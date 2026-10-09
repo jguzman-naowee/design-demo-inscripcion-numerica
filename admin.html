@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin de plataforma — Inscripción numérica</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shared/tokens.css?v=0.1.0">
+<link rel="stylesheet" href="shared/shell.css?v=0.1.0">
+<link rel="stylesheet" href="shared/components.css?v=0.1.0">
+<link rel="stylesheet" href="shared/inscnum.css?v=0.1.0">
+</head>
+<body>
+
+<div class="shell">
+  <div class="main">
+    <header class="top-header" id="topHeader"></header>
+    <div class="page" id="page">
+      <div class="page-inner" id="stage"></div>
+    </div>
+  </div>
+</div>
+
+<script src="shared/sidebar.js?v=0.1.0"></script>
+<script>InscNum.bootRole('admin');
+/* Avatar de sesión en la cabecera de logos; reutiliza las clases del delegado. */
+document.getElementById('topHeader').insertAdjacentHTML('beforeend','<div class="hdr-user"><span class="hdr-me"><span class="hdr-av" title="Admin de plataforma">AD</span></span></div>');</script>
+<script src="shared/hu-data.js?v=0.1.0"></script>
+<script src="shared/hu-launcher.js?v=0.1.0"></script>
+
+</body>
+</html>

@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Fase de inscripción numérica, rol comité</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Siempre claro: sin tema oscuro para que no haya parpadeo en la primera carga. */
+:root{--panel:#ffffff;--fg:#1f2330;--muted:#5d6272;--line:#dcdbd5;--accent:#d74009;--font:'Inter',-apple-system,system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
+.board{display:none}
+.board.cur{display:block}
+.board>.app{min-height:100vh}
+
+/* ---------- Artboard: la app, siempre clara ---------- */
+.app{
+  --n-050:#fff3e6;--n-100:#ffedc7;--n-500:#ff7b24;--n-600:#f05705;--n-700:#d74009;--n-900:#942700;
+  --g-050:#fafbff;--g-100:#f4f5f9;--g-200:#e8e9f2;--g-300:#d4d5e4;--g-500:#9c9ebf;--g-600:#8788ab;--g-700:#646587;--g-900:#282834;
+  --ok-100:#defade;--ok-700:#1f8923;--info-100:#cef4ff;--info-700:#0a55a8;--warn-100:#fef3c7;--warn-700:#b45309;--err-100:#ffe5e9;--err-700:#da1630;
+  background:#fff;color:var(--g-900);font-family:'Inter',-apple-system,sans-serif;font-size:14px;position:relative;color-scheme:light
+}
+.app *{font-family:inherit}
+.page{padding:28px 20px 36px;display:flex;flex-direction:column;gap:18px}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.hdr h1{font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
+.hdr p{margin:0;color:var(--g-700);font-size:15px}
+.seg{display:flex;gap:4px;padding:5px;border:1px solid var(--g-200);border-radius:99px;background:#fff}
+.seg button{border:2px solid transparent;background:none;border-radius:99px;padding:8px 18px;font-size:14px;font-weight:500;color:var(--g-700);cursor:pointer}
+.seg button.on{border-color:var(--n-700);color:var(--g-900)}
+.seg-fill{flex:1 1 auto}.seg-fill button{flex:1 1 0;text-align:center}
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ph{display:flex;flex-direction:column;gap:4px}
+.ph-card{display:flex;align-items:center;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;background:#fff;border:1px solid var(--g-200);border-radius:12px;padding:16px 20px;box-shadow:0 1px 2px rgba(145,158,171,.16)}
+.ph-card h1{margin:0;font-size:20px;line-height:1.3;font-weight:700;letter-spacing:-.01em}
+.ph-ctx{margin:0 0 4px;font-size:13px;color:var(--g-700)}
+.ph-lead{margin:14px 0 0;color:var(--g-700);font-size:15px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;min-height:44px;color:var(--n-700);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{text-decoration:underline}
+.hdr-a{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* Con pestañas, la card queda solo con el título; pestañas y texto van sueltos debajo. */
+.ph-air{padding:0;margin-top:-10px}
+.ptabs{display:flex;gap:4px;border-bottom:1px solid var(--g-200);overflow-x:auto;scrollbar-width:thin}
+.ptab{flex:none;min-height:44px;border:0;background:none;padding:10px 16px;font-size:14px;font-weight:600;color:var(--g-700);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.ptab:focus-visible,.back:focus-visible{outline:2px solid var(--n-700);outline-offset:-2px;border-radius:6px}
+@media (max-width:640px){.hdr{flex-direction:column;gap:12px}.hdr h1{font-size:22px;line-height:1.25}.hdr-a{width:100%}.ptab{padding:10px 14px}}
+.ptab:hover{color:var(--g-900)}.ptab.on{color:var(--n-700);border-bottom-color:var(--n-700);cursor:default}
+.pgn-b{justify-content:center;padding-top:16px}
+.toolbar .sp{flex:1}
+.sel{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--g-300);border-radius:99px;height:40px;padding:0 14px;font-size:13px;color:var(--g-700);background:#fff}
+.sel select{border:0;background:none;font-size:13px;color:var(--g-900);outline:0;max-width:240px}
+.btn{border-radius:99px;height:44px;padding:0 22px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;white-space:nowrap}
+.btn.pri{background:var(--n-700);color:#fff}
+.btn.sec{background:#fff;color:var(--n-700);border-color:var(--g-300)}
+.btn.sm{height:34px;font-size:13px;padding:0 14px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+.tbl{width:100%;border-collapse:separate;border-spacing:0}
+.tbl th{background:var(--g-100);text-align:left;font-weight:600;color:var(--g-700);font-size:13px;padding:12px 10px;white-space:nowrap}
+.tbl th.c,.tbl td.c{text-align:center}
+.tbl th.grp{text-align:center;border-bottom:1px solid var(--g-300)}
+.tbl td{padding:12px 10px;border-bottom:1px solid var(--g-200);font-size:14px;vertical-align:middle}
+.tbl td.sub{color:var(--g-700)}
+.tbl .vsep{border-left:1px solid var(--g-300)}
+.badge{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--g-100);color:var(--g-700)}
+.badge.info{background:var(--info-100);color:var(--info-700)}
+.badge.ok{background:var(--ok-100);color:var(--ok-700)}
+.badge.warn{background:var(--warn-100);color:var(--warn-700)}
+.badge.err{background:var(--err-100);color:var(--err-700)}
+.ex{display:inline-block;font-size:11px;font-weight:600;color:var(--warn-700);background:var(--warn-100);border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.mini{display:block;height:5px;border-radius:3px;background:var(--g-200);margin-top:5px;min-width:70px}
+.mini i{display:block;height:100%;border-radius:3px}
+.mini i.ok{background:#28bf2d}.mini i.warn{background:#e08a14}.mini i.err{background:var(--err-700)}
+.lg{display:flex;gap:16px;font-size:12px;color:var(--g-700);flex-wrap:wrap}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.kpi{display:flex;align-items:center;gap:20px;background:var(--g-100);border-radius:16px;padding:18px 22px;flex-wrap:wrap}
+.kpi b{font-size:30px}
+.lg-n{gap:28px}.lg-n span{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.2}.lg-n b{font-size:24px;color:var(--g-900)}
+.kpi .mini{flex:1;min-width:220px;height:10px}
+.chipf{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--g-300);border-radius:99px;padding:3px 10px;font-size:12px;background:#fff}
+.chipf b{font-weight:600}
+.menuwrap{position:relative;display:inline-block}
+.menu{position:absolute;right:0;top:50px;width:380px;background:#fff;border:1px solid var(--g-200);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.16);padding:8px;z-index:5}
+.menu .it{display:block;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:12px;cursor:pointer;font-size:14px}
+.menu .it:hover{background:var(--g-100)}
+.menu .it b{display:block;font-size:14px}
+.menu .it small{display:block;color:var(--g-700);font-size:12.5px;margin:2px 0 6px}
+.callout{border:1px solid #f2d27a;background:var(--warn-100);color:#6b3c06;border-radius:12px;padding:12px 16px;font-size:13px}
+.xl{border:1px solid var(--g-300);border-radius:6px;overflow:auto}
+.xl table{border-collapse:collapse;font-size:12.5px;min-width:1250px;width:100%}
+.xl th{background:#e9f3ea;border:1px solid var(--g-300);padding:6px 10px;text-align:left;white-space:nowrap;font-weight:600}
+.xl td{border:1px solid var(--g-200);padding:5px 10px;white-space:nowrap}
+.xl td.r{text-align:right}
+.xl .rn{background:var(--g-100);color:var(--g-700);text-align:center;width:34px}
+.tab-x{display:flex;gap:2px;font-size:12px;margin-top:8px}.tab-x span{padding:4px 14px;border:1px solid var(--g-300);border-top:0;border-radius:0 0 6px 6px;background:#fff}
+.pager-note{color:var(--g-700);font-size:12px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--g-200);font-size:14.5px;cursor:pointer}
+.chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--n-700);flex:none}
+.chk .hu{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--g-700);margin-left:6px}
+.card{border:1px solid var(--g-200);border-radius:16px;padding:22px 24px}
+.card h2{font-size:18px;margin:0 0 4px}
+.card>p{margin:0 0 12px;color:var(--g-700);font-size:14px}
+.mem{border:2px dashed var(--g-300);border-radius:14px;padding:22px;background:var(--g-050)}
+.lk{color:var(--n-700);font-weight:600;font-size:14px;background:none;border:0;cursor:pointer;padding:0 4px}
+.lk:hover{text-decoration:underline}
+#pbar{position:fixed;bottom:72px;right:16px;z-index:30;font-size:13px;width:280px;max-width:calc(100vw - 32px);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:0 12px 32px rgba(0,0,0,.18);display:grid;gap:10px}
+#pbar .sim-h{display:flex;align-items:center;justify-content:space-between;font-weight:600;color:var(--fg)}
+#pbar button{font:inherit;font-size:13px;font-weight:500;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:99px;min-height:36px;padding:6px 14px;cursor:pointer;text-align:left}
+#pbar .sim-x{width:36px;padding:0;text-align:center;font-size:18px;line-height:1}
+#pbar button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ptoast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:40;background:#fff;color:#282834;border:1px solid #e8e9f2;border-left:5px solid #28bf2d;border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.14);font-size:14px;max-width:340px}
+/* ---------- Consolidado real (C1), hoja (C5) y tablero (C6) ---------- */
+.cq-h,.rw-h{display:grid;grid-template-columns:24px minmax(100px,1.15fr) minmax(100px,1fr) repeat(4,100px) 190px 144px;align-items:center;column-gap:8px}
+.rw-h.nc,.cq-h.nc{grid-template-columns:24px minmax(170px,1.15fr) minmax(170px,1fr) 220px 150px}
+.cq-h{padding:0 38px;margin:6px -20px 0;color:var(--g-700);font-size:12px;font-weight:600}
+/* Cabecera de columnas fija a todo el ancho; la fila abierta fija su título justo debajo. */
+.cq-h{position:sticky;top:0;z-index:6;background:#fff;padding-block:8px}
+.rw-h{margin-top:16px}
+.rw.op>.rw-h{margin-top:0;padding-top:24px;position:sticky;top:var(--cqh,40px);z-index:5;background:#fff;border-bottom:1px solid var(--g-200)}
+/* Ya pegadas, cada barra lleva detrás una banda fija del ancho del viewport. */
+.cq-h.is-pin::before,.rw.op>.rw-h.is-pin::before{content:'';position:fixed;left:0;right:0;top:inherit;height:var(--ph,40px);z-index:-1;background:#fff}
+.cq-h.is-pin::before{background:#e9eaf0}
+.cq-h.is-pin:not(.has-sub)::before,.rw.op>.rw-h.is-pin::before{box-shadow:0 8px 12px -8px rgba(40,40,52,.28)}
+@media(min-width:1160px){.sc>.scr:has(>.hsi),.sc>.scr:has(>.tbl){overflow:visible}}
+.cq-h .sh{text-align:center;font-size:10.5px;white-space:nowrap}.cq-h .sh.m{color:var(--info-700)}.cq-h .sh.f{color:#a3185f}
+.rws{display:grid;gap:0;background:#fff}
+.rw{border:0;border-bottom:1px solid var(--g-200);border-radius:0;background:#fff;overflow:clip}.rw:last-child{border-bottom:0}
+.rw-h{width:100%;min-height:58px;padding:8px 18px;background:none;border:0;text-align:left;cursor:pointer;font-size:14px;color:var(--g-900)}
+.rw-h:hover{background:var(--g-050)}
+.rw-h:focus-visible{outline:2px solid var(--n-700);outline-offset:-2px}
+.rw-h .md{text-align:center;color:var(--g-700)}
+.rw-h .chv{display:inline-grid;transition:transform .15s;color:var(--g-700)}
+.rw.op .chv{transform:rotate(180deg)}
+.chs{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.chp{font-size:11px;font-weight:600;background:var(--g-100);color:var(--g-900);border-radius:99px;padding:3px 10px}
+.cq{text-align:center;font-weight:600;font-size:15px}
+.cq.nil{color:var(--g-500);font-weight:400}
+.cq.sep{border-left:1px solid var(--g-300)}
+.rw-b{background:#fafafa;border-top:1px solid var(--g-200);padding:12px 18px 14px 56px;font-size:13px}
+.rw-b ul{margin:6px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:4px 24px}
+.rw-b li{padding:3px 0;border-bottom:1px solid var(--g-200)}
+.rw-b li.hit{font-weight:700;color:var(--n-700)}
+.pgn{display:flex;align-items:center;gap:8px;color:var(--g-700);font-size:13px;flex-wrap:wrap}
+.pgn input{border:1px solid var(--g-700);border-radius:8px;height:34px;width:56px;text-align:center;font:inherit;color:var(--g-900);background:#fff}
+.pgn .ar{border:0;background:none;font-size:18px;color:var(--n-700);cursor:pointer;width:28px;height:30px}
+.pgn .ar:disabled{color:var(--g-300);cursor:not-allowed}
+.flt{font:inherit;font-size:13px;font-weight:600;cursor:pointer;border-color:var(--n-700);color:var(--n-700)}
+.fpanel{position:absolute;left:0;top:46px;width:300px;background:#fff;border:1px solid var(--g-200);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.16);padding:14px;z-index:6;display:grid;gap:10px;font-size:13px}
+.fpanel label{display:grid;gap:4px;color:var(--g-700);font-weight:600}
+.fpanel select{border:1px solid var(--g-300);border-radius:10px;height:38px;padding:0 10px;font:inherit;color:var(--g-900);background:#fff}
+.nores{padding:28px;text-align:center;color:var(--g-700);border:1px dashed var(--g-300);border-radius:14px}
+.sheet{border:1px solid var(--g-300);border-radius:6px;overflow:hidden;background:#fff}
+.mb{width:100%;aspect-ratio:1545/218;background:url(../shared/certificado-referencia.png) top / 100% auto no-repeat;background-color:#3a4258}
+.sheet-t{text-align:center;padding:14px 16px 10px}
+.sheet-t b{display:block;font-size:15px}
+.sheet-t span{display:block;color:var(--g-700);font-size:12.5px}
+.sheet .xl{border:0;border-top:1px solid var(--g-300);border-radius:0}
+.td-t{max-width:230px;overflow:hidden;text-overflow:ellipsis}
+/* tablero, dibujado con HTML y SVG */
+.dsh{background:#f7f8fc;border:1px solid var(--g-200);border-radius:16px;padding:22px;display:grid;gap:18px}
+.dsh h2{margin:0;font-size:30px;font-weight:600;letter-spacing:-.01em}
+.dsh .sb{margin:2px 0 0;font-weight:600;font-size:14px}
+.dtop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.dtop small{display:block;text-align:right;letter-spacing:.08em;font-size:10.5px;color:var(--g-700);font-weight:700}
+.dfil{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:#fff;border:1px solid var(--g-200);border-radius:14px;padding:14px 16px;position:relative}
+.dfil .df{display:inline-flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;background:#fafbff;border:1px solid var(--g-200);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.di{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;flex:none}
+.di svg,.ic svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+.dfil .sp{flex:1}
+/* Una sola línea: los selectores ceden ancho antes que partir la barra. */
+.dfil .gm,.dfil .dlk,.dfil .dap{flex:none;white-space:nowrap}
+@media(max-width:1280px){.dfil .df .di{display:none}.dfil .df{padding:8px 10px}}
+.dfil .df select{font:inherit;font-weight:600;border:0;background:transparent;max-width:210px;min-width:0;width:100%;text-overflow:ellipsis;cursor:pointer;color:inherit}
+.dfil .df select:focus-visible,.dlk:focus-visible,.dap:focus-visible{outline:2px solid #ff6a00;outline-offset:2px}
+.dlk,.dap{cursor:pointer}
+.dlk{color:var(--g-700);font-weight:700;font-size:13px;background:none;border:0}
+.dap{background:#ff6a00;color:#fff;font-weight:700;font-size:13px;border:0;border-radius:10px;padding:10px 16px;box-shadow:0 6px 14px -6px rgba(255,106,0,.7)}
+.gm{position:relative;display:inline-block}
+.gm>button{font:inherit;display:inline-flex;align-items:center;gap:10px;background:#fff7f0;border:1px solid #ffb98a;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--g-900)}
+.gmenu{position:absolute;top:calc(100% + 6px);left:0;width:330px;background:#fff;border:1px solid var(--g-200);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:8px;z-index:8}
+.gmenu label{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13.5px;cursor:pointer}
+.gmenu label:hover{background:var(--g-100)}
+.gmenu input{width:16px;height:16px;accent-color:#ff6a00}
+.gmenu .gx{display:flex;gap:14px;padding:6px 10px 8px;border-bottom:1px solid var(--g-200);margin-bottom:4px}
+.gmenu .gx button{background:none;border:0;color:var(--n-700);font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
+.dkp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.dkp.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dk{background:#fff;border:1px solid var(--g-200);border-radius:16px;padding:20px 22px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dk small{display:block;font-size:10.5px;letter-spacing:.06em;font-weight:700;color:var(--g-700);text-transform:uppercase}
+.dk b{display:block;font-size:34px;font-weight:400;margin-top:4px}
+.ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;flex:none}
+.dc{background:#fff;border:1px solid var(--g-200);border-radius:16px;padding:22px 24px;position:relative}
+.dc .dh{margin:0;font-size:16px;font-weight:700}
+.dc .sbt{margin:2px 0 0;color:var(--g-700);font-size:13px}
+.dc .vb{position:absolute;right:22px;top:20px;background:#ff6a00;color:#fff;border:0;border-radius:8px;font-size:12px;font-weight:700;padding:7px 12px}
+.dcr{display:grid;gap:14px}
+.dcr.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dc svg{width:100%;height:auto;display:block}
+.dcn{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tot{font-size:11px;font-weight:700;font-style:italic;color:var(--g-700);background:var(--g-100);border:1px solid var(--g-200);border-radius:99px;padding:5px 12px}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;font-weight:600;margin-top:10px}
+.leg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.gbar{display:grid;grid-template-columns:90px 1fr 80px;gap:10px;align-items:center;margin-top:16px;font-size:13px}
+.gbar .tr{height:16px;background:var(--g-100);border-radius:8px;overflow:hidden}
+.gbar .tr i{display:block;height:100%}
+.c6-wip>:not(header):not(.mq):not(.ptabs):not(.ph-air){filter:grayscale(1);opacity:.65}
+.mq{overflow:hidden;border:1px solid #f2d27a;background:var(--warn-100);border-radius:10px;color:#6b3c06;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mq-t{display:flex;width:max-content;animation:mq-run 28s linear infinite}
+.mq-t span{flex:none;padding:8px 28px;white-space:nowrap}
+.mq-t span::before{content:'';display:inline-block;width:6px;height:6px;margin-right:14px;border-radius:50%;background:#b45309;vertical-align:middle}
+@keyframes mq-run{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.mq-t{animation:none}}
+.dnote{border:1px solid #f2d27a;background:var(--warn-100);color:#6b3c06;border-radius:12px;padding:10px 14px;font-size:13px}
+.mem .mb{border-radius:6px;margin:12px 0}
+/* ---------- Cards, mismo patrón que el delegado (N1): fondo gris, tarjetas blancas ---------- */
+.board>.app{background:#f5f6fa;-webkit-font-smoothing:antialiased;--cp:24px;--sh:0 0 2px rgba(145,158,171,.2),0 12px 24px -4px rgba(145,158,171,.12)}
+.page{max-width:1200px;margin:0 auto;padding:28px 32px 48px;gap:24px}
+.ph{background:#fff;border:1px solid #e7e9f3;border-radius:12px;box-shadow:var(--sh);padding:24px 32px}
+.ph-card{border:0;box-shadow:none;padding:0;border-radius:0;background:none}
+.ph-card h1{font-size:24px;letter-spacing:-.02em}
+.ph-lead{margin:0;padding-top:14px}
+.ini-card{background:#fff;border:1px solid #e7e9f3;border-radius:12px;box-shadow:var(--sh);padding:28px var(--cp) 24px;display:flex;flex-direction:column;gap:20px;min-width:0}
+.ini-k{margin:0;font-size:18px;line-height:1.2;font-weight:600;color:#282834;letter-spacing:-.02em}
+.cd-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px 20px;flex-wrap:wrap}
+.th-rec,.td-rec{width:210px;min-width:210px}.btn-rec{width:190px;justify-content:center}
+.cd-s{margin:6px 0 0;color:#646587;font-size:14px}
+/* Título suelto sobre una card sin bordes (C2 y C3). */
+.cd-out{margin-bottom:-12px}.ini-nb{border:0;box-shadow:none;padding:0;--cp:0px;background:transparent}
+/* Encabezado de columnas como una card, alineada con las filas. */
+.hsi{border:1px solid var(--g-300);border-radius:14px;background:#fff;overflow:clip}
+.ini-nb .cq-h{background:#e9eaf0;border:0;border-bottom:1px solid var(--g-300);border-radius:0;padding-inline:18px;margin:0}
+.ini-nb{gap:12px}
+/* El paginador queda pegado a la card de arriba (misma card), con 24 px de espacio arriba. */
+.ini-nb>.pgn-b.toolbar{margin-top:-12px;background:#fff;border:1px solid var(--g-300);border-top:0;border-radius:0 0 14px 14px;padding:24px 18px 20px}
+.ini-nb .sc:has(+ .pgn-b) .hsi{border-radius:14px 14px 0 0}
+.ini-nb .sc:has(+ .pgn-b) .tbl tbody tr:last-child td:first-child{border-bottom-left-radius:0}
+.ini-nb .sc:has(+ .pgn-b) .tbl tbody tr:last-child td:last-child{border-bottom-right-radius:0}
+/* La barra de filtros de C1 es una card; con encabezado de columnas debajo, ambas se unen en una sola. */
+.ini-nb>.toolbar{background:#fff;border:1px solid var(--g-300);border-radius:14px;padding:14px 18px}
+/* Tablas de C2 y C3: una sola card; encabezado en gris y filas con divisores, sin huecos. */
+.ini-nb .tbl{border-spacing:0}
+.ini-nb .tbl thead th{background:#e9eaf0;border-bottom:0;position:sticky;top:0;z-index:5}
+.ini-nb .tbl thead tr:nth-child(2) th{top:var(--th1,44px)}
+.ini-nb .tbl.is-pin thead tr:first-child th:first-child::before{content:'';position:fixed;left:0;right:0;top:0;height:var(--ph,52px);z-index:-1;background:#e9eaf0;box-shadow:0 8px 12px -8px rgba(40,40,52,.28)}
+.ini-nb .tbl thead tr:first-child th{border-top:1px solid var(--g-300)}
+.ini-nb .tbl thead tr:last-child th,.ini-nb .tbl thead th[rowspan],.ini-nb .tbl thead th.grp{border-bottom:1px solid var(--g-300)}
+.ini-nb .tbl thead tr:first-child th:first-child{border-left:1px solid var(--g-300);border-top-left-radius:14px;padding-left:18px}
+.ini-nb .tbl thead tr:first-child th:last-child{border-right:1px solid var(--g-300);border-top-right-radius:14px;padding-right:18px}
+.ini-nb .tbl tbody td{background:#fff;border-bottom:1px solid var(--g-200);padding:20px 10px}
+.ini-nb .tbl tbody tr:last-child td{border-bottom:1px solid var(--g-300)}
+.ini-nb .tbl tbody td:first-child{border-left:1px solid var(--g-300);padding-left:18px}
+.ini-nb .tbl tbody td:last-child{border-right:1px solid var(--g-300);padding-right:18px}
+.ini-nb .tbl tbody tr:last-child td:first-child{border-bottom-left-radius:14px}.ini-nb .tbl tbody tr:last-child td:last-child{border-bottom-right-radius:14px}
+.ini-dl{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1px;background:#e7e9f3;border:1px solid #e7e9f3;border-radius:8px;overflow:hidden}
+.ini-dl>div{background:#fff;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+.ini-dl dt{font-size:13px;font-weight:600;color:#646587}
+.ini-dl dd{margin:0;display:flex;flex-direction:column;gap:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px}
+.kpi1{padding:0;gap:0;overflow:hidden}
+.kpi1 .ini-dl{display:block;border:0;background:none;border-radius:0}.kpi1 .ini-dl>div{height:100%}
+.ini-v{display:flex;align-items:baseline;gap:6px;font-size:15px;font-weight:600;color:#646587}
+.ini-v b{font-size:32px;line-height:1;font-weight:800;letter-spacing:-.02em;color:#282834}
+.ini-pg{display:block;height:6px;border-radius:99px;background:#f4f5f9;overflow:hidden}
+.ini-pg i{display:block;height:6px;border-radius:99px;background:#d74009}
+.ini-b{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;background:#f4f5f9;color:#282834}
+.ini-b.inf{background:#cef4ff;color:#002b5b}.ini-b.wa{background:#ffedc7;color:#942700}
+.ini-card .pager-note{margin:0}
+.exl{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--warn-700);background:var(--warn-100);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.exl.real{color:var(--ok-700);background:var(--ok-100)}
+.dk .exl,.dc .exl{margin-top:8px}
+.dsh{background:none;border:0;padding:0;gap:24px}
+.dsh h2{font-size:24px;letter-spacing:-.02em}
+.dfil,.dk,.dc{border-color:#e7e9f3;border-radius:12px;box-shadow:var(--sh)}
+.dfil{padding:16px 20px}
+.dc{padding:24px}
+.dk{padding:22px 24px}
+.dk>div{min-width:0}
+.leg .nd b{color:var(--g-700);font-weight:600}
+.leg .nd i{background:var(--g-300)}
+.cq-h{margin:6px calc(-1*var(--cp)) 0;padding-inline:calc(var(--cp) + 18px)}
+.rws .rw,.nores{border-color:#e7e9f3}
+.mem{background:var(--g-050)}
+@media (max-width:640px){
+ .board>.app{--cp:16px}
+ .page{padding:16px 16px 32px;gap:16px}
+ .ph{padding:18px 16px}
+ .ini-dl>div{padding:16px}
+ .dsh .dkp{grid-template-columns:minmax(0,1fr)}
+ .exl{white-space:normal}
+}
+/* ---------- Sin desborde de la página: las cajas anchas hacen scroll por dentro ---------- */
+.sc{position:relative;max-width:100%;min-width:0}
+.sc>.scr{overflow-x:auto;max-width:100%}
+.sc>.scr:focus-visible{outline:2px solid var(--n-700);outline-offset:-2px}
+@media (min-width:1101px){.sc::before,.sc::after{display:none}}
+.sc::before,.sc::after{content:"";position:absolute;top:0;bottom:0;width:22px;z-index:2;pointer-events:none;opacity:0;transition:opacity .15s}
+.sc::before{left:0;background:linear-gradient(to right,rgba(40,40,52,.2),rgba(40,40,52,0))}
+.sc::after{right:0;background:linear-gradient(to left,rgba(40,40,52,.2),rgba(40,40,52,0))}
+.sc.sl::before,.sc.sr::after{opacity:1}
+.cq-h+.rws{margin-top:0}
+.page>*,.dsh>*,.dc{min-width:0}
+@media (max-width:640px){
+ .hsi{min-width:1080px}.hsi.nc{min-width:810px}
+ .scr>.tbl{min-width:760px}
+ .seg{flex-wrap:wrap;border-radius:20px;max-width:100%}
+ .sel{max-width:100%;min-width:0}.sel select{min-width:0;max-width:100%}
+ .kpi .mini{min-width:140px}
+ .hdr-a{position:relative}
+ .hdr-a .menuwrap,.fwrap,.dfil .gm{position:static}
+ .toolbar{position:relative}
+ .menu,.fpanel,.gmenu{left:0;right:0;width:auto;max-width:100%}
+ .menu{top:calc(100% + 6px)}.fpanel{top:calc(100% + 6px)}
+ .dsh h2{font-size:22px}
+ .dtop small{text-align:left}
+ .dfil{flex-wrap:wrap}.dfil .df{flex:1 1 150px}.dfil .sp{display:none}
+ .dkp{grid-template-columns:repeat(2,minmax(0,1fr))}.dkp.g2,.dcr.c3{grid-template-columns:minmax(0,1fr)}
+ .dk{padding:14px;flex-wrap:wrap}.dk b{font-size:26px}
+ .dc{padding:18px 16px}.dc .vb{position:static;margin-top:10px}
+ .gbar{grid-template-columns:70px minmax(0,1fr) 64px}
+ .leg{min-width:0}
+}
+</style>
+</head>
+<body>
+<main>
+<section class="board" id="c1"></section>
+<section class="board" id="c2"></section>
+<section class="board" id="c3"></section>
+<section class="board" id="c4"></section>
+<section class="board" id="c5"></section>
+<section class="board" id="c6"></section>
+</main>
+
+<script src="../shared/datos-inscnum.js"></script>
+<script src="../shared/datos-consolidado.js"></script>
+<script>
+(function(){
+var DATA=window.INSCNUM_DATA,CON=window.INSCNUM_CONSOLIDADO,PG=10,PG5=25;
+
+/* ---------- datos reales: reglas (cupos) y consolidado (combinaciones, filas) ---------- */
+function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function fdate(s){var p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
+var SEXL={Hombres:'Hombre',Mujeres:'Mujer',Mixto:'Mixto'},SEXK=['Hombres','Mujeres','Mixto'];
+var RB={};DATA.reglas.forEach(function(r){RB[r.id]=r});
+var MAPA={};DATA.mapaNombres.forEach(function(m){MAPA[m.deporte+'|'+m.modalidad]=m});
+// Si una combinación agrupa varias reglas con cupos distintos se muestra el rango.
+function pick(rs,f,k){var v=[];rs.forEach(function(r){var x=r[f][k];if(x!=null&&v.indexOf(x)<0)v.push(x)});if(!v.length)return null;if(v.length===1)return v[0];v.sort(function(a,b){return a-b});return v[0]+'–'+v[v.length-1]}
+function mixto(rs){var v=[];rs.forEach(function(r){if(r.mixtaComposicion&&v.indexOf(r.mixtaComposicion)<0)v.push(r.mixtaComposicion)});return v.length===1?v[0]:(v.length?'Varía por prueba':null)}
+function cupos(c){
+ var m=MAPA[c.deporte+'|'+c.modalidad],ids=m?(m.reglaIds&&m.reglaIds.length?m.reglaIds:[m.reglaId]):[];
+ var rs=ids.map(function(i){return RB[i]}).filter(Boolean);
+ var cp={mc:pick(rs,'masc','atletas'),ms:pick(rs,'masc','suplentes'),fc:pick(rs,'fem','atletas'),fs:pick(rs,'fem','suplentes'),mx:mixto(rs),ov:false};
+ // La HU fija Ajedrez en 5 y 1 para ambos géneros; la hoja solo trae FEM (MASC en blanco).
+ if(c.deporte==='Ajedrez'&&cp.mc==null&&cp.fc!=null){cp.mc=cp.fc;cp.ms=cp.fs;cp.ov=true}
+ return cp}
+var COMB=CON.combinaciones.slice().sort(function(a,b){return a.deporte.localeCompare(b.deporte,'es')||a.modalidad.localeCompare(b.modalidad,'es')});
+var KEY={};COMB.forEach(function(c,i){c.i=i;c.cp=cupos(c);KEY[c.deporte+'|'+c.modalidad]=c});
+var DEPS=[];COMB.forEach(function(c){if(DEPS.indexOf(c.deporte)<0)DEPS.push(c.deporte)});
+var DELN=CON.delegaciones,FILAS=CON.filas;
+// Región de cada delegación: tabla documentada en datos-consolidado.js (D6, 9-oct-2026).
+var REGL=(CON.regiones||{lista:[]}).lista,REGD=(CON.regiones||{porDelegacion:[]}).porDelegacion;
+var PROF=DELN.map(function(){return {deps:{},nm:0,nd:0}});
+FILAS.forEach(function(r){var p=PROF[r[0]],d=p.deps[r[1]];if(!d){d=p.deps[r[1]]={};p.nd++}var m=d[r[2]];if(!m){m=d[r[2]]={};p.nm++}m[r[3]]=1});
+var RANK={Hombres:0,Mujeres:1,Mixto:2};
+function byOrg(a,b){return a[0]-b[0]||KEY[a[1]+'|'+a[2]].i-KEY[b[1]+'|'+b[2]].i||RANK[a[3]]-RANK[b[3]]}
+function bySp(a,b){return KEY[a[1]+'|'+a[2]].i-KEY[b[1]+'|'+b[2]].i||a[0]-b[0]||RANK[a[3]]-RANK[b[3]]}
+var ALL=FILAS.slice().sort(byOrg);
+var COLS=['Delegación','Deporte','Modalidad','Sexo','Cupos MASC','Suplentes MASC','Cupos FEM','Suplentes FEM','Cupos mixtos','Fecha de Intención','Rol','Correo Electrónico'];
+function rowCells(f){var c=KEY[f[1]+'|'+f[2]],cp=c.cp,s=f[3];
+ return [DELN[f[0]],f[1],f[2],SEXL[s],s==='Hombres'?cp.mc:null,s==='Hombres'?cp.ms:null,s==='Mujeres'?cp.fc:null,s==='Mujeres'?cp.fs:null,s==='Mixto'?cp.mx:null,fdate(f[4]),CON.rol,CON.correos[f[0]]]}
+function csvCell(v){v=v==null?'':String(v);return /[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
+// BOM + «;» para que Excel en configuración regional española abra las 12 columnas separadas.
+function z2(n){return (n<10?'0':'')+n}
+function membrete(t){var d=new Date();return ['XXIII Juegos Deportivos Nacionales','Córdoba – Sucre 2027',t,'Informe generado el '+z2(d.getDate())+'-'+z2(d.getMonth()+1)+'-'+d.getFullYear()+' a las '+z2(d.getHours())+':'+z2(d.getMinutes()),'']}
+function toCsv(rows,titulo){var o=membrete(titulo).map(csvCell).concat([COLS.map(csvCell).join(';')]);for(var i=0;i<rows.length;i++)o.push(rowCells(rows[i]).map(csvCell).join(';'));return '﻿'+o.join('\r\n')+'\r\n'}
+function download(name,text){var b=new Blob([text],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}
+
+/* ---------- utilidades ---------- */
+var GRUPOS=['Deportistas','Personal de Apoyo','Prensa','Voluntarios','Autoridades de Juzgamiento (Federaciones)','Comités Organizadores','Proveedores','Otros'];
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+function opts(list,sel,all){return '<option value="">'+all+'</option>'+list.map(function(x){return '<option'+(x===sel?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
+function optsI(list,sel,all){return '<option value="">'+all+'</option>'+list.map(function(x,i){return '<option value="'+i+'"'+(String(i)===String(sel)?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
+var ICO_DL='<svg viewBox="0 0 20 20"><path d="M10 3v10M6 9.5l4 4 4-4M3.5 16.5h13"/></svg>';
+var ICO_FL='<svg viewBox="0 0 20 20"><path d="M3 5h14M6 10h8M9 15h2"/></svg>';
+var CHV='<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5"/></svg>';
+/* Un solo encabezado para las seis pantallas: contexto, título con acciones y, si aplica, pestañas o «volver». */
+function HEAD(o){
+ var ev='XXIII Juegos Deportivos Nacionales · Inscripción numérica',tab=!!o.tab;
+ return '<header class="ph">'+(o.back?'<a class="back" href="#c1" data-go="c1">‹ Volver al consolidado</a>':'')+
+ '<div class="ph-card"><div>'+(tab?'':'<p class="ph-ctx">'+ev+'</p>')+'<h1>'+(tab?ev:o.t)+'</h1></div>'+(o.a?'<div class="hdr-a">'+o.a+'</div>':'')+'</div>'+(tab?'':'<p class="ph-lead">'+o.s+'</p>')+'</header>'+
+ (tab?TABS(o.tab)+'<p class="ph-lead ph-air">'+o.s+'</p>':'')}
+function GO(id){return ' data-go="'+id+'"'}
+/* Card con título, subtítulo y acciones; KPIS arma el resumen de arriba, como el N1 del delegado. */
+function CARD(t,body,o){o=o||{};var hd='<div class="cd-h"><div><h2 class="ini-k">'+t+'</h2>'+(o.s?'<p class="cd-s">'+o.s+'</p>':'')+'</div>'+(o.a||'')+'</div>';if(o.out)return '<div class="cd-out">'+hd+'</div><section class="ini-card ini-nb"'+(o.t?' data-t="'+o.t+'"':'')+'>'+body+'</section>';return '<section class="ini-card"'+(o.t?' data-t="'+o.t+'"':'')+'><div class="cd-h"><div><h2 class="ini-k">'+t+'</h2>'+(o.s?'<p class="cd-s">'+o.s+'</p>':'')+'</div>'+(o.a||'')+'</div>'+body+'</section>'}
+function KPIS(t,l){return '<div class="kpis" role="group" aria-label="'+t+'">'+l.map(function(k){return '<section class="ini-card kpi1"><dl class="ini-dl"><div><dt>'+k[0]+'</dt><dd><span class="ini-v"><b>'+k[1]+'</b>'+(k[2]||'')+'</span>'+(k[3]!=null?'<span class="ini-pg"><i style="width:'+k[3]+'%"></i></span>':'')+'</dd></div></dl></section>'}).join('')+'</div>'}
+function EX(){return '<span class="exl">Cifras de ejemplo (Intercolegiados)</span>'}
+/* Pestañas que agrupan las vistas del seguimiento (consolidado, cupo, avance, tablero). */
+function TABS(cur){return '<div class="ptabs" role="tablist" aria-label="Vistas del seguimiento">'+[['c1','Consolidado'],['c2','Declarado vs cupo'],['c3','Quién falta'],['c6','Tablero']].map(function(t){return '<button type="button" role="tab" class="ptab'+(t[0]===cur?' on':'')+'" aria-selected="'+(t[0]===cur)+'" tabindex="'+(t[0]===cur?0:-1)+'"'+(t[0]===cur?'':' data-go="'+t[0]+'"')+'>'+t[1]+'</button>'}).join('')+'</div>'}
+function num(c){return typeof c==='number'?c:parseInt(String(c).split('–').pop(),10)}
+function stat(d,c){return d>c?'err':(d<c?'warn':'ok')}
+function statTxt(d,c){return d>c?'excede en '+(d-c):(d<c?'faltan '+(c-d):'completo')}
+function cellD(d,cv){var n=num(cv),k=stat(d,n);return '<b>'+d+' / '+cv+'</b><span class="mini"><i class="'+k+'" style="width:'+Math.min(100,Math.round(d/n*100))+'%"></i></span><span class="badge '+k+'" style="margin-top:4px">'+statTxt(d,n)+'</span>'}
+function exD(i,j,n){return Math.round(n*(0.3+0.85*(((i*37+j*101+13)%100)/100)))}
+function pager(p,pages,a){return '<div class="pgn">Página <input type="number" min="1" max="'+pages+'" value="'+p+'" data-a="'+a+'" aria-label="Número de página"> de <b>'+pages+'</b><button type="button" class="ar" data-a="'+a+':prev" aria-label="Página anterior"'+(p<=1?' disabled':'')+'>‹</button><button type="button" class="ar" data-a="'+a+':next" aria-label="Página siguiente"'+(p>=pages?' disabled':'')+'>›</button></div>'}
+function clamp(p,pages){return Math.max(1,Math.min(pages,p||1))}
+function chipsOf(set){return SEXK.filter(function(k){return set[k]}).map(function(k){return '<span class="chp">'+SEXL[k]+'</span>'}).join('')}
+
+/* ---------- estado ---------- */
+// S.f son los filtros del consolidado; C1 y C4 los comparten (HU-IN-15: exportar lo que se ve).
+function newS(){return {f:{view:'bySport',sport:'',sexo:'',org:''},c1:{page:1,open:{},fm:false},c2:{sport:'',page:1},c3:{f:'Todas',sent:{}},c4:{menu:true,mode:'vista',done:''},c5:{page:1},c6:{chk:{},g:{},gm:false,d:{per:0,reg:'',dep:'',tipo:'',dpt:''},ap:{per:0,reg:'',dep:'',tipo:'',dpt:'',g:{}}}}}
+var S=newS();
+
+function combsFiltered(){var f=S.f;return COMB.filter(function(c){return (!f.sport||c.deporte===f.sport)&&(!f.sexo||c.porSexo[f.sexo])&&(f.org===''||c.orgIdx.indexOf(+f.org)>-1)})}
+function filasFiltered(){var f=S.f,o=f.org===''?-1:+f.org;
+ var r=ALL.filter(function(x){return (o<0||x[0]===o)&&(!f.sport||x[1]===f.sport)&&(!f.sexo||x[3]===f.sexo)});
+ return f.view==='bySport'?r.sort(bySp):r}
+function orgsFiltered(){var f=S.f;return DELN.map(function(n,i){return i}).filter(function(i){
+ if(f.org!==''&&i!==+f.org)return false;
+ if(!f.sport&&!f.sexo)return true;
+ var d=PROF[i].deps,k,m,s;
+ for(k in d){if(f.sport&&k!==f.sport)continue;for(m in d[k]){if(!f.sexo||d[k][m][f.sexo])return true}}
+ return false})}
+function filtChips(prefix){var f=S.f;
+ return '<span class="chipf">Pestaña: <b>'+(f.view==='bySport'?'Por deporte':'Por organización')+'</b></span>'+(f.sport?'<span class="chipf">Deporte: <b>'+esc(f.sport)+'</b></span>':'')+(f.sexo?'<span class="chipf">Género: <b>'+SEXL[f.sexo]+'</b></span>':'')+(f.org!==''?'<span class="chipf">Organización: <b>'+esc(DELN[+f.org])+'</b></span>':'')+(!f.sport&&!f.sexo&&f.org===''?'<span class="chipf">Sin filtros</span>':'')}
+
+/* ---------- C1 ---------- */
+function cqv(v,sep,tip){var cls='cq'+(sep?' sep':'');if(v==null)return '<span class="'+cls+' nil"'+(tip?' title="'+tip+'"':'')+'>—</span>';return '<span class="'+cls+'"'+(tip?' title="'+tip+'"':'')+'>'+v+(tip?'<sup>*</sup>':'')+'</span>'}
+var TIPOV='5* · valor de HU-IN-05; la hoja de reglas lo deja en blanco';
+function rowSport(c){
+ var cp=c.cp,tip=cp.ov?TIPOV:'',open=!!S.c1.open[c.i],f=S.f;
+ var cells=cqv(cp.mc,1,tip)+cqv(cp.ms,0,tip)+cqv(cp.fc,1)+cqv(cp.fs,0);
+ var body=open?'<div class="rw-b"><b>Organizaciones que declararon esta combinación ('+c.orgIdx.length+')</b><ul>'+c.orgIdx.map(function(i){return '<li'+(f.org!==''&&+f.org===i?' class="hit"':'')+'>'+esc(DELN[i])+'</li>'}).join('')+'</ul></div>':'';
+ return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h" data-a="c1x:'+c.i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(c.deporte)+'</b><span class="md">'+esc(c.modalidad)+'</span>'+cells+'<span class="chs">'+chipsOf(c.porSexo)+'</span><span class="badge info">'+c.organizaciones+' organizaciones</span></button>'+body+'</div>'}
+function rowOrg(i){
+ var p=PROF[i],f=S.f,open=!!S.c1.open['o'+i],sx={};
+ var lst='';
+ Object.keys(p.deps).sort(function(a,b){return a.localeCompare(b,'es')}).forEach(function(d){
+  if(f.sport&&d!==f.sport)return;
+  var ms=Object.keys(p.deps[d]).filter(function(m){return !f.sexo||p.deps[d][m][f.sexo]}).sort(function(a,b){return a.localeCompare(b,'es')});
+  if(!ms.length)return;
+  ms.forEach(function(m){for(var k in p.deps[d][m])sx[k]=1});
+  lst+='<li><b>'+esc(d)+'</b>: '+ms.map(function(m){return esc(m)+' '+chipsOf(p.deps[d][m])}).join(' · ')+'</li>'});
+ var body=open?'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul style="grid-template-columns:1fr">'+lst+'</ul></div>':'';
+ return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(DELN[i])+'</b><span class="md">'+p.nd+' deportes · '+p.nm+' modalidades</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge info">'+p.nd+' deportes</span></button>'+body+'</div>'}
+function sexOpts(sel){return '<option value="">Todos</option>'+SEXK.map(function(k){return '<option value="'+k+'"'+(sel===k?' selected':'')+'>'+SEXL[k]+'</option>'}).join('')}
+function c1Ahora(){
+ var st=S.c1,f=S.f,body,pages,total,nf=(f.sport?1:0)+(f.sexo?1:0);
+ if(f.view==='bySport'){var l=combsFiltered();total=l.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
+  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi"><div class="cq-h"><span style="grid-column:1/4"></span><span class="sh m">Cupos hombres</span><span class="sh m">Suplentes hombres</span><span class="sh f">Cupos mujeres</span><span class="sh f">Suplentes mujeres</span><span style="grid-column:8/10"></span></div><div class="rws">'+l.slice((st.page-1)*PG,st.page*PG).map(rowSport).join('')+'</div></div></div></div>':'<div class="nores">Ninguna combinación coincide con los filtros.</div>'}
+ else{var o=orgsFiltered();total=o.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
+  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi nc"><div class="rws">'+o.slice((st.page-1)*PG,st.page*PG).map(rowOrg).join('')+'</div></div></div></div>':'<div class="nores">Ninguna organización coincide con los filtros.</div>'}
+ var panel=st.fm?'<div class="fpanel" role="dialog" aria-label="Filtros"><label>Deporte<select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label>Género<select data-a="fg">'+sexOpts(f.sexo)+'</select></label><button type="button" class="btn sec sm" data-a="c1clr">Limpiar filtros</button></div>':'';
+ var tb='<div class="toolbar"><div class="seg seg-fill"><button data-a="fv:bySport" class="'+(f.view==='bySport'?'on':'')+'">Por deporte</button><button data-a="fv:byOrg" class="'+(f.view==='byOrg'?'on':'')+'">Por organización</button></div>'+
+ '<label class="sel"><select data-a="fo" aria-label="Organización">'+optsI(DELN,f.org,'Todas las organizaciones')+'</select></label>'+
+ '<span class="menuwrap fwrap"><button type="button" class="sel flt" data-a="c1fm" aria-expanded="'+st.fm+'">'+ICO_FL.replace('<svg','<svg width="14" height="14" stroke="currentColor" fill="none" stroke-width="1.8"')+' Filtros'+(nf?' ('+nf+')':'')+' ▾</button>'+panel+'</span></div>';
+ var lst=body+'<div class="pgn-b toolbar">'+pager(st.page,pages,'c1p')+'</div>';
+ return '<div class="page">'+HEAD({t:'Consolidado de intenciones',s:'Qué organizaciones declararon participación en cada deporte y modalidad.',a:'<button class="btn sec"'+GO('c4')+'>'+ICO_DL+'Exportar</button>',tab:'c1'})+
+ KPIS('Resumen del consolidado',[['Deportes',DEPS.length],['Combinaciones de deporte y modalidad',fmt(COMB.length)],['Delegaciones',DELN.length],['Resultados con los filtros',fmt(total),'<span>'+(f.view==='bySport'?'combinaciones':'organizaciones')+'</span>']])+
+ CARD(f.view==='bySport'?'Cupos por deporte y modalidad':'Declaración por organización',tb+lst,{out:1,a:'<span class="ini-b inf">'+fmt(total)+(f.view==='bySport'?' combinaciones':' organizaciones')+'</span>'})+'</div>'}
+
+/* C2: lo declarado es de ejemplo; combinaciones, cupos y organizaciones son reales */
+function c2Ahora(){
+ var st=S.c2,l=COMB.filter(function(c){return !st.sport||c.deporte===st.sport}),pages=Math.max(1,Math.ceil(l.length/PG));st.page=clamp(st.page,pages);
+ var dc=function(c,k,j){return c.cp[k]==null?'<td class="c'+(j%2?'':' vsep')+' sub">—</td>':'<td class="c'+(j%2?'':' vsep')+'">'+cellD(exD(c.i,j,num(c.cp[k])),c.cp[k])+'</td>'};
+ var body=l.slice((st.page-1)*PG,st.page*PG).map(function(c){return '<tr><td><b>'+esc(c.deporte)+'</b></td><td>'+esc(c.modalidad)+'</td>'+dc(c,'mc',0)+dc(c,'ms',1)+dc(c,'fc',2)+dc(c,'fs',3)+'<td class="c vsep"><span class="badge info">'+c.organizaciones+'</span></td></tr>'}).join('');
+ var fl='<div class="toolbar"><label class="sel">Deporte <select data-a="c2s">'+opts(DEPS,st.sport,'Todos')+'</select></label><span class="sp"></span>'+
+ '<div class="lg"><span><i style="background:#e08a14"></i>Falta por declarar</span><span><i style="background:#28bf2d"></i>Completo</span><span><i style="background:#da1630"></i>Excede el cupo</span></div></div>';
+ var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th rowspan="2">Deporte</th><th rowspan="2">Modalidad</th><th class="grp vsep" colspan="2">HOMBRES · declarado / cupo</th><th class="grp vsep" colspan="2">MUJERES · declarado / cupo</th><th rowspan="2" class="c vsep">Organizaciones</th></tr><tr><th class="c vsep">Cupos</th><th class="c">Suplentes</th><th class="c vsep">Cupos</th><th class="c">Suplentes</th></tr></thead><tbody>'+body+'</tbody></table></div></div>'+
+ '<div class="pgn-b toolbar">'+pager(st.page,pages,'c2p')+'</div>';
+ return '<div class="page">'+HEAD({t:'Declarado contra cupo',s:'Lo declarado por las delegaciones frente al cupo de cada modalidad.',a:'<button class="btn sec"'+GO('c4')+'>'+ICO_DL+'Exportar</button>',tab:'c2'})+
+ KPIS('Resumen',[['Combinaciones mostradas',fmt(l.length)],['Deportes',DEPS.length],['Delegaciones',DELN.length]])+
+ CARD('Filtros y convenciones',fl)+
+ '<div class="callout">Las cantidades declaradas aún no existen en los datos: son <b>de ejemplo</b>. Combinaciones, cupos y número de organizaciones son reales.</div>'+
+ CARD('Declarado contra cupo por modalidad',tbl,{out:1})+'</div>'}
+
+/* C3: 33 delegaciones reales; estado y avance de ejemplo */
+function c3Data(){return DELN.map(function(n,i){var k=(i*7+3)%10,e=k>=7?'Completo':(k>=3?'Parcial':'Sin declarar');return [n,e,e==='Completo'?100:(e==='Parcial'?20+((i*13)%70):0),PROF[i].nm,i]})}
+function c3Ahora(){
+ var st=S.c3,DEL=c3Data(),list=DEL.filter(function(d){return st.f==='Todas'||d[1]===st.f});
+ var avg=Math.round(DEL.reduce(function(a,d){return a+d[2]},0)/DEL.length);
+ var cnt=function(k){return DEL.filter(function(d){return d[1]===k}).length};
+ var bd=function(k){return k==='Completo'?'ok':(k==='Parcial'?'warn':'')};
+ var rows=list.map(function(d){var sent=st.sent[d[4]];
+  return '<tr><td><b>'+esc(d[0])+'</b></td><td><span class="badge '+bd(d[1])+'">'+d[1]+'</span></td><td style="width:220px"><b>'+d[2]+'%</b><span class="mini"><i class="'+(d[2]===100?'ok':'warn')+'" style="width:'+d[2]+'%"></i></span></td><td class="c">'+d[3]+'</td><td class="td-rec">'+(d[1]==='Completo'?'<span class="pager-note">—</span>':'<button class="btn sec sm btn-rec" data-a="c3r:'+d[4]+'"'+(sent?' disabled':'')+'>'+(sent?'Recordatorio enviado':'Recordar')+'</button>')+'</td></tr>'}).join('');
+ var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th>Delegación (real)</th><th>Estado</th><th>Avance</th><th class="c">Modalidades en el insumo (real)</th><th class="th-rec">Recordar</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
+ '<p class="pager-note">Las 33 delegaciones y sus modalidades son reales; el estado y el porcentaje son de ejemplo. «Recordar» solo cambia el botón en esta maqueta.</p>';
+ return '<div class="page">'+HEAD({t:'Quién falta por declarar',s:'Estado de cada delegación mientras la ventana de inscripción numérica está abierta.',tab:'c3'})+
+ KPIS('Avance de las delegaciones',[['Avance global',avg+'%','',avg],['Completo',cnt('Completo'),'<span>delegaciones</span>'],['Parcial',cnt('Parcial'),'<span>delegaciones</span>'],['Sin declarar',cnt('Sin declarar'),'<span>delegaciones</span>']])+
+ CARD('Filtro por estado','<div class="toolbar"><div class="seg">'+['Todas','Sin declarar','Parcial','Completo'].map(function(f){return '<button data-a="c3f:'+f+'" class="'+(st.f===f?'on':'')+'">'+f+'</button>'}).join('')+'</div></div>')+
+ CARD('Delegaciones',tbl,{out:1,a:'<span class="ini-b inf">'+list.length+' de '+DEL.length+'</span>'})+'</div>'}
+
+/* C4 */
+function c4Rows(){return S.c4.mode==='completo'?ALL:filasFiltered()}
+function prevTable(rows){
+ var th='<tr>'+COLS.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr>';
+ var tb=rows.slice(0,5).map(function(r){return '<tr>'+rowCells(r).map(function(v,j){return '<td'+((j>=4&&j<=8)?' class="r"':'')+'>'+(j===11?'<i>solo en el archivo</i>':(v==null?'—':esc(v)))+'</td>'}).join('')+'</tr>'}).join('');
+ return '<div class="sc"><div class="xl scr" tabindex="0" role="region" aria-label="Tabla con desplazamiento horizontal"><table><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div></div>'}
+function c4Ahora(){
+ var st=S.c4,f=S.f,rows=c4Rows(),full=st.mode==='completo';
+ var chips=full?'<span class="chipf">Reporte completo · <b>sin filtros</b></span>':filtChips();
+ var m=st.menu?'<div class="menu" role="menu"><button class="it" role="menuitem" data-a="c4x:vista"><b>Lo que estoy viendo </b><small>Respeta los filtros y la pestaña activa. Incluye las columnas de cupos y cantidades.</small><span style="display:flex;gap:6px;flex-wrap:wrap">'+filtChips()+'</span></button><button class="it" role="menuitem" data-a="c4x:completo"><b>Reporte completo</b><small>Todo el evento, sin filtros.</small></button></div>':'';
+ var fl='<div class="toolbar"><div class="seg"><button data-a="fv:bySport" class="'+(f.view==='bySport'?'on':'')+'">Por deporte</button><button data-a="fv:byOrg" class="'+(f.view==='byOrg'?'on':'')+'">Por organización</button></div>'+
+ '<label class="sel">Deporte <select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label class="sel">Género <select data-a="fg">'+sexOpts(f.sexo)+'</select></label><label class="sel">Organización <select data-a="fo">'+optsI(DELN,f.org,'Todas')+'</select></label></div>';
+ var vp='<div style="display:flex;gap:6px;flex-wrap:wrap">'+chips+'</div>'+
+ '<div><b>'+fmt(rows.length)+' filas</b> · 12 columnas, incluidas las nuevas de cupos y suplentes. Vista previa de las primeras 5:</div>'+
+ (rows.length?prevTable(rows):'<div class="nores">Ningún dato coincide con los filtros.</div>')+
+ '<div class="toolbar"><button class="btn pri sm" data-a="c4d"'+(rows.length?'':' disabled')+'>'+ICO_DL+'Descargar</button><button class="lk" data-go="c5">Ver el reporte consolidado</button></div>'+
+ (st.done?'<div><b>'+esc(st.done)+'</b></div>':'');
+ return '<div class="page">'+HEAD({t:'Exportar consolidado',s:'Elige qué exportar y revisa la vista previa antes de descargar.',a:'<div class="menuwrap"><button class="btn sec" data-a="c4m">'+ICO_DL+'Exportar ▾</button>'+m+'</div>',back:1})+
+ KPIS('Resumen de la exportación',[['Filas a exportar',fmt(rows.length)],['Columnas',12],['Alcance',full?'Completo':'Vista',''],['Filtros activos',full?0:(f.sport?1:0)+(f.sexo?1:0)+(f.org!==''?1:0)]])+
+ CARD('Filtros',fl)+
+ CARD('Se exportaría ahora',vp)+'</div>'}
+
+/* C5 */
+function c5Ahora(){
+ var st=S.c5,pages=Math.ceil(ALL.length/PG5);st.page=clamp(st.page,pages);
+ var a=(st.page-1)*PG5,part=ALL.slice(a,a+PG5);
+ var th='<tr><th class="rn"></th>'+COLS.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr>';
+ var tb=part.map(function(r,i){return '<tr><td class="rn">'+(a+i+2)+'</td>'+rowCells(r).map(function(v,j){return '<td'+((j>=4&&j<=8)?' class="r"':'')+(j===0||j===8?' title="'+esc(v==null?'':v)+'"':'')+'>'+(j===0||j===8?'<div class="td-t">'+(v==null?'—':esc(v))+'</div>':(v==null?'—':esc(v)))+'</td>'}).join('')+'</tr>'}).join('');
+ var sh='<div class="sheet"><div class="mb" role="img" aria-label="Membrete oficial: XXIII Juegos Deportivos Nacionales 2027"></div><div class="sheet-t"><b>REPORTE CONSOLIDADO DE INSCRIPCIÓN NUMÉRICA</b><span>XXIII Juegos deportivos nacionales · Córdoba – Sucre 2027</span></div>'+
+ '<div class="sc"><div class="xl scr" tabindex="0" role="region" aria-label="Tabla con desplazamiento horizontal"><table><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div></div></div>'+
+ '<div class="tab-x"><span>Consolidado</span></div>'+
+ '<p class="pager-note">Una fila por delegación × deporte × modalidad × sexo. Volumen real del insumo: '+fmt(ALL.length)+' filas (aquí se ven '+PG5+' por página).</p>'+
+ '<div class="toolbar">'+pager(st.page,pages,'c5p')+'<span class="pager-note">Filas '+fmt(a+1)+' a '+fmt(a+part.length)+' de '+fmt(ALL.length)+'</span></div>'+
+ '<p class="pager-note">Correo Electrónico: el real de la hoja original (uno por delegación). El Rol es el del insumo. Al descargar, el archivo lleva el membrete en las primeras filas.</p>';
+ return '<div class="page">'+HEAD({t:'Reporte consolidado de inscripción numérica',s:'Vista previa de la hoja de Excel. Filas reales del insumo; cupos de la hoja de reglas.',a:'<button class="btn pri" data-a="c5d">'+ICO_DL+'Descargar Excel</button>',back:1})+
+ KPIS('Resumen del reporte',[['Filas del insumo',fmt(ALL.length)],['Columnas',12],['Delegaciones',DELN.length],['Filas por página',PG5]])+
+ CARD('Vista previa de la hoja',sh,{a:'<span class="ini-b inf">Página '+st.page+' de '+pages+'</span>'})+'</div>'}
+
+/* C6: tablero (dibujado con HTML y SVG; cifras de las capturas y de ejemplo) */
+var CHK=[
+ [10,'Renombrar «Instituciones Registradas» a «Delegaciones Registradas»'],
+ [10,'Conservar «Deportistas Registrados»'],
+ [10,'Conservar «Personal de Apoyo Registrado»'],
+ [11,'Agregar «Cantidades de inscritos por género»'],
+ [11,'Agregar «Porcentajes de inscritos por género»'],
+ [12,'Quitar «Instituciones»'],
+ [12,'Quitar «Regionales»'],
+ [13,'Agregar al filtro «grupos de inscripción», junto a periodo, región, departamento, tipo de deporte y deporte']
+];
+var IC={cal:'<path d="M3 5h14v12H3zM3 9h14M7 3v4M13 3v4"/>',pin:'<path d="M10 18s6-5 6-9a6 6 0 10-12 0c0 4 6 9 6 9z"/><circle cx="10" cy="9" r="2"/>',trophy:'<path d="M6 3h8v5a4 4 0 01-8 0zM6 5H3v1a3 3 0 003 3M14 5h3v1a3 3 0 01-3 3M10 12v3M7 17h6"/>',ball:'<circle cx="10" cy="10" r="8"/><path d="M2 10h16M10 2c3 3 3 13 0 16M10 2c-3 3-3 13 0 16"/>',bank:'<path d="M3 8l7-4 7 4M5 8v7M9 8v7M13 8v7M3 16h14"/>',people:'<circle cx="7" cy="6" r="3"/><path d="M2 17c0-3 2.5-5 5-5s5 2 5 5M14 4a3 3 0 010 5M15 12c2 .5 3 2.5 3 5"/>',sup:'<circle cx="8" cy="6" r="3"/><path d="M3 17c0-3 2.5-5 5-5s4 1 5 3M13 13l2 2 3-3"/>',clip:'<path d="M6 4h8v13H6zM8 2h4v3H8zM8 11l2 2 3-3"/>',grp:'<circle cx="7" cy="7" r="3"/><circle cx="14" cy="8" r="2.4"/><path d="M2 17c0-3 2.5-5 5-5s5 2 5 5M13 13c3 0 5 1.5 5 4"/>'};
+function ic(p,fg,bg,cls){return '<i class="'+(cls||'ic')+'" style="color:'+fg+';background:'+bg+'"><svg viewBox="0 0 20 20">'+p+'</svg></i>'}
+function rnd(seed){var s=seed;return function(){s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
+var XT=['31 ene','17 feb','12 mar','21 mar','30 mar','07 abr','15 abr','23 abr','01 may','11 may','24 may','04 jun','22 jun','15 jul','03 ago','17 sept'];
+function bars(color,ymax,avg,peak,seed,label){
+ var N=231,W=640,H=250,L=56,R=44,T=14,B=38,pw=W-L-R,ph=H-T-B,r=rnd(seed),g='',i,y;
+ for(i=0;i<=4;i++){y=T+ph-ph*i/4;g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="#eceef5" stroke-dasharray="3 3"/><text x="'+(L-8)+'" y="'+(y+3)+'" text-anchor="end" font-size="10" fill="#8a8fa6">'+fmt(ymax*i/4)+'</text>'}
+ var bw=pw/N*0.55;
+ for(i=0;i<N;i++){var s=0;
+  if(i>=40&&i<94)s=Math.pow((i-40)/54,2.1)*(0.5+0.5*r());
+  else if(i>=94&&i<98)s=0.03*r();
+  else if(i===199)s=0.015;
+  var h=ph*s*peak;if(h<=0)continue;
+  g+='<rect x="'+(L+i*pw/N).toFixed(1)+'" y="'+(T+ph-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+color+'"/>'}
+ var ay=T+ph-ph*avg/ymax;
+ g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+ay+'" y2="'+ay+'" stroke="#ff6a00" stroke-width="1.6" stroke-dasharray="5 4"/><text x="'+(W-R+4)+'" y="'+(ay+3)+'" font-size="10" font-weight="700" fill="#ff6a00">'+fmt(avg)+'</text>';
+ XT.forEach(function(t,k){g+='<text x="'+(L+k*pw/15)+'" y="'+(H-12)+'" text-anchor="middle" font-size="9.5" fill="#8a8fa6">'+t+'</text>'});
+ return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+label+'">'+g+'</svg>'}
+function chartCard(t,sub,svg){return '<div class="dc"><div class="dh">'+t+'</div><p class="sbt">'+sub+'</p>'+EX()+'<button type="button" class="vb">Ver Acumulado</button><div style="margin-top:14px">'+svg+'</div></div>'}
+function ringCard(t,pct,col,lbl,foot){var C=2*Math.PI*78,d=Math.min(pct,100)/100*C;
+ return '<div class="dc"><div class="dh">'+t+'</div>'+EX()+'<svg viewBox="0 0 240 230" style="max-height:240px" role="img" aria-label="'+t+': '+pct+'%"><circle cx="120" cy="112" r="78" fill="none" stroke="#eef0f6" stroke-width="22"/><circle cx="120" cy="112" r="78" fill="none" stroke="'+col+'" stroke-width="22" stroke-dasharray="'+d+' '+C+'" transform="rotate(-90 120 112)"/><text x="120" y="114" text-anchor="middle" font-size="34" font-weight="800" fill="#101828">'+pct+'%</text><text x="120" y="136" text-anchor="middle" font-size="10" font-weight="700" fill="#9aa0b8" letter-spacing="1.5">'+lbl+'</text></svg><p style="text-align:center;font-weight:700;font-size:13px;color:#5d6272;margin:0">'+foot+'</p></div>'}
+function donut(segs,cx,cy,r,sw,gap){var C=2*Math.PI*r,acc=0,g='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#eef0f6" stroke-width="'+sw+'"/>';
+ segs.forEach(function(s){var l=Math.max(0,s.p/100*C-gap);g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+s.c+'" stroke-width="'+sw+'" stroke-dasharray="'+l+' '+C+'" stroke-dashoffset="'+(-acc/100*C)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';acc+=s.p});return g}
+/* Modelo de ejemplo del tablero: determinista, con pesos por grupo, deporte y departamento.
+   Solo «Delegaciones Registradas» es real (cuenta delegaciones del consolidado). */
+var TIPOS=['Individual','De conjunto'],CONJ=['Baloncesto','Balonmano','Béisbol','Fútbol','Fútbol Salón','Rugby 7','Softbol','Voleibol','Porrismo (exhibición)'];
+function tipoDe(d){return CONJ.indexOf(d)>-1?'De conjunto':'Individual'}
+var PERS=[['Todo el tiempo',1],['Últimos 90 días',0.45],['Últimos 30 días',0.18],['Últimos 7 días',0.04]];
+/* GW: pesos de ejemplo (Intercolegiados), no son datos del evento; solo los dos primeros grupos se muestran con cifra. */
+var GW=[643128,30199,2400,4200,1800,1300,1100,1813],GWT=685940;
+var GCOL=['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f59e0b','#ef4444','#84cc16','#94a3b8'];
+function hsh(x){var h=0;for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))%100003;return h}
+var SW={},SWT=0,SOFF={};DEPS.forEach(function(d){SW[d]=1+hsh(d)%7;SWT+=SW[d];SOFF[d]=(hsh('g'+d)%21-10)/100});
+(function(){var m=0;DEPS.forEach(function(d){m+=SOFF[d]*SW[d]/SWT});DEPS.forEach(function(d){SOFF[d]-=m})})();
+var DWN=(function(){var w=DELN.map(function(n){return 1+hsh(n)%7}),t=w.reduce(function(a,b){return a+b},0);return w.map(function(x){return x/t})})();
+var H0=371420,M0=271708;
+function pc(x){return x.toFixed(1).replace('.',',')}
+function nice(x){if(x<=40)return 40;var p=Math.pow(10,Math.floor(Math.log(x)/Math.LN10)),m=[1,2,4,8,10],i=0;while(m[i]*p<x)i++;return m[i]*p}
+/* Marcar los ocho grupos equivale a no filtrar por grupo: así los anillos dan lo mismo que sin filtro. */
+function normA(a){var all=GRUPOS.every(function(_,i){return a.g[i]});return all?{per:a.per,reg:a.reg||'',dep:a.dep,tipo:a.tipo,dpt:a.dpt,g:{}}:a}
+function c6Vacio(a){a=normA(a);return !a.per&&!a.reg&&a.dep===''&&!a.tipo&&!a.dpt&&!GRUPOS.some(function(_,i){return a.g[i]})}
+function regIdx(r){return DELN.map(function(n,i){return i}).filter(function(i){return !r||REGD[i]===r})}
+function modelo(a){
+ a=normA(a);
+ var Q=DEPS.filter(function(d){return (!a.dpt||d===a.dpt)&&(!a.tipo||tipoDe(d)===a.tipo)}),ds=a.dep!=='',di=+a.dep;
+ var idx=regIdx(a.reg).filter(function(i){return !ds||i===di}),rs=!!a.reg&&!ds;
+ var dels=idx.filter(function(i){return Q.some(function(s){return PROF[i].deps[s]})}).length;
+ var num=0,den=0,off=0,fr;
+ if(ds){Object.keys(PROF[di].deps).forEach(function(s){den+=SW[s];if(Q.indexOf(s)>-1){num+=SW[s];off+=SOFF[s]*SW[s]}})}
+ else{DEPS.forEach(function(s){den+=SW[s]});Q.forEach(function(s){num+=SW[s];off+=SOFF[s]*SW[s]})}
+ fr=den?num/den:0;off=num?off/num:0;
+ var F=PERS[a.per][1]*(ds?(idx.length?DWN[di]:0):(rs?idx.reduce(function(t,i){return t+DWN[i]},0):1))*fr,any=GRUPOS.some(function(_,i){return a.g[i]}),sel=function(i){return !any||!!a.g[i]};
+ var gv=GW.map(function(w,i){return sel(i)?Math.round(w*F):0}),tot=gv.reduce(function(x,y){return x+y},0),dep=gv[0];
+ var gsum=GW.reduce(function(x,w,i){return x+(sel(i)?w:0)},0);
+ var sh=c6Vacio(a)?H0/(H0+M0):Math.max(0.35,Math.min(0.8,H0/(H0+M0)+off)),H=c6Vacio(a)?H0:Math.round(dep*sh),M=c6Vacio(a)?M0:dep-H;
+ var vac=c6Vacio(a),j=vac?0:(hsh(JSON.stringify(a))%31-15),sq=Math.sqrt(F);
+ var meta=vac?589560:Math.round(589560*F*(1+j/100)),mun=vac?1142:(F>0?Math.max(1,Math.round(1142*sq)):0),mmeta=vac?1073:Math.round(1073*sq*(1+j/100));
+ return {a:a,dels:dels,F:F,gv:gv,sel:sel,tot:tot,dep:dep,apoyo:gv[1],pre:Math.round(158776*F*gsum/GWT),H:H,M:M,
+  rp:meta?Math.round(dep/meta*100):0,meta:meta,mun:mun,mmeta:mmeta,mp:mmeta?Math.round(mun/mmeta*100):0,
+  seed:vac?7:7+hsh(JSON.stringify(a))%89,cf:dep/GW[0]}}
+function dFil(){
+ var g=S.c6.g,n=GRUPOS.filter(function(x,i){return g[i]}).length,d=S.c6.d;
+ var sl=function(k,lab,p,fg,bg,o){return '<label class="df">'+ic(p,fg,bg,'di')+'<select data-a="c6f:'+k+'" aria-label="'+lab+'">'+o+'</select></label>'};
+ var dl=DEPS.filter(function(x){return !d.tipo||tipoDe(x)===d.tipo});
+ var di=regIdx(d.reg);
+ var h=sl('per','Periodo',IC.cal,'#2563eb','#eaf0ff',PERS.map(function(p,i){return '<option value="'+i+'"'+(+d.per===i?' selected':'')+'>'+p[0]+'</option>'}).join(''))+
+  '<span data-t="f-region" style="display:contents">'+sl('reg','Región',IC.pin,'#0f9d6b','#e6f7ef',opts(REGL,d.reg,'Todas las Regiones'))+'</span>'+
+  sl('dep','Departamento',IC.pin,'#9333ea','#f4eafd','<option value="">Todos los Departamentos</option>'+di.map(function(i){return '<option value="'+i+'"'+(String(i)===String(d.dep)?' selected':'')+'>'+esc(DELN[i])+'</option>'}).join(''))+
+  sl('tipo','Tipo de deporte',IC.trophy,'#ea8a00','#fff3df',opts(TIPOS,d.tipo,'Tipo de Deporte'))+
+  sl('dpt','Deporte',IC.ball,'#e0433a','#fdecea',opts(dl,d.dpt,'Deporte'));
+ var lab=n===0?'Grupos de inscripción':(n===GRUPOS.length?'Todos los grupos':'Grupos de inscripción · '+n);
+ h+='<span class="gm" data-t="f-grupos"><button type="button" data-a="c6gm" aria-expanded="'+S.c6.gm+'" aria-haspopup="true">'+ic(IC.grp,'#d74009','#ffe9d9','di')+lab+' ▾</button>'+
+  (S.c6.gm?'<div class="gmenu" data-t="f-grupos-menu" role="group" aria-label="Grupos de inscripción"><div class="gx"><button type="button" data-a="c6ga">Seleccionar todos</button><button type="button" data-a="c6gc">Limpiar</button></div>'+GRUPOS.map(function(x,i){return '<label><input type="checkbox" data-a="c6g:'+i+'"'+(g[i]?' checked':'')+'>'+x+'</label>'}).join('')+'</div>':'')+'</span>';
+ h+='<span class="sp"></span><button type="button" class="dlk" data-a="c6lp">✕ Limpiar</button><button type="button" class="dap" data-a="c6ap">Aplicar filtros</button>';
+ return '<div class="dfil">'+h+'</div>'}
+function distCard(m){
+ var segs=[],leg='',k=m.gv[0]+m.gv[1];
+ /* Solo Deportistas y Personal de Apoyo tienen cifra; los otros seis grupos no tienen fuente. */
+ GRUPOS.forEach(function(x,i){
+  if(i>1){leg+='<span class="nd"><i></i>'+x+' <b>sin dato</b></span>';return}
+  if(!m.gv[i]||!k)return;var p=m.gv[i]/k*100;segs.push({p:p,c:GCOL[i]});leg+='<span><i style="background:'+GCOL[i]+'"></i>'+x+' '+fmt(m.gv[i])+' ('+pc(p)+'%)</span>'});
+ return '<div class="dc" data-t="dist"><div class="dcn"><div class="dh">Distribución de Usuarios</div><span class="tot">TOTAL CON DATO: '+fmt(k)+'</span></div>'+EX()+'<div class="leg">'+leg+'</div><svg viewBox="0 0 240 200" style="max-height:230px" role="img" aria-label="Distribución de usuarios por grupo de inscripción">'+donut(segs,120,100,70,16,segs.length>1?3:0)+'</svg></div>'}
+function dashboard(){
+ var m=modelo(S.c6.ap);
+ var kpi=function(t,v,p,fg,bg,dt,real){return '<div class="dk" data-t="'+dt+'"><div><small>'+t+'</small><b>'+v+'</b>'+(real?'<span class="exl real">Dato real (consolidado)</span>':EX())+'</div>'+ic(p,fg,bg)+'</div>'};
+ var out='<div class="dsh"><section class="ini-card"><div class="dtop"><div><h2>Inscripciones</h2><p class="sb">Gestión de delegaciones, deportistas y personal de apoyo</p></div><div><small>ÚLTIMA ACTUALIZACIÓN</small><b style="font-size:14px">Hace 15 minutos</b></div></div></section>'+dFil();
+ out+='<div class="dkp" data-t="kpis">'+
+  kpi('Delegaciones Registradas',fmt(m.dels),IC.bank,'#2563eb','#eaf0ff','kpi-del',1)+
+  kpi('Deportistas Registrados',fmt(m.dep),IC.people,'#0f9d6b','#e6f7ef','kpi-dep')+
+  kpi('Personal de Apoyo Registrado',fmt(m.apoyo),IC.sup,'#7c3aed','#f1eafe','kpi-apoyo')+
+  kpi('Preinscripciones',fmt(m.pre),IC.clip,'#e11d48','#fdecef','kpi-pre')+'</div>';
+ var dp=m.dep||1,ymax=nice(100000*m.cf),avg=Math.round(5024*m.cf);
+ out+='<div class="dkp g2"><div class="dc" data-t="gen-cant"><div class="dh">Cantidades de inscritos por género</div><p class="sbt">Deportistas registrados por género</p>'+EX()+
+  '<div class="gbar"><b>Hombres</b><span class="tr"><i style="width:'+(m.H/dp*100).toFixed(1)+'%;background:#3b82f6"></i></span><b>'+fmt(m.H)+'</b></div>'+
+  '<div class="gbar"><b>Mujeres</b><span class="tr"><i style="width:'+(m.M/dp*100).toFixed(1)+'%;background:#ec4899"></i></span><b>'+fmt(m.M)+'</b></div></div>'+
+  '<div class="dc" data-t="gen-pct"><div class="dh">Porcentajes de inscritos por género</div><p class="sbt">Participación de cada género sobre el total</p>'+EX()+'<div style="display:flex;align-items:center;gap:18px"><svg viewBox="0 0 160 160" style="width:150px;flex:none" role="img" aria-label="'+(m.dep?pc(m.H/dp*100)+'% hombres y '+pc(m.M/dp*100)+'% mujeres':'Sin datos para esta selección')+'">'+donut(m.dep?[{p:m.H/dp*100,c:'#3b82f6'},{p:m.M/dp*100,c:'#ec4899'}]:[],80,80,56,20,0)+'<text x="80" y="86" text-anchor="middle" font-size="18" font-weight="800" fill="#101828">'+(m.dep?pc(m.H/dp*100)+'%':'—')+'</text></svg><div class="leg" style="flex-direction:column;gap:8px"><span><i style="background:#3b82f6"></i>Hombres '+(m.dep?pc(m.H/dp*100)+'%':'—')+'</span><span><i style="background:#ec4899"></i>Mujeres '+(m.dep?pc(m.M/dp*100)+'%':'—')+'</span></div></div></div></div>';
+ out+=chartCard('Deportistas Registrados - Diario','Nuevos registros diarios con promedio',m.dep?bars('#2563eb',ymax,avg,0.88,m.seed,'Deportistas registrados por día, con promedio de '+fmt(avg)):'<p class="sbt" style="padding:40px 0;text-align:center">Sin datos para esta selección.</p>');
+ out+='<div class="dcr c3">'+ringCard('Progreso de Registro de Deportistas',m.rp,'#2563eb','DE LA META',fmt(m.dep)+' / '+fmt(m.meta)+' deportistas')+ringCard('Progreso de Cobertura Municipal',m.mp,'#ff6a00','COBERTURA',fmt(m.mun)+' / '+fmt(m.mmeta)+' municipios')+distCard(m)+'</div></div>';
+ return out}
+function c6Ahora(){
+ var done=CHK.filter(function(_,i){return S.c6.chk[i]}).length;
+ var items=CHK.map(function(c,i){return '<label class="chk"><input type="checkbox" data-a="c6c:'+i+'"'+(S.c6.chk[i]?' checked':'')+'><span>'+c[1]+'<span class="hu">HU-IN-'+c[0]+'</span></span></label>'}).join('');
+ return '<div class="page c6-wip">'+HEAD({t:'Tablero de inscripciones',s:'Cifras de la inscripción por delegación, deporte y género.',tab:'c6'})+
+ '<div class="mq" role="status" aria-label="En proceso: datos pendientes"><div class="mq-t" aria-hidden="true">'+new Array(8).join('<span>En proceso · Datos pendientes</span>')+new Array(8).join('<span>En proceso · Datos pendientes</span>')+'</div></div>'+
+ (window.parent!==window?'':'<div class="dnote">Este es el diseño del cambio: el tablero real vive en un dashboard externo, no en este repo. Las cifras son de ejemplo (derivadas por un modelo simple y determinista); solo «Delegaciones Registradas» (33 sin filtros) es real.</div>')+dashboard()+
+ '<p class="callout" data-t="retirado">Retirado: el indicador y el gráfico de «Instituciones» y el indicador y el gráfico de «Regionales». El filtro de región se queda (HU-IN-13).</p>'+
+ CARD('Cambios respecto del tablero actual','<div>'+items+'</div>',{s:'Listado para quien mantiene el dashboard externo. Avance: <b>'+done+' de '+CHK.length+'</b>.',a:'<span class="ini-b inf">'+done+' de '+CHK.length+'</span>'})+
+ CARD('Membrete oficial en las descargas','<div class="mem"><b>Membrete oficial (referencia: certificado de la fase anterior)</b><div class="mb" role="img" aria-label="Membrete del certificado: XXIII Juegos Deportivos Nacionales 2027"></div>'+
+ '<span class="badge warn">Depende del Manual de Marca (Brand Book)</span> <span class="pager-note">Acta del 11-ago-2026 (PR_AR_08.0005 v2, compromiso 8): se solicitó al comité organizador. Mientras llega, el membrete sale del certificado real.</span></div>',{s:'Aplica a las descargas de todos los roles.'})+'</div>'}
+
+/* ---------- pantallas ---------- */
+var B={c1:c1Ahora,c2:c2Ahora,c3:c3Ahora,c4:c4Ahora,c5:c5Ahora,c6:c6Ahora};
+/* Marca como «pegadas» las barras fijas de C1 solo cuando el scroll ya pasó su posición natural. */
+function stk(){var cq=document.querySelector('.cq-h');document.documentElement.style.setProperty('--cqh',(cq&&cq.offsetParent?cq.offsetHeight:40)+'px');var sub=false;
+ Array.prototype.forEach.call(document.querySelectorAll('.cq-h,.rw.op>.rw-h'),function(h){if(!h.offsetParent){h.classList.remove('is-pin');return}
+  var top=parseFloat(getComputedStyle(h).top)||0,nat=h.parentElement.getBoundingClientRect().top+(h.classList.contains('cq-h')?6:0),pin=nat<top-0.5&&Math.abs(h.getBoundingClientRect().top-top)<1;
+  h.style.setProperty('--ph',h.offsetHeight+'px');h.classList.toggle('is-pin',pin);if(pin&&!h.classList.contains('cq-h'))sub=true});
+ if(cq)cq.classList.toggle('has-sub',sub);
+ /* Encabezado fijo de las tablas de C2 y C3, igual que en C1. */
+ Array.prototype.forEach.call(document.querySelectorAll('.ini-nb .tbl'),function(t){if(!t.offsetParent){t.classList.remove('is-pin');return}var th=t.querySelector('thead'),r1=th.querySelector('tr'),r=t.getBoundingClientRect(),hh=th.offsetHeight;t.style.setProperty('--ph',hh+'px');t.style.setProperty('--th1',r1.offsetHeight+'px');t.classList.toggle('is-pin',r.top<-0.5&&r.bottom>hh)})}
+window.addEventListener('scroll',stk,{passive:true});window.addEventListener('resize',stk);
+function draw(k){
+ var el=document.getElementById(k);
+ var focus=document.activeElement&&document.activeElement.getAttribute&&document.activeElement.getAttribute('data-a');
+ var sc=(document.scrollingElement||document.documentElement).scrollTop;
+ el.innerHTML='<div class="app">'+B[k]()+'</div>';
+ if(focus){var f=el.querySelector('[data-a="'+focus+'"]');if(f&&f.focus){try{f.focus({preventScroll:true})}catch(e){f.focus()}}}
+ (document.scrollingElement||document.documentElement).scrollTop=sc;
+ updSc();stk();
+}
+/* Sombra de borde en las cajas con scroll horizontal: avisa que hay más contenido. */
+function updSc(w){(w?[w]:document.querySelectorAll('.sc')).forEach(function(w){var s=w.firstElementChild,m=s.scrollWidth-s.clientWidth;w.classList.toggle('sl',s.scrollLeft>1);w.classList.toggle('sr',m>1&&s.scrollLeft<m-1)})}
+document.addEventListener('scroll',function(e){var t=e.target;if(t&&t.parentNode&&t.parentNode.classList&&t.parentNode.classList.contains('sc'))updSc(t.parentNode)},true);
+window.addEventListener('resize',function(){updSc()});
+function drawAll(){Object.keys(B).forEach(draw)}
+function redrawF(){S.c4.done='';draw('c1');draw('c4')}
+
+document.addEventListener('keydown',function(e){
+ var t=e.target.closest&&e.target.closest('[role="tab"]');if(!t)return;
+ var tabs=Array.prototype.slice.call(t.parentNode.querySelectorAll('[role="tab"]')),i=tabs.indexOf(t),n=-1;
+ if(e.key==='ArrowRight')n=(i+1)%tabs.length;else if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')n=0;else if(e.key==='End')n=tabs.length-1;
+ if(n<0)return;e.preventDefault();
+ var id=tabs[n].getAttribute('data-go');if(!id)return;
+ go(id);var nt=document.querySelector('#'+id+' .ptab.on');if(nt)nt.focus();
+});
+document.addEventListener('click',function(e){
+ if(S.c6.gm&&!e.target.closest('.gm')){S.c6.gm=false;draw('c6')}
+ if(S.c1.fm&&!e.target.closest('.fwrap')){S.c1.fm=false;draw('c1')}
+ var g=e.target.closest('[data-go]');
+ if(g){var gid=g.getAttribute('data-go');
+  if(gid==='c4'&&!g.closest('#c4')){S.c4.menu=true;S.c4.mode='vista';S.c4.done='';draw('c4')}
+  if(g.tagName==='A')e.preventDefault();
+  go(gid);return}
+ var q=e.target.closest('[data-a]');if(!q||q.tagName==='SELECT'||q.type==='number')return;
+ var v=q.getAttribute('data-a'),p=v.split(':'),a0=p[0],a1=p.slice(1).join(':');
+ if(a0==='fv'){S.f.view=a1;S.c1.page=1;redrawF()}
+ else if(a0==='c1x'){S.c1.open[a1]=!S.c1.open[a1];draw('c1')}
+ else if(a0==='c1fm'){S.c1.fm=!S.c1.fm;draw('c1')}
+ else if(a0==='c1clr'){S.f.sport='';S.f.sexo='';S.f.org='';S.c1.page=1;redrawF()}
+ else if(a0==='c1p'){if(a1==='prev')S.c1.page--;else if(a1==='next')S.c1.page++;else return;draw('c1')}
+ else if(a0==='c2p'){if(a1==='prev')S.c2.page--;else if(a1==='next')S.c2.page++;else return;draw('c2')}
+ else if(a0==='c5p'){if(a1==='prev')S.c5.page--;else if(a1==='next')S.c5.page++;else return;draw('c5')}
+ else if(a0==='c3f'){S.c3.f=a1;draw('c3')}
+ else if(a0==='c3r'){S.c3.sent[a1]=true;draw('c3')}
+ else if(a0==='c4m'){S.c4.menu=!S.c4.menu;draw('c4')}
+ else if(a0==='c4x'){S.c4.mode=a1;S.c4.menu=false;S.c4.done='';draw('c4')}
+ else if(a0==='c4d'){var rows=c4Rows(),fl=S.f.sport||S.f.sexo||S.f.org!=='',nm='consolidado-intenciones'+(S.c4.mode==='completo'?'-completo':(fl?'-filtrado':''))+'.csv';
+  download(nm,toCsv(rows,'Consolidado de intenciones'));S.c4.done='Descargado '+nm+' · '+fmt(rows.length)+' filas · 12 columnas';draw('c4');toast(S.c4.done)}
+ else if(a0==='c5d'){download('reporte-consolidado-inscripcion-numerica.csv',toCsv(ALL,'Reporte consolidado de inscripción numérica'));toast('Descargado el reporte completo: '+fmt(ALL.length)+' filas · 12 columnas')}
+ else if(a0==='c6gm'){S.c6.gm=!S.c6.gm;draw('c6')}
+ else if(a0==='c6ga'){GRUPOS.forEach(function(_,i){S.c6.g[i]=true});draw('c6')}
+ else if(a0==='c6gc'){S.c6.g={};draw('c6')}
+ else if(a0==='c6ap'){var d6=S.c6.d,gg={};for(var k in S.c6.g)if(S.c6.g[k])gg[k]=true;S.c6.ap={per:+d6.per,reg:d6.reg,dep:d6.dep,tipo:d6.tipo,dpt:d6.dpt,g:gg};S.c6.gm=false;draw('c6')}
+ else if(a0==='c6lp'){S.c6.d={per:0,reg:'',dep:'',tipo:'',dpt:''};S.c6.g={};S.c6.ap={per:0,reg:'',dep:'',tipo:'',dpt:'',g:{}};S.c6.gm=false;draw('c6')}
+});
+document.addEventListener('change',function(e){
+ var q=e.target.closest('[data-a]');if(!q)return;
+ var v=q.getAttribute('data-a'),p=v.split(':'),a0=p[0];
+ if(a0==='fs'){S.f.sport=q.value;S.c1.page=1;redrawF()}
+ else if(a0==='fg'){S.f.sexo=q.value;S.c1.page=1;redrawF()}
+ else if(a0==='fo'){S.f.org=q.value;S.c1.page=1;redrawF()}
+ else if(a0==='c1p'){S.c1.page=+q.value;draw('c1')}
+ else if(a0==='c2p'){S.c2.page=+q.value;draw('c2')}
+ else if(a0==='c5p'){S.c5.page=+q.value;draw('c5')}
+ else if(a0==='c2s'){S.c2.sport=q.value;S.c2.page=1;draw('c2')}
+ else if(a0==='c6f'){var d7=S.c6.d;d7[p[1]]=q.value;if(p[1]==='tipo'&&d7.dpt&&q.value&&tipoDe(d7.dpt)!==q.value)d7.dpt='';if(p[1]==='reg'&&d7.dep!==''&&q.value&&REGD[+d7.dep]!==q.value)d7.dep='';draw('c6')}
+ else if(a0==='c6c'){S.c6.chk[+p[1]]=q.checked;draw('c6')}
+ else if(a0==='c6g'){S.c6.g[+p[1]]=q.checked;draw('c6')}
+});
+/* ---------- Pantalla única: hash y barra «Simular» ---------- */
+var SCR=['c1','c2','c3','c4','c5','c6'],cur=null;
+function toast(m){var t=document.createElement('div');t.className='ptoast';t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},4000)}
+function go(id,o){show(id,o||{})}
+function show(id,o){
+ setTimeout(function(){updSc()},0);
+ if(SCR.indexOf(id)<0)id='c1';
+ if(id!==cur){
+  cur=id;
+  Array.prototype.forEach.call(document.querySelectorAll('.board'),function(b){b.classList.toggle('cur',b.id===id)});
+  Array.prototype.forEach.call(document.querySelectorAll('#pbar .sim-slot'),function(x){x.hidden=x.getAttribute('data-for')!==id&&x.getAttribute('data-for')!=='*'});
+  window.scrollTo(0,0);
+  try{if(location.hash!=='#'+id)location.hash=id}catch(_){}
+  try{if(window.parent!==window)parent.postMessage({type:'inscnum-screen',id:id},'*')}catch(_){}
+  simEstado();
+ }
+ if(o&&o.notice)toast(o.notice);
+}
+/* La barra «Simular» la abre el flotante del shell por postMessage; aquí solo se muestra y se informa su estado. */
+function simEstado(){
+ var b=document.getElementById('pbar');if(!b)return;
+ try{if(window.parent!==window)parent.postMessage({type:'inscnum-simular-estado',disponible:true,abierto:!b.hidden},'*')}catch(_){}
+}
+function simSet(a){var b=document.getElementById('pbar');b.hidden=a==='alternar'?!b.hidden:a!=='abrir';simEstado()}
+function buildBar(){
+ var bar=document.createElement('div');bar.id='pbar';bar.hidden=true;bar.setAttribute('role','region');bar.setAttribute('aria-label','Simular');
+ bar.innerHTML='<div class="sim-h"><span>Simular</span><button type="button" class="sim-x" aria-label="Cerrar simulación">×</button></div>'+
+  '<div class="sim-slot" data-for="c3" hidden><button type="button" data-sim="rec">Restablecer recordatorios</button></div>'+
+  '<div class="sim-slot" data-for="*" hidden><button type="button" data-sim="all">Reiniciar la demo</button></div>';
+ document.body.appendChild(bar);
+ bar.querySelector('.sim-x').onclick=function(){simSet('cerrar')};
+ bar.addEventListener('click',function(e){var k=e.target.getAttribute('data-sim');
+  if(k==='rec'){S.c3.sent={};draw('c3')}
+  else if(k==='all'){S=newS();drawAll();go('c1',{notice:'Demo reiniciada.'})}});
+ window.addEventListener('message',function(e){var d=e.data;if(d&&d.type==='inscnum-simular')simSet(d.accion)});
+}
+window.InscNumShowScreen=function(id){show(id)};
+drawAll();
+buildBar();show(location.hash.slice(1));simEstado();
+window.addEventListener('hashchange',function(){show(location.hash.slice(1))});
+})();
+</script>
+<script src="../shared/tour.js"></script>
+<script>
+mountTour({
+ 'HU-IN-05':{rol:'Comité organizador',title:'Visualización del cupo máximo en el consolidado',
+  purpose:'Como comité organizador, quiero ver el cupo máximo de atletas y suplentes de cada deporte y modalidad en la pantalla de consolidado de intenciones, para contrastar de un vistazo lo declarado contra el tope reglamentario.',
+  steps:[
+   {board:'c1',sel:'#c1 .cq-h',open:'#c1 [data-a="fv:bySport"]',body:'Cuatro columnas nuevas entre Modalidad y los indicadores de género: «Cupos» y «Suplentes» de <b>hombres</b> y de <b>mujeres</b>, en una sola línea de encabezado.'},
+   {board:'c1',sel:'#c1 .rw',open:'#c1 [data-a="fv:bySport"]',body:'Los valores del mockup de Daniel: Subacuáticas = <b>18 y 2</b> en ambos géneros; Ajedrez = 5 y 1; Arquería = 4 y 1.'},
+   {board:'c1',sel:'#c1 .toolbar',body:'Se conserva lo existente: pestañas <b>Por deporte / Por organización</b>, filtros, selector de organización, paginación, conteo por fila y Exportar.'},
+   {board:'c2',sel:'#c2 .tbl',body:'Propuesta aparte: junto al cupo, lo <b>declarado</b> y su estado (falta, completo, excede), para contrastar de un vistazo.'}
+  ]},
+ 'HU-IN-10':{rol:'Comité organizador',title:'Renombrar y ajustar los indicadores del tablero',
+  purpose:'Como comité organizador, quiero que el tablero de inscripciones hable el lenguaje de los Juegos Nacionales y no el de Intercolegiados, para leer el avance del evento sin traducir conceptos.',
+  steps:[
+   {board:'c6',sel:'#c6 [data-t="kpi-del"]',body:'«Instituciones Registradas» pasa a llamarse <b>«Delegaciones Registradas»</b> (textual del documento guía, sección DashBoard).'},
+   {board:'c6',sel:'#c6 [data-t="kpis"]',body:'Se <b>conservan</b> «Deportistas Registrados» y «Personal de Apoyo Registrado». El tablero es un dashboard externo: este es el listado de cambios para quien lo mantiene.'}
+  ]},
+ 'HU-IN-11':{rol:'Comité organizador',title:'Nuevos indicadores por género',
+  purpose:'Como comité organizador, quiero ver cuántos inscritos hay por género y qué porcentaje representa cada uno, para verificar el equilibrio de la participación.',
+  steps:[
+   {board:'c6',sel:'#c6 [data-t="gen-cant"]',body:'Se agrega el indicador <b>«Cantidades de inscritos por género»</b>.'},
+   {board:'c6',sel:'#c6 [data-t="gen-pct"]',body:'Y el indicador <b>«Porcentajes de inscritos por género»</b>, para ver el equilibrio de la participación.'}
+  ]},
+ 'HU-IN-12':{rol:'Comité organizador',title:'Retirar del tablero lo que no aplica',
+  purpose:'Como comité organizador, quiero que el tablero no muestre «Instituciones» ni «Regionales», porque no son categorías de los Juegos Nacionales.',
+  steps:[
+   {board:'c6',sel:'#c6 label.chk:nth-of-type(6)',body:'Se retira <b>«Instituciones»</b> del tablero.'},
+   {board:'c6',sel:'#c6 label.chk:nth-of-type(7)',body:'Se retira <b>«Regionales»</b>. Textual del documento guía: «Quitar “Instituciones” y “Regionales”».'}
+  ]},
+ 'HU-IN-13':{rol:'Comité organizador',title:'Filtro por grupo de inscripción',
+  purpose:'Como comité organizador, quiero filtrar el tablero por grupo de inscripción, para analizar por separado a deportistas, personal de apoyo, prensa y demás grupos acreditables.',
+  steps:[
+   {board:'c6',sel:'#c6 [data-t="f-grupos"]',body:'El filtro suma la dimensión <b>«grupos de inscripción»</b> y convive con periodo, región, departamento, tipo de deporte y deporte.'},
+   {board:'c6',sel:'#c6 [data-t="f-grupos-menu"]',open:'#c6 [data-a="c6gm"]',body:'Sus <b>ocho valores</b>, textuales del documento guía: Deportistas, Personal de Apoyo, Prensa, Voluntarios, Autoridades de Juzgamiento, Comités Organizadores, Proveedores y Otros.'}
+  ]},
+ 'HU-IN-14':{rol:'Comité organizador',title:'Reporte consolidado de inscripción numérica',
+  purpose:'Como comité organizador, quiero descargar un reporte consolidado de lo declarado por todas las delegaciones, para hacer seguimiento y soportar la planeación del evento.',
+  steps:[
+   {board:'c5',sel:'#c5 .xl thead',body:'El reporte tiene <b>exactamente doce columnas</b>, de Delegación a Correo Electrónico, tomadas del reporte propuesto por Daniel.'},
+   {board:'c5',sel:'#c5 .pager-note',body:'Una fila por combinación <b>delegación × deporte × modalidad × sexo</b>. El insumo actual suma 3.916 filas.'},
+   {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Se descarga en <b>Excel</b>. En la maqueta el botón genera un CSV real (UTF-8, separado por «;») con las doce columnas, que Excel abre directo.'}
+  ]},
+ 'HU-IN-15':{rol:'Comité organizador',title:'Exportación desde el consolidado',
+  purpose:'Como comité organizador, quiero exportar lo que estoy viendo en el consolidado con los filtros aplicados, para trabajar sobre el corte que me interesa.',
+  steps:[
+   {board:'c4',sel:'#c4 .menu',open:'#c4 [data-a="c4m"]',body:'El botón <b>Exportar</b> pasa a ofrecer dos salidas: lo que estás viendo o el reporte completo del evento.'},
+   {board:'c4',sel:'#c4 .menu .it:first-child',open:'#c4 [data-a="c4m"]',body:'«Lo que estoy viendo» incluye las <b>nuevas columnas</b> de cupos y cantidades y respeta los filtros y la pestaña activa.'},
+   {board:'c4',sel:'#c4 .toolbar',body:'Cambia la pestaña o el deporte y la vista previa de abajo dice qué se exportaría. Es una propuesta a validar: ningún insumo habla del botón.'}
+  ]},
+ 'HU-IN-17':{rol:'Comité organizador',title:'Membrete oficial en las descargas',
+  purpose:'Como comité organizador, quiero que todas las descargas de la plataforma salgan con el membrete oficial del evento, para que sirvan como documento formal ante las delegaciones y el Ministerio.',
+  steps:[
+   {board:'c6',sel:'#c6 .mem',body:'Las descargas de <b>todos los roles</b> llevan el membrete del evento. Su diseño espera el Manual de Marca (acta del 11-ago-2026); la referencia es el encabezado del certificado anterior.'},
+   {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Cada descarga, como este reporte, sale con ese <b>membrete oficial</b> para servir de documento formal ante delegaciones y Ministerio.'}
+  ]}
+});
+</script>
+</body>
+</html>

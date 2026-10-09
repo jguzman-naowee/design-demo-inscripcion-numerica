@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inscripción numérica — Selector de perfil</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shared/tokens.css?v=0.1.0">
+<link rel="stylesheet" href="shared/components.css?v=0.1.0">
+<link rel="stylesheet" href="shared/inscnum.css?v=0.1.0">
+</head>
+<body class="landing">
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="masthead__logos">
+      <img src="shared/logos/ministerio.svg" alt="Ministerio del Deporte">
+      <div class="masthead__sep"></div>
+      <img src="shared/logos/suid.png" alt="SUID">
+    </div>
+    <span class="masthead__chip"><span class="dot"></span>Inscripción numérica · v0.1.0 · demo</span>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">XXIII Juegos Nacionales · Inscripción numérica</span>
+    <h1>Inscripción numérica, por rol</h1>
+    <p>
+      Las 17 historias de la hoja PR-08 repartidas entre quien las usa. Escoge un rol para
+      entrar a la demo.
+    </p>
+    <p class="note">
+      Cada rol abre la <strong>fase de inscripción numérica</strong>, con un recorrido guiado
+      por historia de usuario.
+    </p>
+  </section>
+
+  <p class="roles-label">Entra como <span>(demo por rol)</span></p>
+  <div class="grid" id="grid"></div>
+
+  <footer class="foot">
+    <strong>Naowee · Inscripción numérica v0.1.0</strong> — sandbox visual para el equipo.
+    Roles: Delegado · Admin de plataforma · Comité organizador.
+  </footer>
+</div>
+
+<script src="shared/sidebar.js?v=0.1.0"></script>
+<script>
+  (function () {
+    var N = window.InscNum;
+    var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    var last = N.lastRole();
+    document.getElementById('grid').innerHTML = N.ORDER.map(function (c) {
+      var r = N.ROLES[c], n = N.husOf(c).length;
+      return '<a class="role-card" href="' + r.page + '" style="--role-color:' + r.color + '">' +
+        '<div class="role-card__top"><span class="role-card__avatar">' + r.avatar + '</span>' +
+        '<div><div class="role-card__name">' + r.label + '</div>' +
+        '<div class="role-card__tag">' + n + ' HU' + (c === last ? ' · último acceso' : '') + '</div></div></div>' +
+        '<p class="role-card__desc">' + r.d + '</p>' +
+        '<span class="role-card__cta">Abrir como ' + r.label + ' ' + ARROW + '</span></a>';
+    }).join('');
+  })();
+</script>
+
+</body>
+</html>

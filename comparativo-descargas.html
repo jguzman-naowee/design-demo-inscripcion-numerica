@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Descargas: cómo quedaría y qué falta</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/tokens.css?v=0.1.0">
+<link rel="stylesheet" href="shared/components.css?v=0.1.0">
+
+<style>
+:root {
+  --verde: #145c43;
+  --resalte: #f9d7b8;
+  --pin: #b73508;       /* accent oscurecido: 5.9:1 con texto blanco */
+  --pin-int: #1f5fa8;   /* diferencia intencional: 6.6:1 con blanco */
+}
+body { background: var(--bg-soft); color: var(--text-primary); font-size: 14px; line-height: 1.5; }
+.wrap { max-width: 1560px; margin: 0 auto; padding: 20px 24px 56px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+a:focus-visible, button:focus-visible, input:focus-visible, .scroll:focus-visible { outline: 3px solid rgba(215, 64, 9, .45); outline-offset: 2px; }
+
+/* Cabecera */
+.top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.top__logos { display: flex; align-items: center; gap: 12px; }
+.top__logos img { height: 40px; width: auto; display: block; }
+.top__sep { width: 1px; height: 30px; background: var(--border-dark); }
+.top__back { margin-left: auto; }
+h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; letter-spacing: -.3px; }
+.lead { color: var(--text-secondary); max-width: 80ch; margin: 0 0 8px; }
+.lead b { color: var(--text-primary); }
+
+/* Secciones */
+.sec { margin-top: 44px; }
+.sec h2 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+.sec__sub { color: var(--text-secondary); margin: 0 0 16px; max-width: 90ch; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+.col { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.col__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.col__head h3 { font-size: 15px; font-weight: 700; margin: 0; }
+.col__head .naowee-badge { height: 24px; font-size: 11px; padding: 2px 10px; }
+.col__head .naowee-badge--neutral.naowee-badge--quiet { color: #3d3f58; }
+.col__file { color: var(--text-secondary); font-size: 12px; margin-left: auto; font-family: ui-monospace, Menlo, monospace; }
+
+.scroll { flex: 1; overflow: auto; background: #e9ebf3; border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px; }
+.stage { width: max-content; margin: 0 auto; }
+.stage > * { zoom: var(--z, 1); }
+
+/* Llamadas numeradas; --inv mantiene su tamaño legible aunque la hoja se reduzca. */
+.pin {
+  position: absolute; z-index: 5; display: grid; place-items: center;
+  width: calc(26px * var(--inv, 1)); height: calc(26px * var(--inv, 1));
+  border-radius: 50%; background: var(--pin); color: #fff;
+  font: 800 calc(14px * var(--inv, 1))/1 Inter, sans-serif;
+  border: calc(2px * var(--inv, 1)) solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+  transform: translate(-50%, -50%);
+}
+.pin--int { background: var(--pin-int); }
+.rel { position: relative; }
+
+/* Leyenda */
+.legend { margin: 16px 0 0; padding: 0; list-style: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.legend li { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: start; padding: 11px 14px; border-top: 1px solid var(--border); }
+.legend li:first-child { border-top: 0; }
+.legend .n { position: static; transform: none; width: 26px; height: 26px; font-size: 14px; border-width: 0; box-shadow: none; }
+.legend p { margin: 0; }
+.legend p small { display: block; color: var(--text-secondary); font-size: 12.5px; margin-top: 2px; }
+.who { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; border: 1px solid; white-space: nowrap; }
+.chip--dis { background: #f3eeff; color: #5b21b6; border-color: #d9c8fb; }
+.chip--bb  { background: #fff3e6; color: #8f3500; border-color: #ffbf75; }
+.chip--be  { background: #eef5ff; color: #164f93; border-color: #c0d8f8; }
+.chip--ok  { background: #e6f4e7; color: #14561a; border-color: #b7dfb9; }
+
+/* ───────── Excel simulado (ancho de diseño 1006 px) ───────── */
+.xl { width: 1006px; background: #fff; border: 1px solid #c8c8c8; font: 11px/1.25 Inter, sans-serif; color: #1f1f1f; }
+.xl__title { background: #107c41; color: #fff; padding: 4px 10px; font-size: 11px; display: flex; gap: 10px; align-items: center; }
+.xl__title i { width: 9px; height: 9px; border-radius: 50%; background: #fff; opacity: .7; display: inline-block; }
+.xl__title.csv { background: #107c41; }
+.xl__fx { display: flex; align-items: center; border-bottom: 1px solid #d0d0d0; background: #f3f3f3; height: 24px; font-size: 11px; }
+.xl__nb { width: 70px; padding: 0 8px; border-right: 1px solid #d0d0d0; height: 100%; display: flex; align-items: center; background: #fff; }
+.xl__f { padding: 0 10px; font-style: italic; color: #107c41; font-weight: 700; }
+.xl__txt { flex: 1; background: #fff; height: 100%; display: flex; align-items: center; padding: 0 8px; border-left: 1px solid #d0d0d0; white-space: nowrap; overflow: hidden; }
+.xl table { border-collapse: collapse; table-layout: fixed; width: 1004px; }
+.xl td, .xl th { border: 1px solid #d4d4d4; padding: 0; height: 20px; font-weight: 400; vertical-align: middle; }
+.xl .c { padding: 2px 5px; overflow: hidden; white-space: nowrap; }
+.xl th.rn, .xl td.rn { background: #efefef; color: #444; text-align: center; font-size: 10px; border-color: #c8c8c8; }
+.xl thead th { background: #efefef; color: #444; height: 18px; text-align: center; font-size: 10px; border-color: #c8c8c8; }
+.xl .bn { aspect-ratio: 1545 / 218; background: url(shared/certificado-referencia.png) top / 100% auto no-repeat; }
+.xl td.banner { padding: 0; }
+.xl tr.b4 td.rn { height: 34.5px; }
+.xl .titulo { text-align: center; font-weight: 800; font-size: 14px; color: var(--verde); height: 26px; }
+.xl .gen { text-align: center; color: #444; }
+.xl tr.hd td { background: var(--verde); color: #fff; font-weight: 700; height: 32px; white-space: normal; border-color: #0d4331; border-bottom: 3px solid #0d4331; }
+.xl tr.hd .c { white-space: normal; padding-right: 14px; position: relative; line-height: 1.15; }
+.xl tr.hd .c::after { content: "\25BE"; position: absolute; right: 3px; top: 50%; transform: translateY(-50%); font-size: 9px; background: #fff; color: #333; width: 11px; height: 11px; line-height: 11px; text-align: center; border-radius: 1px; }
+.xl tr.dt:nth-child(even) td:not(.rn) { background: #f2f7f4; }
+.xl td.num { text-align: right; }
+.xl td.nota .c::before { content: ""; position: absolute; right: 0; top: 0; border: 4px solid transparent; border-top-color: #d32f2f; border-right-color: #d32f2f; }
+.xl td.nota { position: relative; }
+.xl .frz { box-shadow: inset -2px 0 0 #107c41; }
+.xl__pie { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-top: 1px dashed #9a9a9a; background: #fafafa; color: #777; font-weight: 700; font-size: 12px; }
+.xl__pie img { height: 18px; width: auto; display: block; }
+.xl__pie--no { color: #8a8a8a; font-weight: 400; font-style: italic; justify-content: center; }
+.xl__tabs { display: flex; background: #efefef; border-top: 1px solid #c8c8c8; padding: 4px 8px 0; gap: 2px; font-size: 11px; }
+.xl__tab { padding: 3px 14px; background: #fff; border: 1px solid #c8c8c8; border-top: 0; border-bottom: 3px solid #107c41; font-weight: 700; color: #107c41; }
+.xl--csv td, .xl--csv th { border-color: #e1e1e1; }
+.xl--csv .t { padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.xl--csv tr.hd td { background: #fff; color: #1f1f1f; font-weight: 400; height: 20px; border-bottom: 1px solid #e1e1e1; border-color: #e1e1e1; }
+.xl--csv tr.hd .c::after { content: none; }
+.xl--csv tr.hd .c { white-space: nowrap; padding: 2px 4px; }
+
+/* ───────── Hoja A4 simulada (794 x 1123) ───────── */
+.a4 { width: 794px; height: 1123px; background: #fff; position: relative; box-shadow: 0 2px 14px rgba(0, 0, 0, .18); font-family: Inter, sans-serif; color: #1f1f1f; overflow: hidden; }
+.a4 .bn { aspect-ratio: 1545 / 218; background: url(shared/certificado-referencia.png) top / 100% auto no-repeat; }
+.a4--mal .bnw { overflow: hidden; }
+.a4--mal .bn { background-size: 108% auto; background-position: 38% top; filter: blur(1px) contrast(.9) saturate(.85); transform: scale(1.02); }
+.a4 .cuerpo { padding: 0 100px; }
+.a4 .ev { text-align: center; margin-top: 38px; line-height: 1.25; }
+.a4 .ev b { display: block; color: var(--verde); font-size: 15px; font-weight: 700; }
+.a4 .ev span { font-size: 17px; }
+.a4 h4 { text-align: center; margin: 26px 0 0; font-size: 19px; line-height: 1.2; font-weight: 800; }
+.a4 .act { text-align: center; margin-top: 18px; font-size: 13px; line-height: 1.5; }
+.a4 mark { background: var(--resalte); color: inherit; padding: 1px 4px; }
+.a4 hr { border: 0; border-top: 1px solid #5d8f7e; margin: 28px 0 24px; }
+.a4 .par { font-size: 13px; line-height: 1.55; margin: 0 0 22px; }
+.a4 table { width: 100%; border-collapse: collapse; font-size: 9.5px; table-layout: fixed; }
+.a4 th { background: var(--verde); color: #fff; font-weight: 700; padding: 8px 4px; text-align: center; line-height: 1.15; vertical-align: middle; }
+.a4 td { padding: 11px 4px; text-align: center; background: #f6f6f6; border-bottom: 1px solid #cfcfcf; vertical-align: middle; overflow-wrap: anywhere; }
+.a4 td:first-child, .a4 td:nth-child(2) { text-align: left; }
+.a4--bien col.w0 { width: 13%; } .a4--bien col.w1 { width: 14%; } .a4--bien col.w2 { width: 8%; } .a4--bien col.w3 { width: 10%; }
+.a4--bien col.w4, .a4--bien col.w5, .a4--bien col.w6, .a4--bien col.w7 { width: 9%; } .a4--bien col.w8 { width: 13%; }
+.a4 .pie { position: absolute; left: 100px; right: 100px; bottom: 76px; color: #8a8a96; font-size: 12px; line-height: 1.5; }
+.a4 .pie b { font-weight: 700; }
+.a4 .pie__fila { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.a4 .pie img { height: 20px; width: auto; display: block; opacity: .9; }
+.a4 .pie .txtlogo { font-weight: 700; font-size: 17px; letter-spacing: -.3px; color: #a3a6b8; }
+.a4 .pag { font-weight: 700; font-size: 13px; }
+
+/* Resumen */
+.todo { margin-top: 44px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+.todo h2 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+.todo ul { list-style: none; margin: 14px 0 0; padding: 0; }
+.todo li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+.todo li:first-child { border-top: 0; }
+.todo label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+.todo input { width: 20px; height: 20px; margin: 1px 0 0; flex: none; accent-color: var(--accent); }
+.todo label small { display: block; color: var(--text-secondary); font-size: 12.5px; }
+.todo input:checked + span { color: var(--text-secondary); text-decoration: line-through; }
+.foot { margin-top: 28px; color: var(--text-secondary); font-size: 12.5px; }
+
+@media (max-width: 900px) {
+  .wrap { padding: 16px 16px 40px; }
+  h1 { font-size: 24px; }
+  .pair { grid-template-columns: 1fr; }
+  .top__back { margin-left: 0; width: 100%; }
+  .legend li { grid-template-columns: 30px 1fr; }
+  .legend .who { grid-column: 2; justify-content: flex-start; }
+  .todo li { grid-template-columns: 1fr; }
+  .col__file { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="top__logos">
+      <img src="shared/logos/ministerio.svg" alt="Ministerio del Deporte">
+      <div class="top__sep"></div>
+      <img src="shared/logos/suid.png" alt="SUID">
+    </div>
+    <a class="naowee-btn naowee-btn--quiet naowee-btn--small top__back" href="index.html">Volver al selector de perfil</a>
+  </header>
+
+  <h1>Descargas: cómo quedaría y qué falta</h1>
+  <p class="lead">Dos descargas del demo de inscripción numérica, lado a lado. A la izquierda, <b>cómo quedaría</b> con el membrete, los logos y el formato completos; a la derecha, <b>cómo sale hoy</b> y lo que le falta. Los datos de las filas son los reales del insumo; la fecha y la hora del informe se calculan al abrir la página.</p>
+  <p class="lead">Cada número marca una diferencia y la leyenda de abajo dice quién la resuelve: <span class="chip chip--dis">Diseño</span> <span class="chip chip--bb">Brand Book</span> <span class="chip chip--be">Backend</span>. Un número azul es una diferencia intencional, no una falta.</p>
+
+  <section class="sec" aria-labelledby="t-xlsx">
+    <h2 id="t-xlsx">1. Reporte consolidado (HU-IN-14 y HU-IN-17)</h2>
+    <p class="sec__sub">La hoja de cálculo que baja el comité. Hoy es un <code>.csv</code>; el membrete gráfico, el color y los filtros solo caben en un <code>.xlsx</code>.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>Abierto como .xlsx</h3></div>
+        <div class="scroll" tabindex="0" role="region" aria-label="Vista del Excel como quedaría; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-ok"></div></div></div>
+      </div>
+      <div class="col">
+        <div class="col__head"><span class="naowee-badge naowee-badge--caution">Hoy · lo que falta</span><h3>Abierto como .csv</h3></div>
+        <div class="scroll" tabindex="0" role="region" aria-label="Vista del CSV como sale hoy; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-mal"></div></div></div>
+      </div>
+    </div>
+    <ol class="legend" id="leg-xl" aria-label="Leyenda de las llamadas del reporte consolidado"></ol>
+  </section>
+
+  <section class="sec" aria-labelledby="t-pdf">
+    <h2 id="t-pdf">2. Certificado PDF (HU-IN-16 y HU-IN-17)</h2>
+    <p class="sec__sub">El certificado de la delegación, en A4. Mismos datos en las dos hojas: seis filas reales de la delegación del Atlántico.</p>
+    <div class="pair">
+      <div class="col">
+        <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>PDF con membrete completo</h3></div>
+        <div class="scroll" tabindex="0" role="region" aria-label="Certificado PDF como quedaría; desplaza si no cabe"><div class="stage" data-w="794"><div id="pdf-ok"></div></div></div>
+      </div>
+      <div class="col">
+        <div class="col__head"><span class="naowee-badge naowee-badge--caution">Hoy · lo que falta</span><h3>PDF como sale hoy</h3></div>
+        <div class="scroll" tabindex="0" role="region" aria-label="Certificado PDF como sale hoy; desplaza si no cabe"><div class="stage" data-w="794"><div id="pdf-mal"></div></div></div>
+      </div>
+    </div>
+    <ol class="legend" id="leg-pdf" aria-label="Leyenda de las llamadas del certificado PDF"></ol>
+  </section>
+
+  <section class="todo" aria-labelledby="t-falta">
+    <h2 id="t-falta">Qué falta para que las descargas queden como en la columna izquierda</h2>
+    <p class="sec__sub" style="margin:0">Las casillas son solo para marcar mientras se revisa; no se guardan.</p>
+    <ul id="falta"></ul>
+  </section>
+
+  <p class="foot">Hoja de referencia: <code>shared/certificado-referencia.png</code> (franja superior). Las cifras de «Pág 1 de N» son estimadas a partir del total real de filas.</p>
+</div>
+
+<script src="shared/datos-consolidado.js"></script>
+<script src="shared/datos-inscnum.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.INSCNUM_CONSOLIDADO, D = window.INSCNUM_DATA;
+
+  /* ── utilidades ── */
+  function h(tag, attrs, kids) {
+    var e = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === 'text') e.textContent = attrs[k]; else e.setAttribute(k, attrs[k]);
+    });
+    [].concat(kids || []).forEach(function (c) { if (c != null) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function z2(n) { return (n < 10 ? '0' : '') + n; }
+  var now = new Date();
+  var GEN = 'Informe generado el ' + z2(now.getDate()) + '-' + z2(now.getMonth() + 1) + '-' + now.getFullYear() +
+            ' a las ' + z2(now.getHours()) + ':' + z2(now.getMinutes());
+  function fecha(s) { var p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+  function pin(n, style, int) { return h('span', { 'class': 'pin' + (int ? ' pin--int' : ''), style: style || '', role: 'img', 'aria-label': 'Llamada ' + n, text: String(n) }); }
+  var SEX = { Hombres: 'Hombre', Mujeres: 'Mujer', Mixto: 'Mixto' };
+
+  /* ── cupos por fila: la regla sale de la delegación de referencia (cubre todas las combinaciones) ── */
+  var reg = {}, refId = {};
+  D.reglas.forEach(function (r) { reg[r.id] = r; });
+  D.atlantico.forEach(function (a) { refId[a.deporte + '|' + a.modalidad + '|' + a.sexo] = a.reglaId; });
+  function cupos(dep, mod, sx) {
+    var r = reg[refId[dep + '|' + mod + '|' + sx]], o = { mc: null, ms: null, fc: null, fs: null, mx: null };
+    if (!r) return o;
+    if (sx === 'Hombres') { o.mc = r.masc.atletas; o.ms = r.masc.suplentes; }
+    else if (sx === 'Mujeres') { o.fc = r.fem.atletas; o.fs = r.fem.suplentes; }
+    else if (typeof r.mixtaComposicion === 'string') o.mx = r.mixtaComposicion;
+    else {
+      var m = (r.composicion || []).filter(function (c) { return c.tipo === 'mixta'; })[0];
+      o.mx = m ? m.total : null;
+    }
+    return o;
+  }
+  function v(x) { return x == null ? '—' : String(x); }
+
+  /* ── 10 filas del consolidado: 7 repartidas por el insumo + hasta 3 con texto libre en mixtos ── */
+  var F = C.filas, pick = {}, usadas = {};
+  for (var k = 0; k < 7; k++) pick[Math.floor(k * F.length / 7) + k * 13] = 1;
+  for (var i = 0, t = 0; i < F.length && t < 3; i++) {
+    var f = F[i];
+    if (f[3] === 'Mixto' && !usadas[f[0]] && typeof cupos(f[1], f[2], f[3]).mx === 'string') { pick[i] = 1; usadas[f[0]] = 1; t++; }
+  }
+  var filas = Object.keys(pick).map(Number).sort(function (a, b) { return a - b; }).slice(0, 10).map(function (j) {
+    var f = F[j], c = cupos(f[1], f[2], f[3]);
+    return { del: C.delegaciones[f[0]], dep: f[1], mod: f[2], sx: SEX[f[3]], c: c, fe: fecha(f[4]), rol: C.rol, mail: C.correos[f[0]] };
+  });
+  var COLS = ['Delegación', 'Deporte', 'Modalidad', 'Sexo', 'Cupos MASC', 'Suplentes MASC', 'Cupos FEM', 'Suplentes FEM', 'Cupos mixtos', 'Fecha de Intención', 'Rol', 'Correo Electrónico'];
+  var NUMCOL = { 4: 1, 5: 1, 6: 1, 7: 1 };
+  function celdas(r) { return [r.del, r.dep, r.mod, r.sx, v(r.c.mc), v(r.c.ms), v(r.c.fc), v(r.c.fs), v(r.c.mx), r.fe, r.rol, r.mail]; }
+  var PAGS_XL = Math.ceil(F.length / 38);
+  var LETRAS = 'ABCDEFGHIJKL'.split('');
+  var ANCHOS = [140, 96, 96, 52, 54, 64, 54, 64, 96, 70, 86, 106];
+  var MIXROW = -1;
+  filas.forEach(function (r, n) { if (MIXROW < 0 && typeof r.c.mx === 'string') MIXROW = n; });
+
+  function colgroup(anchos) {
+    var g = h('colgroup', {}, [h('col', { style: 'width:26px' })]);
+    anchos.forEach(function (w) { g.appendChild(h('col', { style: 'width:' + w + 'px' })); });
+    return g;
+  }
+  function barraFx(celda, texto) {
+    return h('div', { 'class': 'xl__fx' }, [h('div', { 'class': 'xl__nb', text: celda }), h('div', { 'class': 'xl__f', text: 'fx' }), h('div', { 'class': 'xl__txt', text: texto })]);
+  }
+  function letras(anchos) {
+    var tr = h('tr', {}, [h('th', { 'class': 'rn' })]);
+    LETRAS.forEach(function (l) { tr.appendChild(h('th', { text: l })); });
+    return h('thead', {}, [tr]);
+  }
+  function rn(n) { return h('td', { 'class': 'rn', text: String(n) }); }
+
+  /* ── Excel .xlsx (izquierda) ── */
+  (function () {
+    var tb = h('tbody');
+    for (var n = 1; n <= 4; n++) {
+      var tr = h('tr', { 'class': 'b4' }, [rn(n)]);
+      if (n === 1) {
+        var bn = h('div', { 'class': 'bn', role: 'img', 'aria-label': 'Membrete: XXIII Juegos Deportivos Nacionales 2027, Deporte y SUID' });
+        var td = h('td', { 'class': 'banner rel', colspan: '12', rowspan: '4' }, [bn, pin(1, 'left:5%;top:50%')]);
+        td.style.padding = '0';
+        tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+    var t = h('tr', {}, [rn(5), h('td', { colspan: '12' }, [h('div', { 'class': 'c titulo', text: 'REPORTE CONSOLIDADO DE INSCRIPCIÓN NUMÉRICA' })])]);
+    tb.appendChild(t);
+    tb.appendChild(h('tr', {}, [rn(6), h('td', { colspan: '12' }, [h('div', { 'class': 'c gen', text: GEN })])]));
+    var hd = h('tr', { 'class': 'hd' }, [rn(7)]);
+    COLS.forEach(function (c, i) {
+      var td = h('td', { 'class': 'rel' }, [h('div', { 'class': 'c', text: c })]);
+      if (i === 11) td.appendChild(pin(2, 'right:12px;top:-6px;transform:translate(50%,-50%)'));
+      hd.appendChild(td);
+    });
+    tb.appendChild(hd);
+    filas.forEach(function (r, n) {
+      var tr = h('tr', { 'class': 'dt' }, [rn(8 + n)]);
+      celdas(r).forEach(function (txt, i) {
+        var cls = [];
+        var shown = txt;
+        if (i === 8 && n === MIXROW) {
+          var m = /^(\d+)/.exec(txt); if (m) { shown = m[1]; cls.push('num', 'nota'); }
+        } else if (NUMCOL[i] || (i === 8 && /^\d+$/.test(txt))) cls.push('num');
+        if (i === 0) cls.push('frz');
+        var td = h('td', { 'class': cls.join(' ') }, [h('div', { 'class': 'c', text: shown })]);
+        if (i === 8 && n === MIXROW) td.appendChild(pin(3, 'left:2px;top:2px'));
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    var tbl = h('table', { role: 'table' }, [h('caption', { 'class': 'sr-only', text: 'Hoja Consolidado: membrete, título, cabecera de 12 columnas y 10 filas reales' }), colgroup(ANCHOS), letras(), tb]);
+    var pie = h('div', { 'class': 'xl__pie rel' }, [
+      h('span', { 'class': 'rel' }, [h('img', { src: 'shared/logos/naowee.svg', alt: 'Naowee' }), pin(5, 'left:calc(100% + 16px);top:50%')]),
+      h('span', { 'class': 'rel', text: 'Pág 1 de ' + PAGS_XL }, [pin(4, 'left:-16px;top:50%')])
+    ]);
+    var xl = h('div', { 'class': 'xl' }, [
+      h('div', { 'class': 'xl__title' }, [h('i'), h('i'), h('i'), h('span', { text: 'reporte-consolidado-inscripcion-numerica.xlsx — Excel' })]),
+      barraFx('A5', 'REPORTE CONSOLIDADO DE INSCRIPCIÓN NUMÉRICA'),
+      tbl, pie,
+      h('div', { 'class': 'xl__tabs' }, [h('span', { 'class': 'xl__tab', text: 'Consolidado' })])
+    ]);
+    document.getElementById('xl-ok').appendChild(xl);
+  })();
+
+  /* ── Excel .csv (derecha) ── */
+  (function () {
+    var tb = h('tbody'), W = 978 / 12;
+    var lineas = ['XXIII Juegos Deportivos Nacionales', 'Córdoba – Sucre 2027', 'Reporte consolidado de inscripción numérica', GEN];
+    lineas.forEach(function (l, n) {
+      var td = h('td', { colspan: '12', 'class': 'rel' }, [h('div', { 'class': 't', text: l })]);
+      if (n === 1) td.appendChild(pin(1, 'left:46%;top:50%'));
+      tb.appendChild(h('tr', {}, [rn(n + 1), td]));
+    });
+    tb.appendChild(h('tr', {}, [rn(5), h('td', { colspan: '12' }, [h('div', { 'class': 't', text: ' ' })])]));
+    var hd = h('tr', { 'class': 'hd' }, [rn(6)]);
+    COLS.forEach(function (c, i) {
+      var td = h('td', { 'class': 'rel' }, [h('div', { 'class': 'c', text: c })]);
+      if (i === 11) td.appendChild(pin(2, 'right:12px;top:-6px;transform:translate(50%,-50%)'));
+      hd.appendChild(td);
+    });
+    tb.appendChild(hd);
+    filas.forEach(function (r, n) {
+      var tr = h('tr', { 'class': 'dt' }, [rn(7 + n)]);
+      celdas(r).forEach(function (txt, i) {
+        var td = h('td', { 'class': 'rel' }, [h('div', { 'class': 't', text: txt })]);
+        if (i === 8 && n === MIXROW) td.appendChild(pin(3, 'left:2px;top:2px'));
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    var g = h('colgroup', {}, [h('col', { style: 'width:26px' })]);
+    for (var j = 0; j < 12; j++) g.appendChild(h('col', { style: 'width:' + W + 'px' }));
+    var tbl = h('table', {}, [h('caption', { 'class': 'sr-only', text: 'Hoja del CSV: cuatro líneas de texto, cabecera y 10 filas, sin formato' }), g, letras(), tb]);
+    var pie = h('div', { 'class': 'xl__pie xl__pie--no rel', text: 'Sin pie de página ni numeración · sin logo' }, [pin(4, 'left:30%;top:50%'), pin(5, 'left:70%;top:50%')]);
+    var xl = h('div', { 'class': 'xl xl--csv' }, [
+      h('div', { 'class': 'xl__title' }, [h('i'), h('i'), h('i'), h('span', { text: 'reporte-consolidado-inscripcion-numerica.csv — Excel' })]),
+      barraFx('A1', 'XXIII Juegos Deportivos Nacionales'),
+      tbl, pie,
+      h('div', { 'class': 'xl__tabs' }, [h('span', { 'class': 'xl__tab', text: 'reporte-consolidado-inscripcion' })])
+    ]);
+    document.getElementById('xl-mal').appendChild(xl);
+  })();
+
+  /* ── Certificado PDF ── */
+  var DEL = C.delegaciones[16], DELT = 'Instituto Departamental de Recreación y Deporte del Atlántico';
+  var at = D.atlantico, sel = [0, 1, 2], extra = 0;
+  (function () {
+    function buscar(fn) { for (var i = 0; i < at.length; i++) if (sel.indexOf(i) < 0 && fn(at[i])) return i; return -1; }
+    var a = buscar(function (x) { return x.deporte === 'Ajedrez' && !x.sinRegla; });
+    var b = buscar(function (x) { var r = reg[x.reglaId]; return x.sexo === 'Mixto' && r && typeof r.mixtaComposicion === 'string'; });
+    var c = buscar(function (x) { return x.sexo === 'Mixto' && x.deporte === 'Arquería'; });
+    [a, b, c].forEach(function (i) { if (i >= 0) sel.push(i); });
+    for (var i = 0; sel.length < 6 && i < at.length; i++) if (sel.indexOf(i) < 0) sel.push(i);
+    sel.sort(function (x, y) { return x - y; });
+  })();
+  var filasPdf = sel.slice(0, 6).map(function (i) { var a = at[i]; return { a: a, c: cupos(a.deporte, a.modalidad, a.sexo) }; });
+  var ultima = fecha(at.map(function (a) { return a.fecha; }).sort().pop()).replace(/\//g, '-');
+  var PAGS_PDF = Math.ceil(at.length / 12);
+  var PDF_COLS = ['Deporte', 'Modalidad', 'Género', 'Fecha de intención', 'Cupos MASC', 'Suplentes MASC', 'Cupos FEM', 'Suplentes FEM', 'Cupos mixtos'];
+
+  function hoja(mal) {
+    var rows = filasPdf.map(function (r) {
+      var c = r.c;
+      return h('tr', {}, [r.a.deporte, r.a.modalidad, SEX[r.a.sexo], fecha(r.a.fecha), v(c.mc), v(c.ms), v(c.fc), v(c.fs), v(c.mx)].map(function (x) { return h('td', { text: x }); }));
+    });
+    var cg = h('colgroup', {}, [0, 1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return h('col', { 'class': 'w' + i }); }));
+    var tbl = h('table', {}, [h('caption', { 'class': 'sr-only', text: 'Seis filas reales de la delegación' }), cg,
+      h('thead', {}, [h('tr', {}, PDF_COLS.map(function (c) { return h('th', { scope: 'col', text: c }); }))]), h('tbody', {}, rows)]);
+    var tw = h('div', { 'class': 'rel' }, [tbl, pin(2, 'left:100%;top:18px;transform:translate(-30%,-50%)')]);
+    var banner = h('div', { 'class': 'bnw rel' }, [h('div', { 'class': 'bn', role: 'img', 'aria-label': mal ? 'Membrete como imagen recortada y de baja resolución' : 'Membrete: XXIII Juegos Deportivos Nacionales 2027, Deporte y SUID' }), pin(1, 'left:6%;top:50%')]);
+    var titulo = h('h4', { 'class': 'rel' }, ['REPORTE DE INSCRIPCIÓN NUMÉRICA', h('br'), 'EN DEPORTES, MODALIDADES Y GÉNERO', pin(3, 'left:100%;top:50%;transform:translate(-30%,-50%)', true)]);
+    var logo = mal
+      ? h('span', { 'class': 'txtlogo rel', text: 'naowee' }, [pin(5, 'left:-14px;top:50%')])
+      : h('span', { 'class': 'rel' }, [h('img', { src: 'shared/logos/naowee.svg', alt: 'Naowee' }), pin(5, 'left:-14px;top:50%')]);
+    var pie = h('div', { 'class': 'pie' }, [
+      h('b', { text: GEN }), h('br'),
+      document.createTextNode('Fecha de cierre de inscripción numérica: 30-10-2026 (ejemplo)'),
+      h('div', { 'class': 'pie__fila' }, [logo, h('span', { 'class': 'pag rel', text: 'Pág 1 de ' + (mal ? 1 : PAGS_PDF) }, [pin(4, 'left:-16px;top:50%')])])
+    ]);
+    return h('div', { 'class': 'a4 ' + (mal ? 'a4--mal' : 'a4--bien'), role: 'group', 'aria-label': 'Hoja A4 del certificado' }, [
+      banner,
+      h('div', { 'class': 'cuerpo' }, [
+        h('div', { 'class': 'ev' }, [h('b', { text: 'XXIII Juegos deportivos nacionales' }), h('span', { text: 'Córdoba – Sucre 2027' })]),
+        titulo,
+        h('div', { 'class': 'act' }, [document.createTextNode('Fecha de última actualización de inscripción numérica: '), h('mark', { text: ultima }), h('br'), h('mark', { text: 'DELEGACIÓN: ' + DEL })]),
+        h('hr'),
+        h('p', { 'class': 'par' }, [document.createTextNode('La delegación '), h('mark', { text: DELT }), document.createTextNode(' ha manifestado su inscripción numérica en los siguientes deportes, modalidades y género:')]),
+        tw
+      ]),
+      pie
+    ]);
+  }
+  document.getElementById('pdf-ok').appendChild(hoja(false));
+  document.getElementById('pdf-mal').appendChild(hoja(true));
+  // La versión de hoy usa 9 columnas iguales: es lo que ilustra la llamada 2.
+  var malTbl = document.querySelector('.a4--mal table'); if (malTbl) malTbl.style.fontSize = '9px';
+
+  /* ── leyendas ── */
+  function leg(id, items) {
+    var ol = document.getElementById(id);
+    items.forEach(function (it) {
+      var who = h('div', { 'class': 'who' }, it.who.map(function (w) {
+        var m = { Diseño: 'dis', 'Brand Book': 'bb', Backend: 'be', Intencional: 'ok' }[w];
+        return h('span', { 'class': 'chip chip--' + m, text: w });
+      }));
+      var p = h('p', {}, [h('b', { text: it.t }), it.s ? h('small', { text: it.s }) : null]);
+      ol.appendChild(h('li', {}, [h('span', { 'class': 'pin n' + (it.int ? ' pin--int' : ''), text: String(it.n), 'aria-label': 'Llamada ' + it.n }), p, who]));
+    });
+  }
+  leg('leg-xl', [
+    { n: 1, t: 'Membrete gráfico con logos en las filas 1 a 4.', s: 'El CSV no admite imágenes: hoy son cuatro líneas de texto. Necesita los logos en vector del Manual de Marca y un .xlsx real.', who: ['Brand Book', 'Backend'] },
+    { n: 2, t: 'Formato: cabecera verde, anchos de columna, filtros automáticos y panel congelado.', s: 'En el CSV la cabecera es texto plano y las columnas salen con el ancho por defecto. Requiere .xlsx.', who: ['Diseño', 'Backend'] },
+    { n: 3, t: '«Cupos mixtos» mezcla números y texto libre.', s: 'Ejemplo real: «8 ; máximo 2 hombres + 2 suplentes». En .xlsx el número queda en la celda y la nota va como comentario (triángulo rojo).', who: ['Diseño', 'Backend'] },
+    { n: 4, t: 'Numeración de páginas e impresión.', s: 'El CSV no tiene pie. El «N» de «Pág 1 de N» es una estimación con las ' + F.length.toLocaleString('es-CO') + ' filas reales.', who: ['Backend'] },
+    { n: 5, t: 'Logo de Naowee en el pie.', s: 'Solo se puede insertar en un .xlsx; el logo en vector sale del Manual de Marca.', who: ['Brand Book', 'Backend'] }
+  ]);
+  leg('leg-pdf', [
+    { n: 1, t: 'Banner del membrete.', s: 'Hoy es una imagen recortada y de baja resolución (aquí con un leve desenfoque para ilustrarlo). Lo ideal son los logos en vector del Manual de Marca.', who: ['Brand Book', 'Diseño'] },
+    { n: 2, t: 'Columnas de la tabla.', s: 'Hoy las nueve columnas son iguales y «Deporte» y «Modalidad» se parten en varias líneas; a la izquierda tienen más ancho que las numéricas.', who: ['Diseño', 'Backend'] },
+    { n: 3, t: 'Título distinto al del PDF original, a propósito.', s: 'El original decía «Intención de participación»; ahora dice «Inscripción numérica». No es una falta. Va igual en las dos hojas.', who: ['Intencional'], int: true },
+    { n: 4, t: 'Numeración de páginas.', s: 'El demo dibuja una sola hoja («Pág 1 de 1»). El PDF real pagina: la delegación tiene ' + at.length + ' filas, unas ' + PAGS_PDF + ' páginas (estimado).', who: ['Backend'] },
+    { n: 5, t: 'Logo de Naowee del pie.', s: 'En el demo de hoy sale como el texto «naowee»; debe volver a ser el logo (shared/logos/naowee.svg).', who: ['Diseño'] }
+  ]);
+
+  /* ── resumen ── */
+  [
+    ['Manual de Marca con los logos en vector (Deporte, SUID, Juegos)', 'Reemplaza el banner recortado del demo y alimenta el membrete de las dos descargas.', 'Brand Book'],
+    ['Acta del 25-ago que confirma el membrete', 'Deja por escrito el membrete definitivo para todas las descargas (HU-IN-17).', 'Brand Book'],
+    ['.xlsx real para el reporte consolidado', 'Imagen del membrete, cabecera verde, anchos, filtros, panel congelado, pie y número de página.', 'Backend'],
+    ['PDF generado por backend con paginación', 'Reemplaza la hoja dibujada del demo; pagina por filas y repite el membrete.', 'Backend'],
+    ['Logo de Naowee restaurado en el pie del certificado del demo', 'Hoy sale como texto «naowee».', 'Diseño'],
+    ['Definir cómo viaja «Cupos mixtos»', 'Número en la celda y la nota aparte, para poder filtrar y sumar.', 'Diseño']
+  ].forEach(function (r, i) {
+    var m = { 'Brand Book': 'bb', Backend: 'be', Diseño: 'dis' }[r[2]];
+    document.getElementById('falta').appendChild(h('li', {}, [
+      h('label', {}, [h('input', { type: 'checkbox', id: 'f' + i }), h('span', {}, [h('b', { text: r[0] }), h('small', { text: r[1] })])]),
+      h('span', { 'class': 'chip chip--' + m, text: r[2] })
+    ]));
+  });
+
+  /* ── escala de las hojas al ancho de su columna ── */
+  function ajustar() {
+    document.querySelectorAll('.stage').forEach(function (st) {
+      var box = st.parentNode, w = +st.dataset.w, avail = box.clientWidth - 24;
+      var z = Math.max(0.55, Math.min(1, avail / w));
+      st.style.setProperty('--z', z.toFixed(3));
+      st.style.setProperty('--inv', (1 / z).toFixed(3));
+    });
+  }
+  ajustar();
+  window.addEventListener('resize', ajustar);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustar);
+})();
+</script>
+</body>
+</html>
