@@ -79,7 +79,6 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .xl { width: 1006px; background: #fff; border: 1px solid #c8c8c8; font: 11px/1.25 Inter, sans-serif; color: #1f1f1f; }
 .xl__title { background: #107c41; color: #fff; padding: 4px 10px; font-size: 11px; display: flex; gap: 10px; align-items: center; }
 .xl__title i { width: 9px; height: 9px; border-radius: 50%; background: #fff; opacity: .7; display: inline-block; }
-.xl__title.csv { background: #107c41; }
 .xl__fx { display: flex; align-items: center; border-bottom: 1px solid #d0d0d0; background: #f3f3f3; height: 24px; font-size: 11px; }
 .xl__nb { width: 70px; padding: 0 8px; border-right: 1px solid #d0d0d0; height: 100%; display: flex; align-items: center; background: #fff; }
 .xl__f { padding: 0 10px; font-style: italic; color: #107c41; font-weight: 700; }
@@ -107,11 +106,6 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .xl__pie--no { color: #8a8a8a; font-weight: 400; font-style: italic; justify-content: center; }
 .xl__tabs { display: flex; background: #efefef; border-top: 1px solid #c8c8c8; padding: 4px 8px 0; gap: 2px; font-size: 11px; }
 .xl__tab { padding: 3px 14px; background: #fff; border: 1px solid #c8c8c8; border-top: 0; border-bottom: 3px solid #107c41; font-weight: 700; color: #107c41; }
-.xl--csv td, .xl--csv th { border-color: #e1e1e1; }
-.xl--csv .t { padding: 2px 4px; white-space: nowrap; overflow: hidden; text-overflow: clip; }
-.xl--csv tr.hd td { background: #fff; color: #1f1f1f; font-weight: 400; height: 20px; border-bottom: 1px solid #e1e1e1; border-color: #e1e1e1; }
-.xl--csv tr.hd .c::after { content: none; }
-.xl--csv tr.hd .c { white-space: nowrap; padding: 2px 4px; }
 
 /* ───────── Hoja A4 simulada (794 x 1123) ───────── */
 .a4 { width: 794px; height: 1123px; background: #fff; position: relative; box-shadow: 0 2px 14px rgba(0, 0, 0, .18); font-family: Inter, sans-serif; color: #1f1f1f; overflow: hidden; }
@@ -177,28 +171,22 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   </header>
 
   <h1>Descargas: cómo quedaría y qué falta</h1>
-  <p class="lead">Dos descargas del demo de inscripción numérica, lado a lado. A la izquierda, <b>cómo quedaría</b> con el membrete, los logos y el formato completos; a la derecha, <b>cómo sale hoy</b> y lo que le falta. Los datos de las filas son los reales del insumo; la fecha y la hora del informe se calculan al abrir la página.</p>
+  <p class="lead">Dos descargas del demo de inscripción numérica. El reporte consolidado es un Excel real (<code>.xlsx</code>) de 12 columnas; el certificado PDF se compara <b>cómo quedaría</b> frente a <b>cómo sale hoy</b>. Los datos de las filas son los reales del insumo; la fecha y la hora del informe se calculan al abrir la página.</p>
   <p class="lead">Cada número marca una diferencia y la leyenda de abajo dice quién la resuelve: <span class="chip chip--dis">Diseño</span> <span class="chip chip--bb">Brand Book</span> <span class="chip chip--be">Backend</span>. Un número azul es una diferencia intencional, no una falta.</p>
 
   <section class="sec" aria-labelledby="t-xlsx">
     <h2 id="t-xlsx">1. Reporte consolidado (HU-IN-14 y HU-IN-17)</h2>
-    <p class="sec__sub">La hoja de cálculo que baja el comité. Hoy es un <code>.csv</code>; el membrete gráfico, el color y los filtros solo caben en un <code>.xlsx</code>.</p>
-    <div class="pair">
-      <div class="col">
-        <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>Abierto como .xlsx</h3></div>
-        <div class="scroll" tabindex="0" role="region" aria-label="Vista del Excel como quedaría; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-ok"></div></div></div>
-      </div>
-      <div class="col">
-        <div class="col__head"><span class="naowee-badge naowee-badge--caution">Hoy · lo que falta</span><h3>Abierto como .csv</h3></div>
-        <div class="scroll" tabindex="0" role="region" aria-label="Vista del CSV como sale hoy; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-mal"></div></div></div>
-      </div>
+    <p class="sec__sub">La hoja de cálculo que baja el comité: un <code>.xlsx</code> con las 12 columnas en este orden. Incluye las <b>34 delegaciones</b> del consolidado: 33 con intención declarada y Vichada, habilitada preventivamente (sin filas ni correo propios).</p>
+    <div class="col">
+      <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>Abierto como .xlsx</h3></div>
+      <div class="scroll" tabindex="0" role="region" aria-label="Vista del Excel como quedaría; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-ok"></div></div></div>
     </div>
     <ol class="legend" id="leg-xl" aria-label="Leyenda de las llamadas del reporte consolidado"></ol>
   </section>
 
   <section class="sec" aria-labelledby="t-pdf">
     <h2 id="t-pdf">2. Certificado PDF (HU-IN-16 y HU-IN-17)</h2>
-    <p class="sec__sub">El certificado de la delegación, en A4. Mismos datos en las dos hojas: seis filas reales de la delegación del Atlántico.</p>
+    <p class="sec__sub">El certificado de la delegación, en A4. Se descarga al terminar la fase, las veces que se quiera y siempre es el mismo. Mismos datos en las dos hojas: seis filas reales de la delegación del Atlántico.</p>
     <div class="pair">
       <div class="col">
         <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>PDF con membrete completo</h3></div>
@@ -218,7 +206,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     <ul id="falta"></ul>
   </section>
 
-  <p class="foot">Hoja de referencia: <code>shared/certificado-referencia.png</code> (franja superior). Las cifras de «Pág 1 de N» son estimadas a partir del total real de filas.</p>
+  <p class="foot">Fechas oficiales de etapas: la inscripción numérica abre el 01-03-2027 (presunta, sin confirmación oficial) y cierra el 30-03-2027. Hoja de referencia: <code>shared/certificado-referencia.png</code> (franja superior). Las cifras de «Pág 1 de N» son estimadas a partir del total real de filas.</p>
 </div>
 
 <script src="shared/datos-consolidado.js"></script>
@@ -274,7 +262,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     var f = F[j], c = cupos(f[1], f[2], f[3]);
     return { del: C.delegaciones[f[0]], dep: f[1], mod: f[2], sx: SEX[f[3]], c: c, fe: fecha(f[4]), rol: C.rol, mail: C.correos[f[0]] };
   });
-  var COLS = ['Delegación', 'Deporte', 'Modalidad', 'Sexo', 'Cupos MASC', 'Suplentes MASC', 'Cupos FEM', 'Suplentes FEM', 'Cupos mixtos', 'Fecha de Intención', 'Rol', 'Correo Electrónico'];
+  var COLS = ['Delegación', 'Deporte', 'Modalidad', 'Sexo', 'Cupos Masculinos', 'Suplentes Masculinos', 'Cupos Femeninos', 'Suplentes Femeninos', 'Cupos Mixtos', 'Fecha de registro', 'Rol registrador', 'Correo electrónico'];
   var NUMCOL = { 4: 1, 5: 1, 6: 1, 7: 1 };
   function celdas(r) { return [r.del, r.dep, r.mod, r.sx, v(r.c.mc), v(r.c.ms), v(r.c.fc), v(r.c.fs), v(r.c.mx), r.fe, r.rol, r.mail]; }
   var PAGS_XL = Math.ceil(F.length / 38);
@@ -336,7 +324,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
       });
       tb.appendChild(tr);
     });
-    var tbl = h('table', { role: 'table' }, [h('caption', { 'class': 'sr-only', text: 'Hoja Consolidado: membrete, título, cabecera de 12 columnas y 10 filas reales' }), colgroup(ANCHOS), letras(), tb]);
+    var tbl = h('table', { role: 'table' }, [h('caption', { 'class': 'sr-only', text: 'Hoja Consolidado: membrete, título, cabecera de 12 columnas y 10 filas de ejemplo' }), colgroup(ANCHOS), letras(), tb]);
     var pie = h('div', { 'class': 'xl__pie rel' }, [
       h('span', { 'class': 'rel' }, [h('img', { src: 'shared/logos/naowee.svg', alt: 'Naowee' }), pin(5, 'left:calc(100% + 16px);top:50%')]),
       h('span', { 'class': 'rel', text: 'Pág 1 de ' + PAGS_XL }, [pin(4, 'left:-16px;top:50%')])
@@ -348,45 +336,6 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
       h('div', { 'class': 'xl__tabs' }, [h('span', { 'class': 'xl__tab', text: 'Consolidado' })])
     ]);
     document.getElementById('xl-ok').appendChild(xl);
-  })();
-
-  /* ── Excel .csv (derecha) ── */
-  (function () {
-    var tb = h('tbody'), W = 978 / 12;
-    var lineas = ['XXIII Juegos Deportivos Nacionales', 'Córdoba – Sucre 2027', 'Reporte consolidado de inscripción numérica', GEN];
-    lineas.forEach(function (l, n) {
-      var td = h('td', { colspan: '12', 'class': 'rel' }, [h('div', { 'class': 't', text: l })]);
-      if (n === 1) td.appendChild(pin(1, 'left:46%;top:50%'));
-      tb.appendChild(h('tr', {}, [rn(n + 1), td]));
-    });
-    tb.appendChild(h('tr', {}, [rn(5), h('td', { colspan: '12' }, [h('div', { 'class': 't', text: ' ' })])]));
-    var hd = h('tr', { 'class': 'hd' }, [rn(6)]);
-    COLS.forEach(function (c, i) {
-      var td = h('td', { 'class': 'rel' }, [h('div', { 'class': 'c', text: c })]);
-      if (i === 11) td.appendChild(pin(2, 'right:12px;top:-6px;transform:translate(50%,-50%)'));
-      hd.appendChild(td);
-    });
-    tb.appendChild(hd);
-    filas.forEach(function (r, n) {
-      var tr = h('tr', { 'class': 'dt' }, [rn(7 + n)]);
-      celdas(r).forEach(function (txt, i) {
-        var td = h('td', { 'class': 'rel' }, [h('div', { 'class': 't', text: txt })]);
-        if (i === 8 && n === MIXROW) td.appendChild(pin(3, 'left:2px;top:2px'));
-        tr.appendChild(td);
-      });
-      tb.appendChild(tr);
-    });
-    var g = h('colgroup', {}, [h('col', { style: 'width:26px' })]);
-    for (var j = 0; j < 12; j++) g.appendChild(h('col', { style: 'width:' + W + 'px' }));
-    var tbl = h('table', {}, [h('caption', { 'class': 'sr-only', text: 'Hoja del CSV: cuatro líneas de texto, cabecera y 10 filas, sin formato' }), g, letras(), tb]);
-    var pie = h('div', { 'class': 'xl__pie xl__pie--no rel', text: 'Sin pie de página ni numeración · sin logo' }, [pin(4, 'left:30%;top:50%'), pin(5, 'left:70%;top:50%')]);
-    var xl = h('div', { 'class': 'xl xl--csv' }, [
-      h('div', { 'class': 'xl__title' }, [h('i'), h('i'), h('i'), h('span', { text: 'reporte-consolidado-inscripcion-numerica.csv — Excel' })]),
-      barraFx('A1', 'XXIII Juegos Deportivos Nacionales'),
-      tbl, pie,
-      h('div', { 'class': 'xl__tabs' }, [h('span', { 'class': 'xl__tab', text: 'reporte-consolidado-inscripcion' })])
-    ]);
-    document.getElementById('xl-mal').appendChild(xl);
   })();
 
   /* ── Certificado PDF ── */
@@ -404,7 +353,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   var filasPdf = sel.slice(0, 6).map(function (i) { var a = at[i]; return { a: a, c: cupos(a.deporte, a.modalidad, a.sexo) }; });
   var ultima = fecha(at.map(function (a) { return a.fecha; }).sort().pop()).replace(/\//g, '-');
   var PAGS_PDF = Math.ceil(at.length / 12);
-  var PDF_COLS = ['Deporte', 'Modalidad', 'Género', 'Fecha de intención', 'Cupos MASC', 'Suplentes MASC', 'Cupos FEM', 'Suplentes FEM', 'Cupos mixtos'];
+  var PDF_COLS = ['Deporte', 'Modalidad', 'Género', 'Fecha de intención', 'Cupos Masculinos', 'Suplentes Masculinos', 'Cupos Femeninos', 'Suplentes Femeninos', 'Cupos Mixtos'];
 
   function hoja(mal) {
     var rows = filasPdf.map(function (r) {
@@ -422,7 +371,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
       : h('span', { 'class': 'rel' }, [h('img', { src: 'shared/logos/naowee.svg', alt: 'Naowee' }), pin(5, 'left:-14px;top:50%')]);
     var pie = h('div', { 'class': 'pie' }, [
       h('b', { text: GEN }), h('br'),
-      document.createTextNode('Fecha de cierre de inscripción numérica: 30-10-2026 (ejemplo)'),
+      document.createTextNode('Fecha de cierre de inscripción numérica: 30-03-2027'),
       h('div', { 'class': 'pie__fila' }, [logo, h('span', { 'class': 'pag rel', text: 'Pág 1 de ' + (mal ? 1 : PAGS_PDF) }, [pin(4, 'left:-16px;top:50%')])])
     ]);
     return h('div', { 'class': 'a4 ' + (mal ? 'a4--mal' : 'a4--bien'), role: 'group', 'aria-label': 'Hoja A4 del certificado' }, [
@@ -456,11 +405,11 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     });
   }
   leg('leg-xl', [
-    { n: 1, t: 'Membrete gráfico con logos en las filas 1 a 4.', s: 'El CSV no admite imágenes: hoy son cuatro líneas de texto. Necesita los logos en vector del Manual de Marca y un .xlsx real.', who: ['Brand Book', 'Backend'] },
-    { n: 2, t: 'Formato: cabecera verde, anchos de columna, filtros automáticos y panel congelado.', s: 'En el CSV la cabecera es texto plano y las columnas salen con el ancho por defecto. Requiere .xlsx.', who: ['Diseño', 'Backend'] },
-    { n: 3, t: '«Cupos mixtos» mezcla números y texto libre.', s: 'Ejemplo real: «8 ; máximo 2 hombres + 2 suplentes». En .xlsx el número queda en la celda y la nota va como comentario (triángulo rojo).', who: ['Diseño', 'Backend'] },
-    { n: 4, t: 'Numeración de páginas e impresión.', s: 'El CSV no tiene pie. El «N» de «Pág 1 de N» es una estimación con las ' + F.length.toLocaleString('es-CO') + ' filas reales.', who: ['Backend'] },
-    { n: 5, t: 'Logo de Naowee en el pie.', s: 'Solo se puede insertar en un .xlsx; el logo en vector sale del Manual de Marca.', who: ['Brand Book', 'Backend'] }
+    { n: 1, t: 'Membrete gráfico con logos en las filas 1 a 4.', s: 'Imagen insertada en el .xlsx; los logos en vector salen del Manual de Marca.', who: ['Brand Book', 'Backend'] },
+    { n: 2, t: 'Doce columnas fijas, con cabecera verde, filtros automáticos y panel congelado.', s: 'El orden es el acordado: de Delegación a Correo electrónico. El Rol registrador y el correo son los de quien registró la intención.', who: ['Diseño', 'Backend'] },
+    { n: 3, t: '«Cupos Mixtos» mezcla números y texto libre.', s: 'Ejemplo real: «8 ; máximo 2 hombres + 2 suplentes». El número queda en la celda y la nota va como comentario (triángulo rojo).', who: ['Diseño', 'Backend'] },
+    { n: 4, t: 'Numeración de páginas e impresión.', s: 'El «N» de «Pág 1 de N» es una estimación con las ' + F.length.toLocaleString('es-CO') + ' filas reales.', who: ['Backend'] },
+    { n: 5, t: 'Logo de Naowee en el pie.', s: 'Se inserta en el .xlsx; el logo en vector sale del Manual de Marca.', who: ['Brand Book', 'Backend'] }
   ]);
   leg('leg-pdf', [
     { n: 1, t: 'Banner del membrete.', s: 'Hoy es una imagen recortada y de baja resolución (aquí con un leve desenfoque para ilustrarlo). Lo ideal son los logos en vector del Manual de Marca.', who: ['Brand Book', 'Diseño'] },
@@ -473,9 +422,9 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   /* ── resumen ── */
   [
     ['Manual de Marca con los logos en vector (Deporte, SUID, Juegos)', 'Reemplaza el banner recortado del demo y alimenta el membrete de las dos descargas.', 'Brand Book'],
-    ['Acta del 25-ago que confirma el membrete', 'Deja por escrito el membrete definitivo para todas las descargas (HU-IN-17).', 'Brand Book'],
-    ['.xlsx real para el reporte consolidado', 'Imagen del membrete, cabecera verde, anchos, filtros, panel congelado, pie y número de página.', 'Backend'],
-    ['PDF generado por backend con paginación', 'Reemplaza la hoja dibujada del demo; pagina por filas y repite el membrete.', 'Backend'],
+    ['Confirmación escrita del membrete', 'Deja por escrito el membrete definitivo para todas las descargas (HU-IN-17).', 'Brand Book'],
+    ['Generar el .xlsx del reporte consolidado', 'Imagen del membrete, 12 columnas, cabecera verde, anchos, filtros, panel congelado, pie y número de página.', 'Backend'],
+    ['PDF generado por backend con paginación', 'Reemplaza la hoja dibujada del demo; pagina por filas, repite el membrete y se puede descargar las veces que se quiera al terminar la fase.', 'Backend'],
     ['Logo de Naowee restaurado en el pie del certificado del demo', 'Hoy sale como texto «naowee».', 'Diseño'],
     ['Definir cómo viaja «Cupos mixtos»', 'Número en la celda y la nota aparte, para poder filtrar y sumar.', 'Diseño']
   ].forEach(function (r, i) {

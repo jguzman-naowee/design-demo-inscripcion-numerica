@@ -95,7 +95,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .xl td{border:1px solid var(--g-200);padding:5px 10px;white-space:nowrap}
 .xl td.r{text-align:right}
 .xl .rn{background:var(--g-100);color:var(--g-700);text-align:center;width:34px}
-.tab-x{display:flex;gap:2px;font-size:12px;margin-top:8px}.tab-x span{padding:4px 14px;border:1px solid var(--g-300);border-top:0;border-radius:0 0 6px 6px;background:#fff}
+.tab-x{display:flex;gap:2px;font-size:12px;margin-top:8px}.tab-x span{padding:4px 14px;border:1px solid var(--g-300);border-top:0;border-radius:0 0 6px 6px;background:#fff}.tab-x span.on{font-weight:700;background:var(--g-100,#f2f2f5)}
 .pager-note{color:var(--g-700);font-size:12px}
 .chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--g-200);font-size:14.5px;cursor:pointer}
 .chk input{width:18px;height:18px;margin-top:2px;accent-color:var(--n-700);flex:none}
@@ -206,13 +206,6 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .gbar{display:grid;grid-template-columns:90px 1fr 80px;gap:10px;align-items:center;margin-top:16px;font-size:13px}
 .gbar .tr{height:16px;background:var(--g-100);border-radius:8px;overflow:hidden}
 .gbar .tr i{display:block;height:100%}
-.c6-wip>:not(header):not(.mq):not(.ptabs):not(.ph-air){filter:grayscale(1);opacity:.65}
-.mq{overflow:hidden;border:1px solid #f2d27a;background:var(--warn-100);border-radius:10px;color:#6b3c06;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.mq-t{display:flex;width:max-content;animation:mq-run 28s linear infinite}
-.mq-t span{flex:none;padding:8px 28px;white-space:nowrap}
-.mq-t span::before{content:'';display:inline-block;width:6px;height:6px;margin-right:14px;border-radius:50%;background:#b45309;vertical-align:middle}
-@keyframes mq-run{to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.mq-t{animation:none}}
 .dnote{border:1px solid #f2d27a;background:var(--warn-100);color:#6b3c06;border-radius:12px;padding:10px 14px;font-size:13px}
 .mem .mb{border-radius:6px;margin:12px 0}
 /* ---------- Cards, mismo patrón que el delegado (N1): fondo gris, tarjetas blancas ---------- */
@@ -271,6 +264,8 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .exl{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--warn-700);background:var(--warn-100);border-radius:99px;padding:3px 10px;white-space:nowrap}
 .exl.real{color:var(--ok-700);background:var(--ok-100)}
 .dk .exl,.dc .exl{margin-top:8px}
+.dsub{display:block;margin-top:2px;font-size:12px;color:var(--g-700)}
+.dsub+.exl{margin-top:6px}
 .dsh{background:none;border:0;padding:0;gap:24px}
 .dsh h2{font-size:24px;letter-spacing:-.02em}
 .dfil,.dk,.dc{border-color:#e7e9f3;border-radius:12px;box-shadow:var(--sh)}
@@ -348,7 +343,7 @@ var RB={};DATA.reglas.forEach(function(r){RB[r.id]=r});
 var MAPA={};DATA.mapaNombres.forEach(function(m){MAPA[m.deporte+'|'+m.modalidad]=m});
 // Si una combinación agrupa varias reglas con cupos distintos se muestra el rango.
 function pick(rs,f,k){var v=[];rs.forEach(function(r){var x=r[f][k];if(x!=null&&v.indexOf(x)<0)v.push(x)});if(!v.length)return null;if(v.length===1)return v[0];v.sort(function(a,b){return a-b});return v[0]+'–'+v[v.length-1]}
-function mixto(rs){var v=[];rs.forEach(function(r){if(r.mixtaComposicion&&v.indexOf(r.mixtaComposicion)<0)v.push(r.mixtaComposicion)});return v.length===1?v[0]:(v.length?'Varía por prueba':null)}
+function mixto(rs){var v=[];rs.forEach(function(r){if(r.mixtaComposicion&&v.indexOf(r.mixtaComposicion)<0)v.push(r.mixtaComposicion)});return v.length===1?v[0]:(v.length?'Varía según la modalidad':null)}
 function cupos(c){
  var m=MAPA[c.deporte+'|'+c.modalidad],ids=m?(m.reglaIds&&m.reglaIds.length?m.reglaIds:[m.reglaId]):[];
  var rs=ids.map(function(i){return RB[i]}).filter(Boolean);
@@ -359,24 +354,41 @@ function cupos(c){
 var COMB=CON.combinaciones.slice().sort(function(a,b){return a.deporte.localeCompare(b.deporte,'es')||a.modalidad.localeCompare(b.modalidad,'es')});
 var KEY={};COMB.forEach(function(c,i){c.i=i;c.cp=cupos(c);KEY[c.deporte+'|'+c.modalidad]=c});
 var DEPS=[];COMB.forEach(function(c){if(DEPS.indexOf(c.deporte)<0)DEPS.push(c.deporte)});
-var DELN=CON.delegaciones,FILAS=CON.filas;
+var DELN=CON.delegaciones,FILAS=CON.filas,HAB=CON.habilitadasPreventivas||[],ESTH=CON.estadoHabilitada;
+function isHab(i){return HAB.indexOf(i)>-1}
 // Región de cada delegación: tabla documentada en datos-consolidado.js (D6, 9-oct-2026).
 var REGL=(CON.regiones||{lista:[]}).lista,REGD=(CON.regiones||{porDelegacion:[]}).porDelegacion;
 var PROF=DELN.map(function(){return {deps:{},nm:0,nd:0}});
 FILAS.forEach(function(r){var p=PROF[r[0]],d=p.deps[r[1]];if(!d){d=p.deps[r[1]]={};p.nd++}var m=d[r[2]];if(!m){m=d[r[2]]={};p.nm++}m[r[3]]=1});
+var NCON=PROF.filter(function(p){return p.nd>0}).length;
+// El total sale de DELN: con intención = con filas declaradas; habilitadas = marca explícita del consolidado.
+var DELTXT=NCON+' con intención + '+HAB.length+' habilitada'+(HAB.length>1?'s':'');
 var RANK={Hombres:0,Mujeres:1,Mixto:2};
 function byOrg(a,b){return a[0]-b[0]||KEY[a[1]+'|'+a[2]].i-KEY[b[1]+'|'+b[2]].i||RANK[a[3]]-RANK[b[3]]}
 function bySp(a,b){return KEY[a[1]+'|'+a[2]].i-KEY[b[1]+'|'+b[2]].i||a[0]-b[0]||RANK[a[3]]-RANK[b[3]]}
 var ALL=FILAS.slice().sort(byOrg);
-var COLS=['Delegación','Deporte','Modalidad','Sexo','Cupos MASC','Suplentes MASC','Cupos FEM','Suplentes FEM','Cupos mixtos','Fecha de Intención','Rol','Correo Electrónico'];
+var COLS=['Delegación','Deporte','Modalidad','Sexo','Cupos Masculinos','Suplentes Masculinos','Cupos Femeninos','Suplentes Femeninos','Cupos Mixtos','Fecha de registro','Rol registrador','Correo electrónico'];
+var ROLR=/gestor/i.test(CON.rol)?'Gestor':'Auxiliar';
 function rowCells(f){var c=KEY[f[1]+'|'+f[2]],cp=c.cp,s=f[3];
- return [DELN[f[0]],f[1],f[2],SEXL[s],s==='Hombres'?cp.mc:null,s==='Hombres'?cp.ms:null,s==='Mujeres'?cp.fc:null,s==='Mujeres'?cp.fs:null,s==='Mixto'?cp.mx:null,fdate(f[4]),CON.rol,CON.correos[f[0]]]}
+ return [DELN[f[0]],f[1],f[2],SEXL[s],s==='Hombres'?cp.mc:null,s==='Hombres'?cp.ms:null,s==='Mujeres'?cp.fc:null,s==='Mujeres'?cp.fs:null,s==='Mixto'?cp.mx:null,fdate(f[4]),ROLR,CON.correos[f[0]]]}
 function csvCell(v){v=v==null?'':String(v);return /[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
 // BOM + «;» para que Excel en configuración regional española abra las 12 columnas separadas.
 function z2(n){return (n<10?'0':'')+n}
-function membrete(t){var d=new Date();return ['XXIII Juegos Deportivos Nacionales','Córdoba – Sucre 2027',t,'Informe generado el '+z2(d.getDate())+'-'+z2(d.getMonth()+1)+'-'+d.getFullYear()+' a las '+z2(d.getHours())+':'+z2(d.getMinutes()),'']}
-function toCsv(rows,titulo){var o=membrete(titulo).map(csvCell).concat([COLS.map(csvCell).join(';')]);for(var i=0;i<rows.length;i++)o.push(rowCells(rows[i]).map(csvCell).join(';'));return '﻿'+o.join('\r\n')+'\r\n'}
-function download(name,text){var b=new Blob([text],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}
+function membrete(t,al){var d=new Date();return ['XXIII Juegos Deportivos Nacionales','Córdoba – Sucre 2027',t].concat(al?[al]:[],['Informe generado el '+z2(d.getDate())+'-'+z2(d.getMonth()+1)+'-'+d.getFullYear()+' a las '+z2(d.getHours())+':'+z2(d.getMinutes()),''])}
+function toCsv(rows,titulo,al){var o=membrete(titulo,al).map(csvCell).concat([COLS.map(csvCell).join(';')]);for(var i=0;i<rows.length;i++)o.push(rowCells(rows[i]).map(csvCell).join(';'));return '﻿'+o.join('\r\n')+'\r\n'}
+function download(name,data,type){var b=new Blob([data],{type:type||'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}
+// SheetJS se carga la primera vez que se exporta; si falla, se cae al CSV con aviso.
+var XURL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',XP=null;
+function loadXlsx(){if(window.XLSX)return Promise.resolve();if(XP)return XP;
+ XP=new Promise(function(ok,ko){var s=document.createElement('script');s.src=XURL;s.onload=function(){window.XLSX?ok():ko()};s.onerror=ko;document.head.appendChild(s)}).catch(function(e){XP=null;throw e});return XP}
+function xlsxBytes(rows,titulo,al){var X=window.XLSX,wb=X.utils.book_new(),
+ m=X.utils.aoa_to_sheet(membrete(titulo,al).map(function(x){return [x]})),d=X.utils.aoa_to_sheet([COLS].concat(rows.map(rowCells)));
+ m['!cols']=[{wch:70}];d['!cols']=[46,22,24,10,10,12,10,12,16,16,14,40].map(function(w){return {wch:w}});
+ X.utils.book_append_sheet(wb,m,'Membrete');X.utils.book_append_sheet(wb,d,'Consolidado');
+ return X.write(wb,{bookType:'xlsx',type:'array'})}
+function exportar(rows,titulo,base,al,fin){
+ loadXlsx().then(function(){download(base+'.xlsx',xlsxBytes(rows,titulo,al),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');fin(base+'.xlsx')})
+ .catch(function(){download(base+'.csv',toCsv(rows,titulo,al));toast('No se pudo cargar el generador de Excel: se descargó un CSV con las mismas columnas.');fin(base+'.csv')})}
 
 /* ---------- utilidades ---------- */
 var GRUPOS=['Deportistas','Personal de Apoyo','Prensa','Voluntarios','Autoridades de Juzgamiento (Federaciones)','Comités Organizadores','Proveedores','Otros'];
@@ -423,6 +435,7 @@ function orgsFiltered(){var f=S.f;return DELN.map(function(n,i){return i}).filte
  var d=PROF[i].deps,k,m,s;
  for(k in d){if(f.sport&&k!==f.sport)continue;for(m in d[k]){if(!f.sexo||d[k][m][f.sexo])return true}}
  return false})}
+function filtTxt(){var f=S.f,o=[(f.view==='bySport'?'Por deporte':'Por organización')];if(f.sport)o.push('Deporte '+f.sport);if(f.sexo)o.push('Género '+SEXL[f.sexo]);if(f.org!=='')o.push('Organización '+DELN[+f.org]);return o.join(' · ')}
 function filtChips(prefix){var f=S.f;
  return '<span class="chipf">Pestaña: <b>'+(f.view==='bySport'?'Por deporte':'Por organización')+'</b></span>'+(f.sport?'<span class="chipf">Deporte: <b>'+esc(f.sport)+'</b></span>':'')+(f.sexo?'<span class="chipf">Género: <b>'+SEXL[f.sexo]+'</b></span>':'')+(f.org!==''?'<span class="chipf">Organización: <b>'+esc(DELN[+f.org])+'</b></span>':'')+(!f.sport&&!f.sexo&&f.org===''?'<span class="chipf">Sin filtros</span>':'')}
 
@@ -443,13 +456,13 @@ function rowOrg(i){
   if(!ms.length)return;
   ms.forEach(function(m){for(var k in p.deps[d][m])sx[k]=1});
   lst+='<li><b>'+esc(d)+'</b>: '+ms.map(function(m){return esc(m)+' '+chipsOf(p.deps[d][m])}).join(' · ')+'</li>'});
- var body=open?'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul style="grid-template-columns:1fr">'+lst+'</ul></div>':'';
- return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(DELN[i])+'</b><span class="md">'+p.nd+' deportes · '+p.nm+' modalidades</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge info">'+p.nd+' deportes</span></button>'+body+'</div>'}
+ var hb=isHab(i),body=open?(hb?'<div class="rw-b"><b>'+ESTH+'</b><p class="pager-note">No hizo la intención en deportes y modalidades; queda habilitada ante un posible permiso extraordinario del comité.</p></div>':'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul style="grid-template-columns:1fr">'+lst+'</ul></div>'):'';
+ return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(DELN[i])+'</b><span class="md">'+(hb?ESTH:p.nd+' deportes · '+p.nm+' modalidades')+'</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge '+(hb?'warn':'info')+'">'+(hb?'Habilitada':p.nd+' deportes')+'</span></button>'+body+'</div>'}
 function sexOpts(sel){return '<option value="">Todos</option>'+SEXK.map(function(k){return '<option value="'+k+'"'+(sel===k?' selected':'')+'>'+SEXL[k]+'</option>'}).join('')}
 function c1Ahora(){
  var st=S.c1,f=S.f,body,pages,total,nf=(f.sport?1:0)+(f.sexo?1:0);
  if(f.view==='bySport'){var l=combsFiltered();total=l.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
-  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi"><div class="cq-h"><span style="grid-column:1/4"></span><span class="sh m">Cupos hombres</span><span class="sh m">Suplentes hombres</span><span class="sh f">Cupos mujeres</span><span class="sh f">Suplentes mujeres</span><span style="grid-column:8/10"></span></div><div class="rws">'+l.slice((st.page-1)*PG,st.page*PG).map(rowSport).join('')+'</div></div></div></div>':'<div class="nores">Ninguna combinación coincide con los filtros.</div>'}
+  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi"><div class="cq-h"><span style="grid-column:1/4"></span><span class="sh m">Cupos hombres</span><span class="sh m">Suplentes hombres</span><span class="sh f">Cupos mujeres</span><span class="sh f">Suplentes mujeres</span><span style="grid-column:8/10"></span></div><div class="rws">'+l.slice((st.page-1)*PG,st.page*PG).map(rowSport).join('')+'</div></div></div></div>':'<div class="nores">'+(f.org!==''&&isHab(+f.org)?esc(DELN[+f.org])+' no declaró deportes ni modalidades: '+ESTH.toLowerCase()+'.':'Ninguna combinación coincide con los filtros.')+'</div>'}
  else{var o=orgsFiltered();total=o.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
   body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi nc"><div class="rws">'+o.slice((st.page-1)*PG,st.page*PG).map(rowOrg).join('')+'</div></div></div></div>':'<div class="nores">Ninguna organización coincide con los filtros.</div>'}
  var panel=st.fm?'<div class="fpanel" role="dialog" aria-label="Filtros"><label>Deporte<select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label>Género<select data-a="fg">'+sexOpts(f.sexo)+'</select></label><button type="button" class="btn sec sm" data-a="c1clr">Limpiar filtros</button></div>':'';
@@ -458,7 +471,7 @@ function c1Ahora(){
  '<span class="menuwrap fwrap"><button type="button" class="sel flt" data-a="c1fm" aria-expanded="'+st.fm+'">'+ICO_FL.replace('<svg','<svg width="14" height="14" stroke="currentColor" fill="none" stroke-width="1.8"')+' Filtros'+(nf?' ('+nf+')':'')+' ▾</button>'+panel+'</span></div>';
  var lst=body+'<div class="pgn-b toolbar">'+pager(st.page,pages,'c1p')+'</div>';
  return '<div class="page">'+HEAD({t:'Consolidado de intenciones',s:'Qué organizaciones declararon participación en cada deporte y modalidad.',a:'<button class="btn sec"'+GO('c4')+'>'+ICO_DL+'Exportar</button>',tab:'c1'})+
- KPIS('Resumen del consolidado',[['Deportes',DEPS.length],['Combinaciones de deporte y modalidad',fmt(COMB.length)],['Delegaciones',DELN.length],['Resultados con los filtros',fmt(total),'<span>'+(f.view==='bySport'?'combinaciones':'organizaciones')+'</span>']])+
+ KPIS('Resumen del consolidado',[['Deportes',DEPS.length],['Combinaciones de deporte y modalidad',fmt(COMB.length)],['Delegaciones',DELN.length,'<span>'+DELTXT+'</span>'],['Resultados con los filtros',fmt(total),'<span>'+(f.view==='bySport'?'combinaciones':'organizaciones')+'</span>']])+
  CARD(f.view==='bySport'?'Cupos por deporte y modalidad':'Declaración por organización',tb+lst,{out:1,a:'<span class="ini-b inf">'+fmt(total)+(f.view==='bySport'?' combinaciones':' organizaciones')+'</span>'})+'</div>'}
 
 /* C2: lo declarado es de ejemplo; combinaciones, cupos y organizaciones son reales */
@@ -471,25 +484,25 @@ function c2Ahora(){
  var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th rowspan="2">Deporte</th><th rowspan="2">Modalidad</th><th class="grp vsep" colspan="2">HOMBRES · declarado / cupo</th><th class="grp vsep" colspan="2">MUJERES · declarado / cupo</th><th rowspan="2" class="c vsep">Organizaciones</th></tr><tr><th class="c vsep">Cupos</th><th class="c">Suplentes</th><th class="c vsep">Cupos</th><th class="c">Suplentes</th></tr></thead><tbody>'+body+'</tbody></table></div></div>'+
  '<div class="pgn-b toolbar">'+pager(st.page,pages,'c2p')+'</div>';
  return '<div class="page">'+HEAD({t:'Declarado contra cupo',s:'Lo declarado por las delegaciones frente al cupo de cada modalidad.',a:'<button class="btn sec"'+GO('c4')+'>'+ICO_DL+'Exportar</button>',tab:'c2'})+
- KPIS('Resumen',[['Combinaciones mostradas',fmt(l.length)],['Deportes',DEPS.length],['Delegaciones',DELN.length]])+
+ KPIS('Resumen',[['Combinaciones mostradas',fmt(l.length)],['Deportes',DEPS.length],['Delegaciones',DELN.length,'<span>'+DELTXT+'</span>']])+
  CARD('Filtros y convenciones',fl)+
  '<div class="callout">Las cantidades declaradas aún no existen en los datos: son <b>de ejemplo</b>. Combinaciones, cupos y número de organizaciones son reales.</div>'+
  CARD('Declarado contra cupo por modalidad',tbl,{out:1})+'</div>'}
 
-/* C3: 33 delegaciones reales; estado y avance de ejemplo */
-function c3Data(){return DELN.map(function(n,i){var k=(i*7+3)%10,e=k>=7?'Completo':(k>=3?'Parcial':'Sin declarar');return [n,e,e==='Completo'?100:(e==='Parcial'?20+((i*13)%70):0),PROF[i].nm,i]})}
+/* C3: delegaciones reales; estado y avance de ejemplo (la habilitada no cuenta en el avance) */
+function c3Data(){return DELN.map(function(n,i){if(isHab(i))return [n,ESTH,0,0,i];var k=(i*7+3)%10,e=k>=7?'Completo':(k>=3?'Parcial':'Sin declarar');return [n,e,e==='Completo'?100:(e==='Parcial'?20+((i*13)%70):0),PROF[i].nm,i]})}
 function c3Ahora(){
- var st=S.c3,DEL=c3Data(),list=DEL.filter(function(d){return st.f==='Todas'||d[1]===st.f});
- var avg=Math.round(DEL.reduce(function(a,d){return a+d[2]},0)/DEL.length);
+ var st=S.c3,DEL=c3Data(),CI=DEL.filter(function(d){return !isHab(d[4])}),list=DEL.filter(function(d){return st.f==='Todas'||d[1]===st.f||(st.f==='Habilitada'&&isHab(d[4]))});
+ var avg=Math.round(CI.reduce(function(a,d){return a+d[2]},0)/CI.length);
  var cnt=function(k){return DEL.filter(function(d){return d[1]===k}).length};
- var bd=function(k){return k==='Completo'?'ok':(k==='Parcial'?'warn':'')};
+ var bd=function(k){return k==='Completo'?'ok':(k==='Parcial'||k===ESTH?'warn':'')};
  var rows=list.map(function(d){var sent=st.sent[d[4]];
-  return '<tr><td><b>'+esc(d[0])+'</b></td><td><span class="badge '+bd(d[1])+'">'+d[1]+'</span></td><td style="width:220px"><b>'+d[2]+'%</b><span class="mini"><i class="'+(d[2]===100?'ok':'warn')+'" style="width:'+d[2]+'%"></i></span></td><td class="c">'+d[3]+'</td><td class="td-rec">'+(d[1]==='Completo'?'<span class="pager-note">—</span>':'<button class="btn sec sm btn-rec" data-a="c3r:'+d[4]+'"'+(sent?' disabled':'')+'>'+(sent?'Recordatorio enviado':'Recordar')+'</button>')+'</td></tr>'}).join('');
+  return '<tr><td><b>'+esc(d[0])+'</b></td><td><span class="badge '+bd(d[1])+'">'+d[1]+'</span></td><td style="width:220px">'+(isHab(d[4])?'<span class="pager-note">—</span>':'<b>'+d[2]+'%</b><span class="mini"><i class="'+(d[2]===100?'ok':'warn')+'" style="width:'+d[2]+'%"></i></span>')+'</td><td class="c">'+d[3]+'</td><td class="td-rec">'+(isHab(d[4])?'<span class="pager-note">Sin correo registrado</span>':d[1]==='Completo'?'<span class="pager-note">—</span>':'<button class="btn sec sm btn-rec" data-a="c3r:'+d[4]+'"'+(sent?' disabled':'')+'>'+(sent?'Recordatorio enviado':'Recordar')+'</button>')+'</td></tr>'}).join('');
  var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th>Delegación (real)</th><th>Estado</th><th>Avance</th><th class="c">Modalidades en el insumo (real)</th><th class="th-rec">Recordar</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
- '<p class="pager-note">Las 33 delegaciones y sus modalidades son reales; el estado y el porcentaje son de ejemplo. «Recordar» solo cambia el botón en esta maqueta.</p>';
- return '<div class="page">'+HEAD({t:'Quién falta por declarar',s:'Estado de cada delegación mientras la ventana de inscripción numérica está abierta.',tab:'c3'})+
- KPIS('Avance de las delegaciones',[['Avance global',avg+'%','',avg],['Completo',cnt('Completo'),'<span>delegaciones</span>'],['Parcial',cnt('Parcial'),'<span>delegaciones</span>'],['Sin declarar',cnt('Sin declarar'),'<span>delegaciones</span>']])+
- CARD('Filtro por estado','<div class="toolbar"><div class="seg">'+['Todas','Sin declarar','Parcial','Completo'].map(function(f){return '<button data-a="c3f:'+f+'" class="'+(st.f===f?'on':'')+'">'+f+'</button>'}).join('')+'</div></div>')+
+ '<p class="pager-note">Las '+DELN.length+' delegaciones ('+DELTXT+') y sus modalidades son reales; el estado y el porcentaje de las '+NCON+' con intención son de ejemplo. VICHADA no hizo la intención y se deja habilitada de forma preventiva. «Recordar» solo cambia el botón en esta maqueta.</p>';
+ return '<div class="page">'+HEAD({t:'Quién falta por declarar',s:'Estado de cada delegación mientras la ventana de inscripción numérica está abierta (presunta apertura 01-03-2027, cierra 30-03-2027).',tab:'c3'})+
+ KPIS('Avance de las delegaciones',[['Avance global',avg+'%','',avg],['Completo',cnt('Completo'),'<span>delegaciones</span>'],['Parcial',cnt('Parcial'),'<span>delegaciones</span>'],['Sin declarar',cnt('Sin declarar'),'<span>delegaciones</span>'],['Habilitada',HAB.length,'<span>preventivamente</span>']])+
+ CARD('Filtro por estado','<div class="toolbar"><div class="seg">'+['Todas','Sin declarar','Parcial','Completo','Habilitada'].map(function(f){return '<button data-a="c3f:'+f+'" class="'+(st.f===f?'on':'')+'">'+f+'</button>'}).join('')+'</div></div>')+
  CARD('Delegaciones',tbl,{out:1,a:'<span class="ini-b inf">'+list.length+' de '+DEL.length+'</span>'})+'</div>'}
 
 /* C4 */
@@ -505,7 +518,7 @@ function c4Ahora(){
  var fl='<div class="toolbar"><div class="seg"><button data-a="fv:bySport" class="'+(f.view==='bySport'?'on':'')+'">Por deporte</button><button data-a="fv:byOrg" class="'+(f.view==='byOrg'?'on':'')+'">Por organización</button></div>'+
  '<label class="sel">Deporte <select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label class="sel">Género <select data-a="fg">'+sexOpts(f.sexo)+'</select></label><label class="sel">Organización <select data-a="fo">'+optsI(DELN,f.org,'Todas')+'</select></label></div>';
  var vp='<div style="display:flex;gap:6px;flex-wrap:wrap">'+chips+'</div>'+
- '<div><b>'+fmt(rows.length)+' filas</b> · 12 columnas, incluidas las nuevas de cupos y suplentes. Vista previa de las primeras 5:</div>'+
+ '<div><b>'+fmt(rows.length)+' filas</b> · 12 columnas, incluidas las de cupos y suplentes. Se descarga un archivo de Excel (.xlsx) con la hoja «Membrete» y la hoja «Consolidado». Vista previa de las primeras 5:</div>'+
  (rows.length?prevTable(rows):'<div class="nores">Ningún dato coincide con los filtros.</div>')+
  '<div class="toolbar"><button class="btn pri sm" data-a="c4d"'+(rows.length?'':' disabled')+'>'+ICO_DL+'Descargar</button><button class="lk" data-go="c5">Ver el reporte consolidado</button></div>'+
  (st.done?'<div><b>'+esc(st.done)+'</b></div>':'');
@@ -522,12 +535,12 @@ function c5Ahora(){
  var tb=part.map(function(r,i){return '<tr><td class="rn">'+(a+i+2)+'</td>'+rowCells(r).map(function(v,j){return '<td'+((j>=4&&j<=8)?' class="r"':'')+(j===0||j===8?' title="'+esc(v==null?'':v)+'"':'')+'>'+(j===0||j===8?'<div class="td-t">'+(v==null?'—':esc(v))+'</div>':(v==null?'—':esc(v)))+'</td>'}).join('')+'</tr>'}).join('');
  var sh='<div class="sheet"><div class="mb" role="img" aria-label="Membrete oficial: XXIII Juegos Deportivos Nacionales 2027"></div><div class="sheet-t"><b>REPORTE CONSOLIDADO DE INSCRIPCIÓN NUMÉRICA</b><span>XXIII Juegos deportivos nacionales · Córdoba – Sucre 2027</span></div>'+
  '<div class="sc"><div class="xl scr" tabindex="0" role="region" aria-label="Tabla con desplazamiento horizontal"><table><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div></div></div>'+
- '<div class="tab-x"><span>Consolidado</span></div>'+
+ '<div class="tab-x"><span>Membrete</span><span class="on">Consolidado</span></div>'+
  '<p class="pager-note">Una fila por delegación × deporte × modalidad × sexo. Volumen real del insumo: '+fmt(ALL.length)+' filas (aquí se ven '+PG5+' por página).</p>'+
  '<div class="toolbar">'+pager(st.page,pages,'c5p')+'<span class="pager-note">Filas '+fmt(a+1)+' a '+fmt(a+part.length)+' de '+fmt(ALL.length)+'</span></div>'+
- '<p class="pager-note">Correo Electrónico: el real de la hoja original (uno por delegación). El Rol es el del insumo. Al descargar, el archivo lleva el membrete en las primeras filas.</p>';
+ '<p class="pager-note">Correo electrónico: el real de la hoja original (uno por delegación). Rol registrador: Gestor o Auxiliar; el insumo solo trae Gestor. Fecha de registro: es la de la intención en deportes y modalidades (2026), anterior a la ventana de inscripción numérica. VICHADA no tiene filas: está habilitada preventivamente. Al descargar, el Excel trae la hoja «Membrete» y luego la hoja «Consolidado».</p>';
  return '<div class="page">'+HEAD({t:'Reporte consolidado de inscripción numérica',s:'Vista previa de la hoja de Excel. Filas reales del insumo; cupos de la hoja de reglas.',a:'<button class="btn pri" data-a="c5d">'+ICO_DL+'Descargar Excel</button>',back:1})+
- KPIS('Resumen del reporte',[['Filas del insumo',fmt(ALL.length)],['Columnas',12],['Delegaciones',DELN.length],['Filas por página',PG5]])+
+ KPIS('Resumen del reporte',[['Filas del insumo',fmt(ALL.length)],['Columnas',12],['Delegaciones',DELN.length,'<span>'+DELTXT+'</span>'],['Filas por página',PG5]])+
  CARD('Vista previa de la hoja',sh,{a:'<span class="ini-b inf">Página '+st.page+' de '+pages+'</span>'})+'</div>'}
 
 /* C6: tablero (dibujado con HTML y SVG; cifras de las capturas y de ejemplo) */
@@ -565,7 +578,7 @@ function ringCard(t,pct,col,lbl,foot){var C=2*Math.PI*78,d=Math.min(pct,100)/100
 function donut(segs,cx,cy,r,sw,gap){var C=2*Math.PI*r,acc=0,g='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#eef0f6" stroke-width="'+sw+'"/>';
  segs.forEach(function(s){var l=Math.max(0,s.p/100*C-gap);g+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+s.c+'" stroke-width="'+sw+'" stroke-dasharray="'+l+' '+C+'" stroke-dashoffset="'+(-acc/100*C)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';acc+=s.p});return g}
 /* Modelo de ejemplo del tablero: determinista, con pesos por grupo, deporte y departamento.
-   Solo «Delegaciones Registradas» es real (cuenta delegaciones del consolidado). */
+   Solo «Delegaciones Registradas» es real (delegaciones del consolidado). */
 var TIPOS=['Individual','De conjunto'],CONJ=['Baloncesto','Balonmano','Béisbol','Fútbol','Fútbol Salón','Rugby 7','Softbol','Voleibol','Porrismo (exhibición)'];
 function tipoDe(d){return CONJ.indexOf(d)>-1?'De conjunto':'Individual'}
 var PERS=[['Todo el tiempo',1],['Últimos 90 días',0.45],['Últimos 30 días',0.18],['Últimos 7 días',0.04]];
@@ -575,7 +588,7 @@ var GCOL=['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f59e0b','#ef4444','#84cc16',
 function hsh(x){var h=0;for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))%100003;return h}
 var SW={},SWT=0,SOFF={};DEPS.forEach(function(d){SW[d]=1+hsh(d)%7;SWT+=SW[d];SOFF[d]=(hsh('g'+d)%21-10)/100});
 (function(){var m=0;DEPS.forEach(function(d){m+=SOFF[d]*SW[d]/SWT});DEPS.forEach(function(d){SOFF[d]-=m})})();
-var DWN=(function(){var w=DELN.map(function(n){return 1+hsh(n)%7}),t=w.reduce(function(a,b){return a+b},0);return w.map(function(x){return x/t})})();
+var DWN=(function(){var w=DELN.map(function(n,i){return isHab(i)?0:1+hsh(n)%7}),t=w.reduce(function(a,b){return a+b},0);return w.map(function(x){return x/t})})();
 var H0=371420,M0=271708;
 function pc(x){return x.toFixed(1).replace('.',',')}
 function nice(x){if(x<=40)return 40;var p=Math.pow(10,Math.floor(Math.log(x)/Math.LN10)),m=[1,2,4,8,10],i=0;while(m[i]*p<x)i++;return m[i]*p}
@@ -598,7 +611,8 @@ function modelo(a){
  var sh=c6Vacio(a)?H0/(H0+M0):Math.max(0.35,Math.min(0.8,H0/(H0+M0)+off)),H=c6Vacio(a)?H0:Math.round(dep*sh),M=c6Vacio(a)?M0:dep-H;
  var vac=c6Vacio(a),j=vac?0:(hsh(JSON.stringify(a))%31-15),sq=Math.sqrt(F);
  var meta=vac?589560:Math.round(589560*F*(1+j/100)),mun=vac?1142:(F>0?Math.max(1,Math.round(1142*sq)):0),mmeta=vac?1073:Math.round(1073*sq*(1+j/100));
- return {a:a,dels:dels,F:F,gv:gv,sel:sel,tot:tot,dep:dep,apoyo:gv[1],pre:Math.round(158776*F*gsum/GWT),H:H,M:M,
+ var hab=(a.tipo||a.dpt)?0:idx.filter(isHab).length;
+ return {a:a,dels:dels,hab:hab,F:F,gv:gv,sel:sel,tot:tot,dep:dep,apoyo:gv[1],pre:Math.round(158776*F*gsum/GWT),H:H,M:M,
   rp:meta?Math.round(dep/meta*100):0,meta:meta,mun:mun,mmeta:mmeta,mp:mmeta?Math.round(mun/mmeta*100):0,
   seed:vac?7:7+hsh(JSON.stringify(a))%89,cf:dep/GW[0]}}
 function dFil(){
@@ -618,20 +632,21 @@ function dFil(){
  return '<div class="dfil">'+h+'</div>'}
 function distCard(m){
  var segs=[],leg='',k=m.gv[0]+m.gv[1];
- /* Solo Deportistas y Personal de Apoyo tienen cifra; los otros seis grupos no tienen fuente. */
+ /* Solo Deportistas y Personal de Apoyo tienen cifra; los demás grupos no tienen fase numérica. */
  GRUPOS.forEach(function(x,i){
-  if(i>1){leg+='<span class="nd"><i></i>'+x+' <b>sin dato</b></span>';return}
-  if(!m.gv[i]||!k)return;var p=m.gv[i]/k*100;segs.push({p:p,c:GCOL[i]});leg+='<span><i style="background:'+GCOL[i]+'"></i>'+x+' '+fmt(m.gv[i])+' ('+pc(p)+'%)</span>'});
+  if(i>1){leg+='<span class="nd"><i></i>'+x+' <b>sin dato'+(i<7?' · sin fase numérica':'')+'</b></span>';return}
+  if(!m.gv[i]||!k)return;var p=m.gv[i]/k*100;segs.push({p:p,c:GCOL[i]});leg+='<span><i style="background:'+GCOL[i]+'"></i>'+x+(i===1?' (desde Lista larga)':'')+' '+fmt(m.gv[i])+' ('+pc(p)+'%)</span>'});
  return '<div class="dc" data-t="dist"><div class="dcn"><div class="dh">Distribución de Usuarios</div><span class="tot">TOTAL CON DATO: '+fmt(k)+'</span></div>'+EX()+'<div class="leg">'+leg+'</div><svg viewBox="0 0 240 200" style="max-height:230px" role="img" aria-label="Distribución de usuarios por grupo de inscripción">'+donut(segs,120,100,70,16,segs.length>1?3:0)+'</svg></div>'}
 function dashboard(){
  var m=modelo(S.c6.ap);
- var kpi=function(t,v,p,fg,bg,dt,real){return '<div class="dk" data-t="'+dt+'"><div><small>'+t+'</small><b>'+v+'</b>'+(real?'<span class="exl real">Dato real (consolidado)</span>':EX())+'</div>'+ic(p,fg,bg)+'</div>'};
+ var kpi=function(t,v,p,fg,bg,dt,real,sub){return '<div class="dk" data-t="'+dt+'"><div><small>'+t+'</small><b>'+v+'</b>'+(sub?'<span class="dsub">'+sub+'</span>':'')+(real?'<span class="exl real">Dato real (consolidado)</span>':EX())+'</div>'+ic(p,fg,bg)+'</div>'};
  var out='<div class="dsh"><section class="ini-card"><div class="dtop"><div><h2>Inscripciones</h2><p class="sb">Gestión de delegaciones, deportistas y personal de apoyo</p></div><div><small>ÚLTIMA ACTUALIZACIÓN</small><b style="font-size:14px">Hace 15 minutos</b></div></div></section>'+dFil();
+ out+='<p class="callout" data-t="grupos-nota">Prensa, Voluntarios, Federaciones, Comités y Proveedores no tienen fase numérica: se inscriben en la convocatoria o en la inscripción nominal (30-09-2027), por eso aparecen «sin dato». Personal de Apoyo entra desde la Lista larga (30-05-2027). El tablero queda listo para todos los grupos.</p>';
  out+='<div class="dkp" data-t="kpis">'+
-  kpi('Delegaciones Registradas',fmt(m.dels),IC.bank,'#2563eb','#eaf0ff','kpi-del',1)+
+  kpi('Delegaciones Registradas',fmt(m.dels+m.hab),IC.bank,'#2563eb','#eaf0ff','kpi-del',1,m.dels+' con intención'+(m.hab?' + '+m.hab+' habilitada'+(m.hab>1?'s':''):''))+
   kpi('Deportistas Registrados',fmt(m.dep),IC.people,'#0f9d6b','#e6f7ef','kpi-dep')+
-  kpi('Personal de Apoyo Registrado',fmt(m.apoyo),IC.sup,'#7c3aed','#f1eafe','kpi-apoyo')+
-  kpi('Preinscripciones',fmt(m.pre),IC.clip,'#e11d48','#fdecef','kpi-pre')+'</div>';
+  kpi('Personal de Apoyo Registrado',fmt(m.apoyo),IC.sup,'#7c3aed','#f1eafe','kpi-apoyo',0,'Entra desde Lista larga')+
+  kpi('Intenciones registradas',fmt(m.pre),IC.clip,'#e11d48','#fdecef','kpi-pre')+'</div>';
  var dp=m.dep||1,ymax=nice(100000*m.cf),avg=Math.round(5024*m.cf);
  out+='<div class="dkp g2"><div class="dc" data-t="gen-cant"><div class="dh">Cantidades de inscritos por género</div><p class="sbt">Deportistas registrados por género</p>'+EX()+
   '<div class="gbar"><b>Hombres</b><span class="tr"><i style="width:'+(m.H/dp*100).toFixed(1)+'%;background:#3b82f6"></i></span><b>'+fmt(m.H)+'</b></div>'+
@@ -643,9 +658,8 @@ function dashboard(){
 function c6Ahora(){
  var done=CHK.filter(function(_,i){return S.c6.chk[i]}).length;
  var items=CHK.map(function(c,i){return '<label class="chk"><input type="checkbox" data-a="c6c:'+i+'"'+(S.c6.chk[i]?' checked':'')+'><span>'+c[1]+'<span class="hu">HU-IN-'+c[0]+'</span></span></label>'}).join('');
- return '<div class="page c6-wip">'+HEAD({t:'Tablero de inscripciones',s:'Cifras de la inscripción por delegación, deporte y género.',tab:'c6'})+
- '<div class="mq" role="status" aria-label="En proceso: datos pendientes"><div class="mq-t" aria-hidden="true">'+new Array(8).join('<span>En proceso · Datos pendientes</span>')+new Array(8).join('<span>En proceso · Datos pendientes</span>')+'</div></div>'+
- (window.parent!==window?'':'<div class="dnote">Este es el diseño del cambio: el tablero real vive en un dashboard externo, no en este repo. Las cifras son de ejemplo (derivadas por un modelo simple y determinista); solo «Delegaciones Registradas» (33 sin filtros) es real.</div>')+dashboard()+
+ return '<div class="page">'+HEAD({t:'Tablero de inscripciones',s:'Cifras de la inscripción por delegación, deporte y género.',tab:'c6'})+
+ (window.parent!==window?'':'<div class="dnote">Este es el diseño del cambio: el tablero real vive en un dashboard externo, no en este repo. Las cifras son de ejemplo (derivadas por un modelo simple y determinista); solo «Delegaciones Registradas» ('+DELN.length+' sin filtros: '+DELTXT+') es real.</div>')+dashboard()+
  '<p class="callout" data-t="retirado">Retirado: el indicador y el gráfico de «Instituciones» y el indicador y el gráfico de «Regionales». El filtro de región se queda (HU-IN-13).</p>'+
  CARD('Cambios respecto del tablero actual','<div>'+items+'</div>',{s:'Listado para quien mantiene el dashboard externo. Avance: <b>'+done+' de '+CHK.length+'</b>.',a:'<span class="ini-b inf">'+done+' de '+CHK.length+'</span>'})+
  CARD('Membrete oficial en las descargas','<div class="mem"><b>Membrete oficial (referencia: certificado de la fase anterior)</b><div class="mb" role="img" aria-label="Membrete del certificado: XXIII Juegos Deportivos Nacionales 2027"></div>'+
@@ -707,9 +721,9 @@ document.addEventListener('click',function(e){
  else if(a0==='c3r'){S.c3.sent[a1]=true;draw('c3')}
  else if(a0==='c4m'){S.c4.menu=!S.c4.menu;draw('c4')}
  else if(a0==='c4x'){S.c4.mode=a1;S.c4.menu=false;S.c4.done='';draw('c4')}
- else if(a0==='c4d'){var rows=c4Rows(),fl=S.f.sport||S.f.sexo||S.f.org!=='',nm='consolidado-intenciones'+(S.c4.mode==='completo'?'-completo':(fl?'-filtrado':''))+'.csv';
-  download(nm,toCsv(rows,'Consolidado de intenciones'));S.c4.done='Descargado '+nm+' · '+fmt(rows.length)+' filas · 12 columnas';draw('c4');toast(S.c4.done)}
- else if(a0==='c5d'){download('reporte-consolidado-inscripcion-numerica.csv',toCsv(ALL,'Reporte consolidado de inscripción numérica'));toast('Descargado el reporte completo: '+fmt(ALL.length)+' filas · 12 columnas')}
+ else if(a0==='c4d'){var rows=c4Rows(),full=S.c4.mode==='completo',fl=S.f.sport||S.f.sexo||S.f.org!=='',bs='consolidado-intenciones'+(full?'-completo':(fl?'-filtrado':''));
+  exportar(rows,'Consolidado de intenciones',bs,full?'Alcance: reporte completo, sin filtros':'Filtros: '+filtTxt(),function(nm){S.c4.done='Descargado '+nm+' · '+fmt(rows.length)+' filas · 12 columnas';draw('c4');toast(S.c4.done)})}
+ else if(a0==='c5d'){exportar(ALL,'Reporte consolidado de inscripción numérica','reporte-consolidado-inscripcion-numerica','Alcance: reporte completo, sin filtros',function(nm){toast('Descargado '+nm+': '+fmt(ALL.length)+' filas · 12 columnas')})}
  else if(a0==='c6gm'){S.c6.gm=!S.c6.gm;draw('c6')}
  else if(a0==='c6ga'){GRUPOS.forEach(function(_,i){S.c6.g[i]=true});draw('c6')}
  else if(a0==='c6gc'){S.c6.g={};draw('c6')}
@@ -810,9 +824,9 @@ mountTour({
  'HU-IN-14':{rol:'Comité organizador',title:'Reporte consolidado de inscripción numérica',
   purpose:'Como comité organizador, quiero descargar un reporte consolidado de lo declarado por todas las delegaciones, para hacer seguimiento y soportar la planeación del evento.',
   steps:[
-   {board:'c5',sel:'#c5 .xl thead',body:'El reporte tiene <b>exactamente doce columnas</b>, de Delegación a Correo Electrónico, tomadas del reporte propuesto por Daniel.'},
+   {board:'c5',sel:'#c5 .xl thead',body:'El reporte tiene <b>exactamente doce columnas</b>, de Delegación a Correo electrónico, tomadas del reporte propuesto por Daniel: Delegación, Deporte, Modalidad, Sexo, cupos y suplentes por género, Cupos Mixtos, Fecha de registro, Rol registrador y Correo electrónico.'},
    {board:'c5',sel:'#c5 .pager-note',body:'Una fila por combinación <b>delegación × deporte × modalidad × sexo</b>. El insumo actual suma 3.916 filas.'},
-   {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Se descarga en <b>Excel</b>. En la maqueta el botón genera un CSV real (UTF-8, separado por «;») con las doce columnas, que Excel abre directo.'}
+   {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Se descarga en <b>Excel</b>. El botón genera un <b>.xlsx real</b> con la hoja «Membrete» y la hoja «Consolidado» (doce columnas); si no puede cargar el generador, descarga un CSV con aviso.'}
   ]},
  'HU-IN-15':{rol:'Comité organizador',title:'Exportación desde el consolidado',
   purpose:'Como comité organizador, quiero exportar lo que estoy viendo en el consolidado con los filtros aplicados, para trabajar sobre el corte que me interesa.',

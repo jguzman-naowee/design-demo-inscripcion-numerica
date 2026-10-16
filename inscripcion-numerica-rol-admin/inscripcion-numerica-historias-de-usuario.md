@@ -114,3 +114,11 @@
 **Adjuntos/referencias:** Ninguno en la hoja. Base: HU-IN-01 y HU-IN-03.
 
 **Nota:** Propuesta del equipo de diseño. Validada por Jorge Guzmán el 9-oct-2026.
+
+### Decisiones del 16-oct-2026 · D14 (respuestas de Daniel, negocio)
+
+- **D14.1 · Pruebas fuera de esta fase:** la inscripción numérica es solo Deporte + Modalidad + Género. A1 pierde la columna «Matriz», los KPI de pruebas casadas y el filtro de parametrización; los topes por prueba se ocultan (criterios reescritos). Se mantienen cupos y suplentes por modalidad y género y los topes por delegación y por género por deporte. Las etiquetas «según matriz» pasan a «según instructivo».
+- **D14.2 · Ventana y etapas (A5):** valores por defecto `abre 2027-03-01T08:00`, `cierra 2027-03-30T23:59`, `hoy 2027-03-15T12:00` en `localStorage['naowee-inscnum-ventana']` (el valor de `hoy` ahora lleva hora). Rótulo «Fechas de ejemplo»; la apertura es «presunta, sin confirmación oficial». La card pasa a «Intención de participación en deportes y modalidades · Cerrada · 30-08-2026 · 23:59». Etapas: intención de participación (30-08-2025), intención en deportes y modalidades (30-08-2026), inscripción numérica (cierra 30-03-2027), lista larga (30-05-2027), nominal (30-09-2027). Fuera de la ventana nadie cambia nada en la plataforma.
+- **D14.3 · Mixtos (A4):** solo Ecuestre es mixto abierto (se habilita Mixto en sus tres modalidades, sin composición fija). Las demás modalidades con Mixto son pruebas mixtas con especificaciones del instructivo: card informativa con el cupo mixto de la hoja, sin alerta «sin composición», sin editor y sin chips en A1.
+- **D14.4 · Cambios a mitad de fase (A6):** si el cupo baja con declaraciones, se recalcula, se avisa a las delegaciones afectadas y se registra (quién, cuándo, antes → después, cuántas delegaciones). Se muestra en la confirmación, en el resultado y en el registro. El encargado departamental solo cambia dentro de la ventana; fuera, solo un cambio extraordinario autorizado por el comité.
+- **D14.5 · 34 delegaciones:** el universo es 34 (33 con intención en deportes y modalidades + Vichada, habilitada de forma preventiva por un posible permiso extraordinario). Sustituye a D12. Las «afectadas» salen de las declaraciones y no dependen de si el consolidado trae 33 o 34.

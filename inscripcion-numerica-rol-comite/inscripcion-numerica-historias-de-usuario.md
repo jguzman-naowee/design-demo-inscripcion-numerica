@@ -154,10 +154,21 @@ Hallazgos del código de `suite-web-v2` (verificados):
 - **D7 · Propuestas P01 a P09:** validadas por Jorge Guzmán.
 - **D8 · Equivalencias de nombres V3 → hoja/matriz:** renombres (Esgrima Espada/Florete/Sable → «Única», con el 12 + 3 sumado entre las tres armas; Arquería → Tiro con Arco; Fútbol Salón → Fútbol de Salón; Rugby 7 → Rugby Siete; Tenis Mesa → Tenis de Mesa; SUP Racing → SUP Race) y agrupaciones (Vela Bote, Vela Tabla, Cheer, Performance Cheer, Skateboarding): la fila usa el mayor cupo documentado del grupo y un tooltip lista las modalidades y sus cupos. Filas sin regla por nombre: 0; las 9 filas de Atlántico con un género no habilitado siguen deshabilitadas.
 - **D9 · Intenciones posteriores al 30-08:** las fechas hasta el 01-09-2026 son válidas (casos excepcionales); no se marcan ni se filtran.
-- **D10 · Hero:** las etapas quedan como están y la actual es «Inscripción numérica». Las fechas de la ventana son de ejemplo y se rotulan así.
+- **D10 · Hero (reemplazada por D14.4):** las etapas quedan como están y la actual es «Inscripción numérica». Las fechas de la ventana son de ejemplo y se rotulan así.
 - **D11 · Rol auxiliar:** captura pero no confirma; la grilla arranca vacía.
-- **D12 · Delegaciones:** se usan las 33 de la hoja. El acta menciona 34: queda como diferencia sin resolver.
+- **D12 · Delegaciones (reemplazada por D14.1):** se usan las 33 de la hoja. El acta menciona 34: queda como diferencia sin resolver.
 - Tablero (D6): la tabla delegación → región vive en `shared/datos-consolidado.js` (`regiones`), con el criterio y los casos de borde (Antioquia → Andina; Cauca y Nariño → Pacífica; Guainía y Guaviare → Amazonía).
+
+### Decisiones del 16-oct-2026 (respuesta de Daniel, negocio)
+
+- **D14 · Aplicación de las respuestas de Daniel en el comité:**
+  1. **34 delegaciones** (32 departamentos + Bogotá D.C. + Federación Deportiva Militar). Se agrega VICHADA al consolidado sin filas ni correo: «Sin intención · habilitada preventivamente» (no hizo la intención; posible permiso extraordinario del comité). Se muestra «34 · 33 con intención + 1 habilitada» en C1, C2, C3, C5 y el tablero; el tablero suma la habilitada solo según región y departamento. Vichada no entra en el avance global ni en «Sin declarar», y no tiene «Recordar» (sin correo).
+  2. **Pruebas fuera de esta fase:** la unidad es deporte + modalidad + género; «Varía por prueba» pasa a «Varía según la modalidad». No había columna de matriz en C1/C2.
+  3. **Reporte en Excel real** (.xlsx con SheetJS 0.18.5 desde cdnjs, carga perezosa; si falla, CSV con aviso). Doce columnas: Delegación, Deporte, Modalidad, Sexo, Cupos Masculinos, Suplentes Masculinos, Cupos Femeninos, Suplentes Femeninos, Cupos Mixtos, Fecha de registro, Rol registrador, Correo electrónico. Hoja inicial «Membrete» y hoja «Consolidado». C4 respeta los filtros; C5 es siempre el reporte completo. «Rol registrador» = Gestor o Auxiliar (el insumo solo trae Gestor). «Fecha de registro» es la de la intención (2026).
+  4. **Etapas oficiales:** Intención de participación (cerró 30-08-2025), Intención en deportes y modalidades (cerró 30-08-2026), Inscripción numérica (presunta apertura 01-03-2027, cierra 30-03-2027), Lista larga (30-05-2027), Nominal (30-09-2027). Se retira «Preinscripción de delegaciones». El indicador del tablero «Preinscripciones» pasa a «Intenciones registradas» (solo rótulo; cifra de ejemplo).
+  5. **Tablero C6:** Prensa, Voluntarios, Federaciones, Comités y Proveedores no tienen fase numérica (se inscriben en convocatoria o nominal) y Personal de Apoyo entra desde Lista larga. Se mantiene «sin dato» con el motivo y el indicador «Personal de Apoyo Registrado». Se quita la franja «En proceso · Datos pendientes» y el atenuado en gris: el tablero se ve a color y con los filtros activos.
+  6. **Edad:** nada que mostrar (aplica desde lista larga).
+- Las menciones de «matriz» en D2, D3 y D8 son decisiones históricas sobre la precedencia de fuentes y se conservan.
 
 ## Historias propuestas (validadas por Jorge Guzmán, 9-oct-2026)
 
