@@ -19,7 +19,7 @@
 **Criterios de aceptación:**
 
 - La grilla lista únicamente las combinaciones deporte + modalidad + género que la delegación declaró en la intención de participación.
-- Volumen de referencia del insumo: 3.916 combinaciones, 33 delegaciones, 40 deportes, 68 modalidades declaradas.
+- Volumen de referencia del insumo: 3.467 combinaciones (3.916 antes de D19), 33 delegaciones, 40 deportes, 68 modalidades declaradas.
 - La delegación solo ve y edita lo suyo
 
 **Adjuntos/referencias:** Levantamiento Inscripción Numérica.docx (mockup a mano) · Inscripción_Numérica_V3.xlsx
@@ -32,7 +32,7 @@
 
 **Criterios de aceptación:**
 
-- Por cada fila habilitada el sistema permite capturar: cantidad de atletas y cantidad de suplentes, diferenciadas por género (MASC / FEM) y, cuando aplique, para la composición mixta.
+- Por cada fila habilitada el sistema permite capturar: cantidad de atletas y cantidad de suplentes, diferenciadas por género (MASC / FEM) ~~y, cuando aplique, para la composición mixta~~ (**reemplazado por D19**: donde la hoja trae cupo mixto no hay columna mixta; se capturan hombres y mujeres y el límite es la suma de ambos).
 - Cada valor se valida contra el cupo parametrizado de esa combinación (ver HU-IN-09).
 
 **Adjuntos/referencias:** Inscripción_Numérica_V3.xlsx · DEPORTES MODALIDADES JN 2027.xlsx
@@ -87,7 +87,7 @@
 
 - Mismo formato del certificado de la fase anterior, añadiendo las columnas del reporte propuesto (textual del documento guía).
 - Estructura confirmada del certificado anterior: encabezado «XXIII Juegos deportivos nacionales / Córdoba – Sucre 2027»; «Informe generado el DD-MM-AAAA»; «Fecha de cierre de inscripción...: DD-MM-AAAA»; numeración «Pág X de Y»; título del reporte; «DELEGACIÓN: <nombre>»; párrafo de declaración; tabla Deporte · Modalidad · Género · Fecha de intención; y «Fecha de última actualización...».
-- Al certificado se le agregan las columnas: Cupos MASC · Suplentes MASC · Cupos FEM · Suplentes FEM · Cupos mixtos.
+- Al certificado se le agregan las columnas: Cupos MASC · Suplentes MASC · Cupos FEM · Suplentes FEM · Cupos mixtos (D19: esta última solo se llena en Ecuestre).
 - Sale en PDF, una delegación por documento.
 - Se habilita al terminar la fase; se puede descargar las veces que se quiera y es siempre el mismo (D17).
 
@@ -98,8 +98,8 @@
 - HU-IN-06 remite a «ver HU-IN-09» en su criterio de validación; debe decir HU-IN-07. HU-IN-07 es la validación contra el cupo parametrizado; HU-IN-09 son los topes agregados de la delegación.
 - Certificado (HU-IN-16): el PDF real de la fase anterior pone «Fecha de última actualización…» y «DELEGACIÓN: <nombre>» arriba, y «Informe generado el…», «Fecha de cierre de inscripción…» y «Pág X de Y» al pie. La tabla de cabecera es verde.
 - Género: el certificado y la hoja de declaraciones escriben Hombre / Mujer / Mixto, no MASC / FEM.
-- En la hoja de declaraciones, «Mixto» es un sexo propio de cada fila (como Hombres o Mujeres), no un subtotal.
-- HU-IN-04: Atlántico declaró 40 deportes y 84 modalidades, que son 182 filas (78 Hombres, 76 Mujeres, 28 Mixto). La hoja tiene 33 delegaciones y 3.916 filas, como dice el criterio. Pero el criterio dice 68 modalidades declaradas en total y Atlántico sola declaró 84: hay que revisar cuál es el dato correcto.
+- En la hoja de declaraciones, «Mixto» es un sexo propio de cada fila (como Hombres o Mujeres), no un subtotal. **Reemplazado por D19** salvo en Ecuestre: en las demás modalidades la fila Mixto desaparece de la grilla y se captura como hombres + mujeres.
+- HU-IN-04: Atlántico declaró 40 deportes y 84 modalidades, que son 182 filas (78 Hombres, 76 Mujeres, 28 Mixto). La hoja original tenía 33 delegaciones y 3.916 filas, como dice el criterio (3.467 tras D19). Pero el criterio dice 68 modalidades declaradas en total y Atlántico sola declaró 84: hay que revisar cuál es el dato correcto.
 - La hoja de reglas NO trae mínimos de equipo ni topes por delegación. Los que usa el demo son los que citan HU-IN-08 y HU-IN-09, y quedan «por confirmar». (9-oct-2026: la matriz sí los trae y manda; ver D2/D3.)
 - Conflictos entre la hoja de reglas y las HU (resueltos el 9-oct-2026 con el criterio de D2/D3):
   - Tenis de Campo: hoja 4+1; HU-IN-09 dice «2 atletas por delegación».
@@ -132,7 +132,12 @@
 - **D16 · Etapas y fechas oficiales (HU-IN-P01 y D10):** 1 Intención de participación (cerró 30-08-2025); 2 Intención de participación en deportes y modalidades (cerró 30-08-2026); 3 Inscripción numérica (activa; abre 01-03-2027, presunta y sin confirmación oficial, y cierra 30-03-2027); 4 Inscripción lista larga (hasta 30-05-2027); 5 Inscripción nominal (hasta 30-09-2027). Desaparece «Preinscripción de delegaciones».
 - **D17 · Editar tras confirmar (HU-IN-P02, HU-IN-P03 y HU-IN-16):** el delegado puede modificar su declaración cuantas veces quiera mientras la ventana esté abierta; vale la última versión guardada. Tras confirmar, la grilla queda a la vista con «Modificar declaración» hasta el cierre. Al cierre solo hay lectura, reportes y certificado, salvo un cambio extraordinario autorizado por el comité. El certificado se habilita al terminar la fase, se descarga las veces que se quiera y es siempre el mismo.
 - **D18 · Reporte de avance en Excel real (HU-IN-P10):** «Descargar avance» genera un .xlsx (SheetJS, carga perezosa desde cdnjs, versión 0.18.5) con una hoja «Membrete» y una hoja «Avance». Si la librería no carga, se descarga el CSV anterior con un aviso. Se mantiene la vista previa PDF del borrador con su leyenda. Columnas exactas y en este orden: Delegación, Deporte, Modalidad, Sexo, Cupos Masculinos, Suplentes Masculinos, Cupos Femeninos, Suplentes Femeninos, Cupos Mixtos, Fecha de registro, Rol registrador, Correo electrónico.
-- Numeración: D14 es la que dictó Negocio; D15 a D18 las asignó el equipo de diseño y se pueden renumerar sin tocar el contenido.
+- **D19 · Cupos mixtos como suma de hombres + mujeres (19-oct-2026, Daniel):** la columna «Cupos mixtos» no sirve. En las modalidades cuya fila de hoja trae «Cupos Mixtos» por sus pruebas (todas las que hoy traen género Mixto en la hoja de reglas, **excepto Ecuestre**, que es completamente mixto y conserva el cupo mixto), la grilla muestra Atletas y Suplentes de Hombres y de Mujeres, y el **límite general es la suma de ambas columnas** contra el cupo mixto total de la hoja (atletas con atletas, suplentes con suplentes). Ejemplo: «4 en total · 2 MASC + 2 FEM» → hombres + mujeres ≤ 4. Si la modalidad ya tenía filas Hombres y Mujeres con cupo propio, se mantiene el tope de cada género y además aplica el límite conjunto (vale el menor); si solo existía la fila Mixto, se crean las filas de hombres y mujeres, limitadas solo por la suma. El límite es duro (motor `limOf`/`setV`): al llegar a la suma el valor se limita y se lee «Tope alcanzado: N de N (suma hombres + mujeres)»; el panel «Topes y validaciones» lista «Hombres + Mujeres: val de max». La fila Mixto desaparece de la grilla, de los contadores y de los totales: «Cupos mixtos» en la barra inferior y en el resumen solo cuenta Ecuestre y se oculta cuando es 0. El xlsx de «Descargar avance» mantiene las 12 columnas exactas; «Cupos Mixtos» solo se llena en Ecuestre. **Reemplaza** la parte de cupos mixtos de HU-IN-06 y HU-IN-16, de las notas de revisión («Mixto es un sexo propio de cada fila»), de HU-IN-P01 y de D18.
+  - Interpretación del demo: el límite conjunto sale de `shared/limites-conjuntos.js`, el mismo que parametriza el Admin (A4) y que lee el comité (C1); la grilla ya no lo deriva. Hoy: 15 reglas con límite definido (p. ej. Triatlón Triathlon 4, Natación artística 8 + 2, Cheer 12 + 1; en una agrupación vale el mayor del grupo) y 12 sin definir (Ajedrez ×3, Arquería Compuesto, Atletismo, Bádminton, Billar ×2, Patinaje artístico, Taekwondo, Tenis de Campo y Tenis de Mesa): ahí no se valida un tope conjunto, solo se quita la fila Mixto y cada género conserva su cupo.
+  - Ajedrez (la hoja lo trae con mixto y sin cupo numérico, es decir, sin límite conjunto definido): las filas de Hombres que estaban deshabilitadas por la hoja pasan a habilitarse, con su cupo por género. Ecuestre: sus tres filas Mixto estaban deshabilitadas por no tener regla; se habilitan «sin tope» para que el cupo mixto exista. Ambas lecturas se pueden revertir sin tocar el resto.
+  - Efecto en la grilla: de 182 declaraciones de intención se pasa a 163 filas de captura (se retiran 22 filas Mixto y se crean 3 de hombres o mujeres que no existían).
+- **Membrete (19-oct-2026):** el membrete queda como está (el banner del certificado) y aplica a todas las descargas: certificado, vista previa del avance y hoja «Membrete» del Excel.
+- Numeración: D14 es la que dictó Negocio; D15 a D19 las asignó el equipo de diseño y se pueden renumerar sin tocar el contenido.
 
 ## Historias propuestas (validadas por Jorge Guzmán, 9-oct-2026)
 
@@ -196,7 +201,7 @@
 
 **Criterios de aceptación:**
 
-- Muestra totales de atletas y de suplentes por género (Hombre, Mujer, Mixto).
+- Muestra totales de atletas y de suplentes por género (Hombre, Mujer; Mixto solo aparece cuando es mayor que cero, es decir, con Ecuestre, por D19).
 - Muestra el estado de cada deporte (sin cantidades, con cantidades, con error de validación).
 - Los totales coinciden con la suma de las filas de la grilla (HU-IN-04).
 
@@ -232,7 +237,7 @@
 - El reporte lista por deporte, modalidad y género los atletas y suplentes declarados frente al cupo, con los totales, la delegación, la fecha y hora de generación y el estado «Borrador, sin confirmar».
 - La vista previa en PDF (imprimir o guardar como PDF) conserva el membrete del certificado y la leyenda y marca de agua «BORRADOR — no es el certificado».
 - «Descargar Excel» genera un archivo .xlsx real (D18) con una hoja inicial «Membrete» (evento, título del reporte, leyenda de borrador, delegación, estado, fecha de generación y fecha de cierre) y una hoja «Avance» con una fila por combinación deporte + modalidad + sexo y estas columnas exactas, en este orden: Delegación, Deporte, Modalidad, Sexo, Cupos Masculinos, Suplentes Masculinos, Cupos Femeninos, Suplentes Femeninos, Cupos Mixtos, Fecha de registro, Rol registrador, Correo electrónico.
-- En «Sexo» va Masculino, Femenino o Mixto según la fila; las columnas de los otros géneros y las celdas sin suplentes quedan vacías. «Fecha de registro», «Rol registrador» (Gestor o Auxiliar) y «Correo electrónico» se llenan solo en las filas que alguien registró.
+- En «Sexo» va Masculino, Femenino o Mixto según la fila (Mixto solo en Ecuestre, D19); las columnas de los otros géneros y las celdas sin suplentes quedan vacías. «Fecha de registro», «Rol registrador» (Gestor o Auxiliar) y «Correo electrónico» se llenan solo en las filas que alguien registró.
 - Si la librería del Excel no carga, se descarga el CSV con las mismas filas y un aviso en pantalla.
 - No reemplaza al certificado de HU-IN-16, que solo se descarga al cierre.
 

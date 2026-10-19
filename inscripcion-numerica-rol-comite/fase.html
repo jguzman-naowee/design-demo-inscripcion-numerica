@@ -64,6 +64,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .tbl th.grp{text-align:center;border-bottom:1px solid var(--g-300)}
 .tbl td{padding:12px 10px;border-bottom:1px solid var(--g-200);font-size:14px;vertical-align:middle}
 .tbl td.sub{color:var(--g-700)}
+.mini-n{display:block;font-size:11px;color:var(--g-700);font-weight:400}
 .tbl .vsep{border-left:1px solid var(--g-300)}
 .badge{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--g-100);color:var(--g-700)}
 .badge.info{background:var(--info-100);color:var(--info-700)}
@@ -113,7 +114,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 #pbar button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ptoast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:40;background:#fff;color:#282834;border:1px solid #e8e9f2;border-left:5px solid #28bf2d;border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.14);font-size:14px;max-width:340px}
 /* ---------- Consolidado real (C1), hoja (C5) y tablero (C6) ---------- */
-.cq-h,.rw-h{display:grid;grid-template-columns:24px minmax(100px,1.15fr) minmax(100px,1fr) repeat(4,100px) 190px 144px;align-items:center;column-gap:8px}
+.cq-h,.rw-h{display:grid;grid-template-columns:24px minmax(84px,1.15fr) minmax(84px,1fr) repeat(4,100px) 104px 150px 130px;align-items:center;column-gap:8px}
 .rw-h.nc,.cq-h.nc{grid-template-columns:24px minmax(170px,1.15fr) minmax(170px,1fr) 220px 150px}
 .cq-h{padding:0 38px;margin:6px -20px 0;color:var(--g-700);font-size:12px;font-weight:600}
 /* Cabecera de columnas fija a todo el ancho; la fila abierta fija su título justo debajo. */
@@ -125,7 +126,8 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .cq-h.is-pin::before{background:#e9eaf0}
 .cq-h.is-pin:not(.has-sub)::before,.rw.op>.rw-h.is-pin::before{box-shadow:0 8px 12px -8px rgba(40,40,52,.28)}
 @media(min-width:1160px){.sc>.scr:has(>.hsi),.sc>.scr:has(>.tbl){overflow:visible}}
-.cq-h .sh{text-align:center;font-size:10.5px;white-space:nowrap}.cq-h .sh.m{color:var(--info-700)}.cq-h .sh.f{color:#a3185f}
+.cq-h .sh{text-align:center;font-size:10.5px;white-space:nowrap}.cq-h .sh.m{color:var(--info-700)}.cq-h .sh.f{color:#a3185f}.cq-h .sh.j{color:var(--g-700);white-space:normal;line-height:1.2}
+.cq.cj{font-size:13px;line-height:1.25;padding-inline:4px}
 .rws{display:grid;gap:0;background:#fff}
 .rw{border:0;border-bottom:1px solid var(--g-200);border-radius:0;background:#fff;overflow:clip}.rw:last-child{border-bottom:0}
 .rw-h{width:100%;min-height:58px;padding:8px 18px;background:none;border:0;text-align:left;cursor:pointer;font-size:14px;color:var(--g-900)}
@@ -298,7 +300,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .cq-h+.rws{margin-top:0}
 .page>*,.dsh>*,.dc{min-width:0}
 @media (max-width:640px){
- .hsi{min-width:1080px}.hsi.nc{min-width:810px}
+ .hsi{min-width:1212px}.hsi.nc{min-width:810px}
  .scr>.tbl{min-width:760px}
  .seg{flex-wrap:wrap;border-radius:20px;max-width:100%}
  .sel{max-width:100%;min-width:0}.sel select{min-width:0;max-width:100%}
@@ -331,6 +333,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 
 <script src="../shared/datos-inscnum.js"></script>
 <script src="../shared/datos-consolidado.js"></script>
+<script src="../shared/limites-conjuntos.js?v=0.1.0"></script>
 <script>
 (function(){
 var DATA=window.INSCNUM_DATA,CON=window.INSCNUM_CONSOLIDADO,PG=10,PG5=25;
@@ -343,13 +346,26 @@ var RB={};DATA.reglas.forEach(function(r){RB[r.id]=r});
 var MAPA={};DATA.mapaNombres.forEach(function(m){MAPA[m.deporte+'|'+m.modalidad]=m});
 // Si una combinación agrupa varias reglas con cupos distintos se muestra el rango.
 function pick(rs,f,k){var v=[];rs.forEach(function(r){var x=r[f][k];if(x!=null&&v.indexOf(x)<0)v.push(x)});if(!v.length)return null;if(v.length===1)return v[0];v.sort(function(a,b){return a-b});return v[0]+'–'+v[v.length-1]}
-function mixto(rs){var v=[];rs.forEach(function(r){if(r.mixtaComposicion&&v.indexOf(r.mixtaComposicion)<0)v.push(r.mixtaComposicion)});return v.length===1?v[0]:(v.length?'Varía según la modalidad':null)}
+var LC=window.INSCNUM_LC||{};
+// D19: el límite conjunto H+M sale de shared/limites-conjuntos.js (el mismo que parametriza el Admin); null = sin definir.
+function rango(v){v=v.filter(function(x,i){return v.indexOf(x)===i}).sort(function(a,b){return a-b});return v.length>1?v[0]+'–'+v[v.length-1]:v[0]}
+function conjV(rs){var l=rs.filter(function(r){return LC[r.id]});
+ return l.length?{a:rango(l.map(function(r){return LC[r.id].a})),s:rango(l.map(function(r){return LC[r.id].s}).filter(function(x){return x!=null}))}:{a:null,s:null}}
+function suma(x,y){return x==null&&y==null?null:(x||0)+(y||0)}
+// Ecuestre conserva su cupo mixto propio (no es límite conjunto): se deriva de la hoja como antes.
+function ecu(rs){var l=rs.map(function(r){var t=r.mixtaComposicion||'',a=suma(r.masc.atletas,r.fem.atletas),x=/(\d+)\s*suplentes?/.exec(t),s=x?+x[1]:suma(r.masc.suplentes,r.fem.suplentes);return a==null?null:{a:a,s:s||0}}).filter(Boolean);
+ if(!l.length)return null;var a=rango(l.map(function(x){return x.a})),s=rango(l.map(function(x){return x.s}));return a+(s?' + '+s+' suplentes':'')}
+function tieneLC(rs){return rs.some(function(r){return r.id in LC})}
+function jtxt(j){return !j?null:(j.a==null?'Sin tope':j.a+(j.s!=null&&j.s!==0?' + '+j.s+' sup.':''))}
 function cupos(c){
  var m=MAPA[c.deporte+'|'+c.modalidad],ids=m?(m.reglaIds&&m.reglaIds.length?m.reglaIds:[m.reglaId]):[];
  var rs=ids.map(function(i){return RB[i]}).filter(Boolean);
- var cp={mc:pick(rs,'masc','atletas'),ms:pick(rs,'masc','suplentes'),fc:pick(rs,'fem','atletas'),fs:pick(rs,'fem','suplentes'),mx:mixto(rs),ov:false};
+ var cp={mc:pick(rs,'masc','atletas'),ms:pick(rs,'masc','suplentes'),fc:pick(rs,'fem','atletas'),fs:pick(rs,'fem','suplentes'),mx:null,cj:null,ov:false};
  // La HU fija Ajedrez en 5 y 1 para ambos géneros; la hoja solo trae FEM (MASC en blanco).
  if(c.deporte==='Ajedrez'&&cp.mc==null&&cp.fc!=null){cp.mc=cp.fc;cp.ms=cp.fs;cp.ov=true}
+ // Ecuestre es el único con cupo mixto; el resto declara H y M contra el límite conjunto.
+ if(c.deporte==='Ecuestre'){var e=ecu(rs);cp.mx=e}
+ else if(tieneLC(rs))cp.cj=conjV(rs);
  return cp}
 var COMB=CON.combinaciones.slice().sort(function(a,b){return a.deporte.localeCompare(b.deporte,'es')||a.modalidad.localeCompare(b.modalidad,'es')});
 var KEY={};COMB.forEach(function(c,i){c.i=i;c.cp=cupos(c);KEY[c.deporte+'|'+c.modalidad]=c});
@@ -414,7 +430,7 @@ function TABS(cur){return '<div class="ptabs" role="tablist" aria-label="Vistas 
 function num(c){return typeof c==='number'?c:parseInt(String(c).split('–').pop(),10)}
 function stat(d,c){return d>c?'err':(d<c?'warn':'ok')}
 function statTxt(d,c){return d>c?'excede en '+(d-c):(d<c?'faltan '+(c-d):'completo')}
-function cellD(d,cv){var n=num(cv),k=stat(d,n);return '<b>'+d+' / '+cv+'</b><span class="mini"><i class="'+k+'" style="width:'+Math.min(100,Math.round(d/n*100))+'%"></i></span><span class="badge '+k+'" style="margin-top:4px">'+statTxt(d,n)+'</span>'}
+function cellD(d,cv){var n=num(cv),k=stat(d,n);return '<b>'+d+' / '+cv+'</b><span class="mini"><i class="'+k+'" style="width:'+(n?Math.min(100,Math.round(d/n*100)):100)+'%"></i></span><span class="badge '+k+'" style="margin-top:4px">'+statTxt(d,n)+'</span>'}
 function exD(i,j,n){return Math.round(n*(0.3+0.85*(((i*37+j*101+13)%100)/100)))}
 function pager(p,pages,a){return '<div class="pgn">Página <input type="number" min="1" max="'+pages+'" value="'+p+'" data-a="'+a+'" aria-label="Número de página"> de <b>'+pages+'</b><button type="button" class="ar" data-a="'+a+':prev" aria-label="Página anterior"'+(p<=1?' disabled':'')+'>‹</button><button type="button" class="ar" data-a="'+a+':next" aria-label="Página siguiente"'+(p>=pages?' disabled':'')+'>›</button></div>'}
 function clamp(p,pages){return Math.max(1,Math.min(pages,p||1))}
@@ -444,8 +460,8 @@ function cqv(v,sep,tip){var cls='cq'+(sep?' sep':'');if(v==null)return '<span cl
 var TIPOV='5* · valor de HU-IN-05; la hoja de reglas lo deja en blanco';
 function rowSport(c){
  var cp=c.cp,tip=cp.ov?TIPOV:'',open=!!S.c1.open[c.i],f=S.f;
- var cells=cqv(cp.mc,1,tip)+cqv(cp.ms,0,tip)+cqv(cp.fc,1)+cqv(cp.fs,0);
- var body=open?'<div class="rw-b"><b>Organizaciones que declararon esta combinación ('+c.orgIdx.length+')</b><ul>'+c.orgIdx.map(function(i){return '<li'+(f.org!==''&&+f.org===i?' class="hit"':'')+'>'+esc(DELN[i])+'</li>'}).join('')+'</ul></div>':'';
+ var jt=jtxt(cp.cj),cells=cqv(cp.mc,1,tip)+cqv(cp.ms,0,tip)+cqv(cp.fc,1)+cqv(cp.fs,0)+(jt?'<span class="cq sep cj" title="Límite conjunto Hombres + Mujeres: lo declarado en ambos géneros se suma contra este valor">'+jt+'</span>':'<span class="cq sep nil">—</span>');
+ var body=open?'<div class="rw-b">'+(jt?'<p class="pager-note">Se declaran Hombres y Mujeres; el límite general es la suma de ambos: <b>'+jt+'</b>.</p>':'')+'<b>Organizaciones que declararon esta combinación ('+c.orgIdx.length+')</b><ul>'+c.orgIdx.map(function(i){return '<li'+(f.org!==''&&+f.org===i?' class="hit"':'')+'>'+esc(DELN[i])+'</li>'}).join('')+'</ul></div>':'';
  return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h" data-a="c1x:'+c.i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(c.deporte)+'</b><span class="md">'+esc(c.modalidad)+'</span>'+cells+'<span class="chs">'+chipsOf(c.porSexo)+'</span><span class="badge info">'+c.organizaciones+' organizaciones</span></button>'+body+'</div>'}
 function rowOrg(i){
  var p=PROF[i],f=S.f,open=!!S.c1.open['o'+i],sx={};
@@ -458,11 +474,11 @@ function rowOrg(i){
   lst+='<li><b>'+esc(d)+'</b>: '+ms.map(function(m){return esc(m)+' '+chipsOf(p.deps[d][m])}).join(' · ')+'</li>'});
  var hb=isHab(i),body=open?(hb?'<div class="rw-b"><b>'+ESTH+'</b><p class="pager-note">No hizo la intención en deportes y modalidades; queda habilitada ante un posible permiso extraordinario del comité.</p></div>':'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul style="grid-template-columns:1fr">'+lst+'</ul></div>'):'';
  return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(DELN[i])+'</b><span class="md">'+(hb?ESTH:p.nd+' deportes · '+p.nm+' modalidades')+'</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge '+(hb?'warn':'info')+'">'+(hb?'Habilitada':p.nd+' deportes')+'</span></button>'+body+'</div>'}
-function sexOpts(sel){return '<option value="">Todos</option>'+SEXK.map(function(k){return '<option value="'+k+'"'+(sel===k?' selected':'')+'>'+SEXL[k]+'</option>'}).join('')}
+function sexOpts(sel){return '<option value="">Todos</option>'+SEXK.map(function(k){return '<option value="'+k+'"'+(sel===k?' selected':'')+'>'+(k==='Mixto'?'Mixto (solo Ecuestre)':SEXL[k])+'</option>'}).join('')}
 function c1Ahora(){
  var st=S.c1,f=S.f,body,pages,total,nf=(f.sport?1:0)+(f.sexo?1:0);
  if(f.view==='bySport'){var l=combsFiltered();total=l.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
-  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi"><div class="cq-h"><span style="grid-column:1/4"></span><span class="sh m">Cupos hombres</span><span class="sh m">Suplentes hombres</span><span class="sh f">Cupos mujeres</span><span class="sh f">Suplentes mujeres</span><span style="grid-column:8/10"></span></div><div class="rws">'+l.slice((st.page-1)*PG,st.page*PG).map(rowSport).join('')+'</div></div></div></div>':'<div class="nores">'+(f.org!==''&&isHab(+f.org)?esc(DELN[+f.org])+' no declaró deportes ni modalidades: '+ESTH.toLowerCase()+'.':'Ninguna combinación coincide con los filtros.')+'</div>'}
+  body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi"><div class="cq-h"><span style="grid-column:1/4"></span><span class="sh m">Cupos hombres</span><span class="sh m">Suplentes hombres</span><span class="sh f">Cupos mujeres</span><span class="sh f">Suplentes mujeres</span><span class="sh j">Límite conjunto H+M</span><span style="grid-column:9/11"></span></div><div class="rws">'+l.slice((st.page-1)*PG,st.page*PG).map(rowSport).join('')+'</div></div></div></div>':'<div class="nores">'+(f.org!==''&&isHab(+f.org)?esc(DELN[+f.org])+' no declaró deportes ni modalidades: '+ESTH.toLowerCase()+'.':'Ninguna combinación coincide con los filtros.')+'</div>'}
  else{var o=orgsFiltered();total=o.length;pages=Math.max(1,Math.ceil(total/PG));st.page=clamp(st.page,pages);
   body=total?'<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><div class="hsi nc"><div class="rws">'+o.slice((st.page-1)*PG,st.page*PG).map(rowOrg).join('')+'</div></div></div></div>':'<div class="nores">Ninguna organización coincide con los filtros.</div>'}
  var panel=st.fm?'<div class="fpanel" role="dialog" aria-label="Filtros"><label>Deporte<select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label>Género<select data-a="fg">'+sexOpts(f.sexo)+'</select></label><button type="button" class="btn sec sm" data-a="c1clr">Limpiar filtros</button></div>':'';
@@ -477,16 +493,20 @@ function c1Ahora(){
 /* C2: lo declarado es de ejemplo; combinaciones, cupos y organizaciones son reales */
 function c2Ahora(){
  var st=S.c2,l=COMB.filter(function(c){return !st.sport||c.deporte===st.sport}),pages=Math.max(1,Math.ceil(l.length/PG));st.page=clamp(st.page,pages);
- var dc=function(c,k,j){return c.cp[k]==null?'<td class="c'+(j%2?'':' vsep')+' sub">—</td>':'<td class="c'+(j%2?'':' vsep')+'">'+cellD(exD(c.i,j,num(c.cp[k])),c.cp[k])+'</td>'};
- var body=l.slice((st.page-1)*PG,st.page*PG).map(function(c){return '<tr><td><b>'+esc(c.deporte)+'</b></td><td>'+esc(c.modalidad)+'</td>'+dc(c,'mc',0)+dc(c,'ms',1)+dc(c,'fc',2)+dc(c,'fs',3)+'<td class="c vsep"><span class="badge info">'+c.organizaciones+'</span></td></tr>'}).join('');
+ // En las modalidades con límite conjunto, H y M solo muestran lo declarado; el estado sale de H + M.
+ var dj=function(c,k,j){var a=c.cp.cj[k];return a==null?0:exD(c.i,j,Math.ceil(num(a)/2))};
+ var dh=function(c,j){return c.cp.cj.a==null?'<td class="c'+(j%2?'':' vsep')+' sub">—</td>':'<td class="c'+(j%2?'':' vsep')+'"><b>'+dj(c,j%2?'s':'a',j)+'</b><span class="mini-n">suma al conjunto</span></td>'};
+ var dcj=function(c,k,j){var t=c.cp.cj;if(!t)return '<td class="c'+(k==='a'?' vsep':'')+' sub">—</td>';var v=t[k];if(v==null)return '<td class="c'+(k==='a'?' vsep':'')+' sub">Sin tope</td>';return '<td class="c'+(k==='a'?' vsep':'')+'">'+cellD(dj(c,k,j)+dj(c,k,j+2),v)+'</td>'};
+ var dc=function(c,k,j){var t=c.cp.cj;if(t&&t[j%2?'s':'a']!=null)return dh(c,j);return c.cp[k]==null?'<td class="c'+(j%2?'':' vsep')+' sub">—</td>':'<td class="c'+(j%2?'':' vsep')+'">'+cellD(exD(c.i,j,num(c.cp[k])),c.cp[k])+'</td>'};
+ var body=l.slice((st.page-1)*PG,st.page*PG).map(function(c){return '<tr><td><b>'+esc(c.deporte)+'</b></td><td>'+esc(c.modalidad)+'</td>'+dc(c,'mc',0)+dc(c,'ms',1)+dc(c,'fc',2)+dc(c,'fs',3)+dcj(c,'a',0)+dcj(c,'s',1)+'<td class="c vsep"><span class="badge info">'+c.organizaciones+'</span></td></tr>'}).join('');
  var fl='<div class="toolbar"><label class="sel">Deporte <select data-a="c2s">'+opts(DEPS,st.sport,'Todos')+'</select></label><span class="sp"></span>'+
  '<div class="lg"><span><i style="background:#e08a14"></i>Falta por declarar</span><span><i style="background:#28bf2d"></i>Completo</span><span><i style="background:#da1630"></i>Excede el cupo</span></div></div>';
- var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th rowspan="2">Deporte</th><th rowspan="2">Modalidad</th><th class="grp vsep" colspan="2">HOMBRES · declarado / cupo</th><th class="grp vsep" colspan="2">MUJERES · declarado / cupo</th><th rowspan="2" class="c vsep">Organizaciones</th></tr><tr><th class="c vsep">Cupos</th><th class="c">Suplentes</th><th class="c vsep">Cupos</th><th class="c">Suplentes</th></tr></thead><tbody>'+body+'</tbody></table></div></div>'+
+ var tbl='<div class="sc"><div class="scr" tabindex="0" role="region" aria-label="Contenido con desplazamiento horizontal"><table class="tbl"><thead><tr><th rowspan="2">Deporte</th><th rowspan="2">Modalidad</th><th class="grp vsep" colspan="2">HOMBRES · declarado / cupo</th><th class="grp vsep" colspan="2">MUJERES · declarado / cupo</th><th class="grp vsep cj" colspan="2">LÍMITE CONJUNTO H + M · declarado / límite</th><th rowspan="2" class="c vsep">Organizaciones</th></tr><tr><th class="c vsep">Cupos</th><th class="c">Suplentes</th><th class="c vsep">Cupos</th><th class="c">Suplentes</th><th class="c vsep">Cupos</th><th class="c">Suplentes</th></tr></thead><tbody>'+body+'</tbody></table></div></div>'+
  '<div class="pgn-b toolbar">'+pager(st.page,pages,'c2p')+'</div>';
  return '<div class="page">'+HEAD({t:'Declarado contra cupo',s:'Lo declarado por las delegaciones frente al cupo de cada modalidad.',a:'<button class="btn sec"'+GO('c4')+'>'+ICO_DL+'Exportar</button>',tab:'c2'})+
  KPIS('Resumen',[['Combinaciones mostradas',fmt(l.length)],['Deportes',DEPS.length],['Delegaciones',DELN.length,'<span>'+DELTXT+'</span>']])+
  CARD('Filtros y convenciones',fl)+
- '<div class="callout">Las cantidades declaradas aún no existen en los datos: son <b>de ejemplo</b>. Combinaciones, cupos y número de organizaciones son reales.</div>'+
+ '<div class="callout">Las cantidades declaradas aún no existen en los datos: son <b>de ejemplo</b>. Combinaciones, cupos y número de organizaciones son reales. En las modalidades con <b>límite conjunto</b> se declaran Hombres y Mujeres y el estado compara la <b>suma de ambos</b> contra ese límite; solo Ecuestre conserva cupo mixto.</div>'+
  CARD('Declarado contra cupo por modalidad',tbl,{out:1})+'</div>'}
 
 /* C3: delegaciones reales; estado y avance de ejemplo (la habilitada no cuenta en el avance) */
@@ -506,6 +526,7 @@ function c3Ahora(){
  CARD('Delegaciones',tbl,{out:1,a:'<span class="ini-b inf">'+list.length+' de '+DEL.length+'</span>'})+'</div>'}
 
 /* C4 */
+var NOTA_CJ='<b>Límite conjunto Hombres + Mujeres.</b> En las modalidades con cupos mixtos por sus pruebas se declaran Hombres y Mujeres, y el límite general es la suma de ambas columnas; por eso «Cupos Mixtos» queda vacía y solo Ecuestre la conserva.';
 function c4Rows(){return S.c4.mode==='completo'?ALL:filasFiltered()}
 function prevTable(rows){
  var th='<tr>'+COLS.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr>';
@@ -519,7 +540,7 @@ function c4Ahora(){
  '<label class="sel">Deporte <select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label class="sel">Género <select data-a="fg">'+sexOpts(f.sexo)+'</select></label><label class="sel">Organización <select data-a="fo">'+optsI(DELN,f.org,'Todas')+'</select></label></div>';
  var vp='<div style="display:flex;gap:6px;flex-wrap:wrap">'+chips+'</div>'+
  '<div><b>'+fmt(rows.length)+' filas</b> · 12 columnas, incluidas las de cupos y suplentes. Se descarga un archivo de Excel (.xlsx) con la hoja «Membrete» y la hoja «Consolidado». Vista previa de las primeras 5:</div>'+
- (rows.length?prevTable(rows):'<div class="nores">Ningún dato coincide con los filtros.</div>')+
+ (rows.length?prevTable(rows):'<div class="nores">Ningún dato coincide con los filtros.</div>')+'<p class="pager-note nota-conj">'+NOTA_CJ+'</p>'+
  '<div class="toolbar"><button class="btn pri sm" data-a="c4d"'+(rows.length?'':' disabled')+'>'+ICO_DL+'Descargar</button><button class="lk" data-go="c5">Ver el reporte consolidado</button></div>'+
  (st.done?'<div><b>'+esc(st.done)+'</b></div>':'');
  return '<div class="page">'+HEAD({t:'Exportar consolidado',s:'Elige qué exportar y revisa la vista previa antes de descargar.',a:'<div class="menuwrap"><button class="btn sec" data-a="c4m">'+ICO_DL+'Exportar ▾</button>'+m+'</div>',back:1})+
@@ -536,6 +557,7 @@ function c5Ahora(){
  var sh='<div class="sheet"><div class="mb" role="img" aria-label="Membrete oficial: XXIII Juegos Deportivos Nacionales 2027"></div><div class="sheet-t"><b>REPORTE CONSOLIDADO DE INSCRIPCIÓN NUMÉRICA</b><span>XXIII Juegos deportivos nacionales · Córdoba – Sucre 2027</span></div>'+
  '<div class="sc"><div class="xl scr" tabindex="0" role="region" aria-label="Tabla con desplazamiento horizontal"><table><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div></div></div>'+
  '<div class="tab-x"><span>Membrete</span><span class="on">Consolidado</span></div>'+
+ '<p class="pager-note nota-conj">'+NOTA_CJ+'</p>'+
  '<p class="pager-note">Una fila por delegación × deporte × modalidad × sexo. Volumen real del insumo: '+fmt(ALL.length)+' filas (aquí se ven '+PG5+' por página).</p>'+
  '<div class="toolbar">'+pager(st.page,pages,'c5p')+'<span class="pager-note">Filas '+fmt(a+1)+' a '+fmt(a+part.length)+' de '+fmt(ALL.length)+'</span></div>'+
  '<p class="pager-note">Correo electrónico: el real de la hoja original (uno por delegación). Rol registrador: Gestor o Auxiliar; el insumo solo trae Gestor. Fecha de registro: es la de la intención en deportes y modalidades (2026), anterior a la ventana de inscripción numérica. VICHADA no tiene filas: está habilitada preventivamente. Al descargar, el Excel trae la hoja «Membrete» y luego la hoja «Consolidado».</p>';
@@ -788,14 +810,17 @@ window.addEventListener('hashchange',function(){show(location.hash.slice(1))});
 </script>
 <script src="../shared/tour.js"></script>
 <script>
+function fmt2(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
 mountTour({
  'HU-IN-05':{rol:'Comité organizador',title:'Visualización del cupo máximo en el consolidado',
   purpose:'Como comité organizador, quiero ver el cupo máximo de atletas y suplentes de cada deporte y modalidad en la pantalla de consolidado de intenciones, para contrastar de un vistazo lo declarado contra el tope reglamentario.',
   steps:[
    {board:'c1',sel:'#c1 .cq-h',open:'#c1 [data-a="fv:bySport"]',body:'Cuatro columnas nuevas entre Modalidad y los indicadores de género: «Cupos» y «Suplentes» de <b>hombres</b> y de <b>mujeres</b>, en una sola línea de encabezado.'},
    {board:'c1',sel:'#c1 .rw',open:'#c1 [data-a="fv:bySport"]',body:'Los valores del mockup de Daniel: Subacuáticas = <b>18 y 2</b> en ambos géneros; Ajedrez = 5 y 1; Arquería = 4 y 1.'},
+   {board:'c1',sel:'#c1 .cq-h .sh.j',open:'#c1 [data-a="fv:bySport"]',body:'Una columna más, <b>«Límite conjunto H+M»</b>, solo en las modalidades con cupos mixtos por sus pruebas: se declaran Hombres y Mujeres y el límite es la suma de ambos. Ya no hay columna de cupos mixtos; el género «Mixto» queda solo para Ecuestre.'},
    {board:'c1',sel:'#c1 .toolbar',body:'Se conserva lo existente: pestañas <b>Por deporte / Por organización</b>, filtros, selector de organización, paginación, conteo por fila y Exportar.'},
-   {board:'c2',sel:'#c2 .tbl',body:'Propuesta aparte: junto al cupo, lo <b>declarado</b> y su estado (falta, completo, excede), para contrastar de un vistazo.'}
+   {board:'c2',sel:'#c2 .tbl',body:'Propuesta aparte: junto al cupo, lo <b>declarado</b> y su estado (falta, completo, excede), para contrastar de un vistazo.'},
+   {board:'c2',sel:'#c2 th.cj',body:'En las modalidades con límite conjunto, el estado compara la <b>suma de hombres y mujeres</b> contra ese límite; las columnas de cada género solo muestran lo declarado.'}
   ]},
  'HU-IN-10':{rol:'Comité organizador',title:'Renombrar y ajustar los indicadores del tablero',
   purpose:'Como comité organizador, quiero que el tablero de inscripciones hable el lenguaje de los Juegos Nacionales y no el de Intercolegiados, para leer el avance del evento sin traducir conceptos.',
@@ -824,8 +849,9 @@ mountTour({
  'HU-IN-14':{rol:'Comité organizador',title:'Reporte consolidado de inscripción numérica',
   purpose:'Como comité organizador, quiero descargar un reporte consolidado de lo declarado por todas las delegaciones, para hacer seguimiento y soportar la planeación del evento.',
   steps:[
-   {board:'c5',sel:'#c5 .xl thead',body:'El reporte tiene <b>exactamente doce columnas</b>, de Delegación a Correo electrónico, tomadas del reporte propuesto por Daniel: Delegación, Deporte, Modalidad, Sexo, cupos y suplentes por género, Cupos Mixtos, Fecha de registro, Rol registrador y Correo electrónico.'},
-   {board:'c5',sel:'#c5 .pager-note',body:'Una fila por combinación <b>delegación × deporte × modalidad × sexo</b>. El insumo actual suma 3.916 filas.'},
+   {board:'c5',sel:'#c5 .xl thead',body:'El reporte tiene <b>exactamente doce columnas</b>, de Delegación a Correo electrónico, tomadas del reporte propuesto por Daniel: Delegación, Deporte, Modalidad, Sexo, cupos y suplentes por género, Cupos Mixtos (vacía salvo Ecuestre), Fecha de registro, Rol registrador y Correo electrónico.'},
+   {board:'c5',sel:'#c5 .nota-conj',body:'Al pie, la nota <b>«Límite conjunto Hombres + Mujeres»</b>: esas modalidades se reportan con sus cupos y suplentes masculinos y femeninos (el valor de Sexo va por fila) y «Cupos Mixtos» queda vacía; solo Ecuestre la conserva.'},
+   {board:'c5',sel:'#c5 .pager-note:not(.nota-conj)',body:'Una fila por combinación <b>delegación × deporte × modalidad × sexo</b>. El insumo actual suma '+fmt2(window.INSCNUM_CONSOLIDADO.filas.length)+' filas.'},
    {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Se descarga en <b>Excel</b>. El botón genera un <b>.xlsx real</b> con la hoja «Membrete» y la hoja «Consolidado» (doce columnas); si no puede cargar el generador, descarga un CSV con aviso.'}
   ]},
  'HU-IN-15':{rol:'Comité organizador',title:'Exportación desde el consolidado',
@@ -838,7 +864,7 @@ mountTour({
  'HU-IN-17':{rol:'Comité organizador',title:'Membrete oficial en las descargas',
   purpose:'Como comité organizador, quiero que todas las descargas de la plataforma salgan con el membrete oficial del evento, para que sirvan como documento formal ante las delegaciones y el Ministerio.',
   steps:[
-   {board:'c6',sel:'#c6 .mem',body:'Las descargas de <b>todos los roles</b> llevan el membrete del evento. Su diseño espera el Manual de Marca (acta del 11-ago-2026); la referencia es el encabezado del certificado anterior.'},
+   {board:'c6',sel:'#c6 .mem',body:'Las descargas de <b>todos los roles</b> llevan el membrete del evento. El membrete queda como está: el banner del certificado anterior, confirmado por negocio (19-oct-2026).'},
    {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Cada descarga, como este reporte, sale con ese <b>membrete oficial</b> para servir de documento formal ante delegaciones y Ministerio.'}
   ]}
 });

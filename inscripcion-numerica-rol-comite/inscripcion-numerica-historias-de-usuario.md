@@ -30,6 +30,7 @@
 - En la pantalla «Consolidado de intenciones» se agregan cuatro columnas entre Modalidad y los indicadores de género: bajo MASC «Cupos» y «Suplentes», y bajo FEM «Cupos» y «Suplentes».
 - Los valores anotados a mano por Daniel en el mockup son: Actividades Subacuáticas Cortas-Piscina y Largas-Aguas Abiertas = 18 y 2 en ambos géneros; Ajedrez Blitz, Clásico y Rápido = 5 y 1 en ambos géneros; Arquería Compuesto y Recurvo = 4 y 1 en ambos géneros.
 - Se conserva lo existente en la pantalla: pestañas «Por deporte» / «Por organización», filtros, selector de organización, paginación, conteo de organizaciones por fila y botón Exportar.
+- (D19, 19-oct-2026) No hay columna de cupos mixtos. En las modalidades con cupos mixtos por sus pruebas (todas, salvo Ecuestre) se agrega una columna «Límite conjunto H+M» y el género «Mixto» del filtro queda solo para Ecuestre.
 
 **Adjuntos/referencias:** Levantamiento Inscripción Numérica.docx (mockup a mano) · Inscripción_Numérica_V3.xlsx
 
@@ -97,8 +98,8 @@
 
 **Criterios de aceptación:**
 
-- El reporte tiene exactamente estas doce columnas, tomadas del reporte propuesto por Daniel: Delegación · Deporte · Modalidad · Sexo · Cupos MASC · Suplentes MASC · Cupos FEM · Suplentes FEM · Cupos mixtos · Fecha de Intención · Rol · Correo Electrónico.
-- Una fila por combinación delegación × deporte × modalidad × sexo. Volumen actual del insumo: 3.916 filas.
+- El reporte tiene exactamente estas doce columnas, tomadas del reporte propuesto por Daniel: Delegación · Deporte · Modalidad · Sexo · Cupos MASC · Suplentes MASC · Cupos FEM · Suplentes FEM · Cupos mixtos · Fecha de Intención · Rol · Correo Electrónico. Desde D19 (19-oct-2026), «Cupos mixtos» queda vacía salvo en Ecuestre; las modalidades con límite conjunto se reportan con sus cupos y suplentes masculinos y femeninos (el valor de Sexo va por fila) y al pie de la vista previa se lee la nota «Límite conjunto Hombres + Mujeres».
+- Una fila por combinación delegación × deporte × modalidad × sexo. Volumen actual del insumo: 3.467 filas (3.916 antes de D19, cuando 513 filas Mixto pasaron a Hombres y Mujeres).
 - Descargable en Excel.
 
 **Adjuntos/referencias:** Inscripción_Numérica_V3.xlsx
@@ -127,6 +128,7 @@
 
 - Las descargas de los distintos roles llevan el membrete definido para el evento.
 - El certificado de la fase anterior ya trae el encabezado del evento; sirve de referencia.
+- (D19, 19-oct-2026) El membrete queda como está, es decir, el banner del certificado, y aplica a todas las descargas de todos los roles (confirmado por negocio).
 
 **Adjuntos/referencias:** Acta 25-ago-2026 · Intención de participación.pdf
 
@@ -141,7 +143,7 @@ Hallazgos del código de `suite-web-v2` (verificados):
 
 - Consolidado: la pantalla real es una lista de filas desplegables con chips Hombre / Mujer / Mixto y «N organizaciones». Las columnas de Daniel (HU-IN-05) van entre la modalidad y los chips, no entre los indicadores de género.
 - HU-IN-10 a HU-IN-13: ya tienen capturas del tablero real (Intercolegiados) como referencia en ADJUNTOS/REFERENCIAS/images/.
-- HU-IN-17: el certificado real ya trae un banner superior con los logos del evento, que puede ser el membrete. Falta el acta del 25-ago-2026 para confirmarlo.
+- HU-IN-17: el certificado real ya trae un banner superior con los logos del evento, que puede ser el membrete. Confirmado por negocio el 19-oct-2026 (ver D19).
 - HU-IN-15 sigue marcada «(propuesta — validar)».
 
 ### Decisiones del 9-oct-2026 (Jorge Guzmán)
@@ -168,6 +170,17 @@ Hallazgos del código de `suite-web-v2` (verificados):
   4. **Etapas oficiales:** Intención de participación (cerró 30-08-2025), Intención en deportes y modalidades (cerró 30-08-2026), Inscripción numérica (presunta apertura 01-03-2027, cierra 30-03-2027), Lista larga (30-05-2027), Nominal (30-09-2027). Se retira «Preinscripción de delegaciones». El indicador del tablero «Preinscripciones» pasa a «Intenciones registradas» (solo rótulo; cifra de ejemplo).
   5. **Tablero C6:** Prensa, Voluntarios, Federaciones, Comités y Proveedores no tienen fase numérica (se inscriben en convocatoria o nominal) y Personal de Apoyo entra desde Lista larga. Se mantiene «sin dato» con el motivo y el indicador «Personal de Apoyo Registrado». Se quita la franja «En proceso · Datos pendientes» y el atenuado en gris: el tablero se ve a color y con los filtros activos.
   6. **Edad:** nada que mostrar (aplica desde lista larga).
+### Decisiones del 19-oct-2026 (Daniel, negocio)
+
+- **D19 · Cupos mixtos, límite conjunto H+M:** la columna «Cupos mixtos» no sirve. En los deportes y modalidades con cupos mixtos por sus pruebas se declaran Hombres y Mujeres, y el límite general es la **suma de ambas columnas** contra el cupo mixto total. **Ecuestre** es completamente mixto y conserva el cupo mixto. Aplicación en el comité:
+  - **Qué modalidades:** 25 combinaciones (27 reglas de la hoja), exactamente la lista de «Límites conjuntos» del Admin (A4): 13 con límite definido y 12 sin definir (se rotulan «Sin tope»). Casos de borde: Ajedrez (3 modalidades) tiene Mixto en la hoja pero no filas; Porrismo Performance Cheer era solo Mixto y ahora se declara en Hombres y Mujeres (la hoja solo trae cupo masculino). Natación Carreras, Gimnasia Trampolín y Squash tienen filas Mixto en el consolidado aunque la hoja no habilita Mixto: no tienen límite conjunto (columna «—») y cada género se compara con su propio cupo.
+  - **Qué número es el límite:** el que parametriza el Admin, leído de `shared/limites-conjuntos.js` (fuente única de los tres roles; ya no se deriva sumando cupos). Donde la hoja no trae cifra el límite queda sin definir y el comité lo rotula «Sin tope»: no se valida un tope conjunto. En las agrupaciones (Vela Bote) se muestra el rango de las reglas del grupo (2–3); la delegación valida el mayor. **Pendiente de confirmar con negocio (ver P7 en PREGUNTAS-PARA-DANIEL.md).**
+  - **C1:** sin columna de cupos mixtos; nueva columna «Límite conjunto H+M» donde corresponde; el filtro de género «Mixto» queda solo para Ecuestre.
+  - **C2:** en las modalidades con límite definido la columna de cada género muestra solo lo declarado y el estado (falta, completo, excede) compara la suma H + M contra el límite conjunto; donde el límite no está definido, cada género se compara con su propio cupo.
+  - **C3:** sin cambio; los conteos por modalidad no dependen del género.
+  - **C4 y C5:** el Excel conserva sus **doce columnas exactas, en el mismo orden**. «Cupos Mixtos» queda vacía salvo Ecuestre (valor derivado: 5 + 3 suplentes, de la hoja); las modalidades con límite conjunto salen con sus cupos y suplentes masculinos y femeninos, y en «Sexo» el valor de cada fila. Al pie de la vista previa de C5 (y de C4) se agrega la nota «Límite conjunto Hombres + Mujeres».
+  - **Datos de ejemplo:** `shared/datos-consolidado.js` pasa de 3.916 a 3.467 filas: 513 filas Mixto fuera de Ecuestre se reemplazan por Hombres y Mujeres (64 filas nuevas, las que faltaban), se conservan las 33 de Ecuestre, las 34 delegaciones y Vichada sin filas. El detalle queda en el campo `conjunto` del archivo.
+  - **Membrete:** queda como está (el banner del certificado) y aplica a todas las descargas de todos los roles; confirmado por negocio.
 - Las menciones de «matriz» en D2, D3 y D8 son decisiones históricas sobre la precedencia de fuentes y se conservan.
 
 ## Historias propuestas (validadas por Jorge Guzmán, 9-oct-2026)
@@ -180,7 +193,7 @@ Hallazgos del código de `suite-web-v2` (verificados):
 
 **Criterios de aceptación:**
 
-- Cada chip de género (Hombre, Mujer, Mixto) muestra «declarado / cupo» para atletas y para suplentes.
+- Cada chip de género (Hombre, Mujer y, solo en Ecuestre, Mixto) muestra «declarado / cupo» para atletas y para suplentes. En las modalidades con límite conjunto (D19) se compara la suma de hombres y mujeres contra ese límite.
 - Un valor por encima del cupo se marca con estado de alerta, y el filtro permite ver solo esos casos.
 - Las combinaciones sin cupo parametrizado muestran «sin cupo» en lugar de un número.
 

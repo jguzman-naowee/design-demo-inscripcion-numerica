@@ -1,0 +1,31 @@
+/* Límite conjunto Hombres + Mujeres por regla de la hoja (D19). Fuente única: la lista del Admin (A4).
+   {a,s} = atletas y suplentes de la suma; null = sin definir en la hoja (no se valida un tope conjunto). */
+window.INSCNUM_LC={
+ "actividades-subacauticas--cortas-piscina":{a:4,s:null},
+ "actividades-subacauticas--largas-aguas-abiertas":{a:4,s:null},
+ "ajedrez--rapido":null,
+ "ajedrez--clasico":null,
+ "ajedrez--blitz":null,
+ "tiro-con-arco--recurvo":{a:2,s:null},
+ "tiro-con-arco--compuesto":null,
+ "atletismo--pista":null,
+ "badminton--unica":null,
+ "billar--pool":null,
+ "billar--heybal":null,
+ "hapkido--combate":{a:4,s:null},
+ "natacion--artistica":{a:8,s:2},
+ "patinaje--artistico":null,
+ "porrismo-exhibicion--cheer-nivel-4":{a:12,s:1},
+ "porrismo-exhibicion--performance-cheer-pomp":{a:6,s:1},
+ "porrismo-exhibicion--performance-cheer-hiphop":{a:6,s:1},
+ "taekwondo--poomsae":null,
+ "tenis-de-campo--unica":null,
+ "tenis-de-mesa--unica":null,
+ "tiro-deportivo--rifle":{a:2,s:null},
+ "tiro-deportivo--pistola":{a:2,s:null},
+ "triatlon--triathlon":{a:4,s:null},
+ "triatlon--duathlon":{a:2,s:null},
+ "vela--tabla-a-vela-wingfoil":{a:3,s:null},
+ "vela--bote-optimist":{a:3,s:null},
+ "vela--bote-snipe":{a:2,s:null}
+};

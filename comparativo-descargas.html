@@ -237,27 +237,28 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   var reg = {}, refId = {};
   D.reglas.forEach(function (r) { reg[r.id] = r; });
   D.atlantico.forEach(function (a) { refId[a.deporte + '|' + a.modalidad + '|' + a.sexo] = a.reglaId; });
+  var ecuId = {};
+  D.mapaNombres.forEach(function (m) { if (m.deporte === 'Ecuestre') ecuId[m.deporte + '|' + m.modalidad] = m.reglaId || (m.reglaIds || [])[0]; });
   function cupos(dep, mod, sx) {
-    var r = reg[refId[dep + '|' + mod + '|' + sx]], o = { mc: null, ms: null, fc: null, fs: null, mx: null };
+    var r = reg[refId[dep + '|' + mod + '|' + sx]] || reg[ecuId[dep + '|' + mod]], o = { mc: null, ms: null, fc: null, fs: null, mx: null };
     if (!r) return o;
     if (sx === 'Hombres') { o.mc = r.masc.atletas; o.ms = r.masc.suplentes; }
     else if (sx === 'Mujeres') { o.fc = r.fem.atletas; o.fs = r.fem.suplentes; }
-    else if (typeof r.mixtaComposicion === 'string') o.mx = r.mixtaComposicion;
-    else {
-      var m = (r.composicion || []).filter(function (c) { return c.tipo === 'mixta'; })[0];
-      o.mx = m ? m.total : null;
-    }
+    else if (dep === 'Ecuestre') o.mx = mixEcu(r);
     return o;
+  }
+  /* D19: solo Ecuestre conserva «Cupos Mixtos»; las demás modalidades usan el límite conjunto y la columna queda vacía. */
+  function mixEcu(r) {
+    var a = (r.masc.atletas || 0) + (r.fem.atletas || 0), s = (r.masc.suplentes || 0) + (r.fem.suplentes || 0);
+    return a ? a + (s ? ' + ' + s + ' suplentes' : '') : null;
   }
   function v(x) { return x == null ? '—' : String(x); }
 
-  /* ── 10 filas del consolidado: 7 repartidas por el insumo + hasta 3 con texto libre en mixtos ── */
-  var F = C.filas, pick = {}, usadas = {};
+  /* ── 10 filas del consolidado: 7 repartidas, 1 de Ecuestre (Mixto) y el par Hombres + Mujeres de Natación artística ── */
+  var F = C.filas, pick = {};
   for (var k = 0; k < 7; k++) pick[Math.floor(k * F.length / 7) + k * 13] = 1;
-  for (var i = 0, t = 0; i < F.length && t < 3; i++) {
-    var f = F[i];
-    if (f[3] === 'Mixto' && !usadas[f[0]] && typeof cupos(f[1], f[2], f[3]).mx === 'string') { pick[i] = 1; usadas[f[0]] = 1; t++; }
-  }
+  for (var i = 0; i < F.length; i++) if (F[i][3] === 'Mixto') { pick[i] = 1; break; }
+  for (var i = 0; i < F.length - 1; i++) if (F[i][1] === 'Natación' && F[i][2] === 'Artística' && F[i][3] === 'Hombres' && F[i + 1][0] === F[i][0] && F[i + 1][3] === 'Mujeres' && F[i + 1][2] === 'Artística') { pick[i] = 1; pick[i + 1] = 1; break; }
   var filas = Object.keys(pick).map(Number).sort(function (a, b) { return a - b; }).slice(0, 10).map(function (j) {
     var f = F[j], c = cupos(f[1], f[2], f[3]);
     return { del: C.delegaciones[f[0]], dep: f[1], mod: f[2], sx: SEX[f[3]], c: c, fe: fecha(f[4]), rol: C.rol, mail: C.correos[f[0]] };
@@ -269,7 +270,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   var LETRAS = 'ABCDEFGHIJKL'.split('');
   var ANCHOS = [140, 96, 96, 52, 54, 64, 54, 64, 96, 70, 86, 106];
   var MIXROW = -1;
-  filas.forEach(function (r, n) { if (MIXROW < 0 && typeof r.c.mx === 'string') MIXROW = n; });
+  filas.forEach(function (r, n) { if (MIXROW < 0 && r.c.mx != null) MIXROW = n; });
 
   function colgroup(anchos) {
     var g = h('colgroup', {}, [h('col', { style: 'width:26px' })]);
@@ -340,13 +341,15 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 
   /* ── Certificado PDF ── */
   var DEL = C.delegaciones[16], DELT = 'Instituto Departamental de Recreación y Deporte del Atlántico';
-  var at = D.atlantico, sel = [0, 1, 2], extra = 0;
+  /* D19: las declaraciones Mixto fuera de Ecuestre se ven como Hombres y Mujeres. */
+  var at = D.atlantico.filter(function (a) { return a.sexo !== 'Mixto' || a.deporte === 'Ecuestre'; }), sel = [0, 1], extra = 0;
   (function () {
     function buscar(fn) { for (var i = 0; i < at.length; i++) if (sel.indexOf(i) < 0 && fn(at[i])) return i; return -1; }
     var a = buscar(function (x) { return x.deporte === 'Ajedrez' && !x.sinRegla; });
-    var b = buscar(function (x) { var r = reg[x.reglaId]; return x.sexo === 'Mixto' && r && typeof r.mixtaComposicion === 'string'; });
-    var c = buscar(function (x) { return x.sexo === 'Mixto' && x.deporte === 'Arquería'; });
-    [a, b, c].forEach(function (i) { if (i >= 0) sel.push(i); });
+    var b = buscar(function (x) { return x.sexo === 'Mixto' && x.deporte === 'Ecuestre'; });
+    var c = buscar(function (x) { return x.deporte === 'Natación' && x.modalidad === 'Artística' && x.sexo === 'Hombres'; });
+    var d = buscar(function (x) { return x.deporte === 'Natación' && x.modalidad === 'Artística' && x.sexo === 'Mujeres'; });
+    [a, b, c, d].forEach(function (i) { if (i >= 0) sel.push(i); });
     for (var i = 0; sel.length < 6 && i < at.length; i++) if (sel.indexOf(i) < 0) sel.push(i);
     sel.sort(function (x, y) { return x - y; });
   })();
@@ -407,7 +410,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   leg('leg-xl', [
     { n: 1, t: 'Membrete gráfico con logos en las filas 1 a 4.', s: 'Imagen insertada en el .xlsx; los logos en vector salen del Manual de Marca.', who: ['Brand Book', 'Backend'] },
     { n: 2, t: 'Doce columnas fijas, con cabecera verde, filtros automáticos y panel congelado.', s: 'El orden es el acordado: de Delegación a Correo electrónico. El Rol registrador y el correo son los de quien registró la intención.', who: ['Diseño', 'Backend'] },
-    { n: 3, t: '«Cupos Mixtos» mezcla números y texto libre.', s: 'Ejemplo real: «8 ; máximo 2 hombres + 2 suplentes». El número queda en la celda y la nota va como comentario (triángulo rojo).', who: ['Diseño', 'Backend'] },
+    { n: 3, t: '«Cupos Mixtos» queda vacía salvo en Ecuestre.', s: 'Las modalidades con límite conjunto salen con cupos y suplentes de hombres y de mujeres, y el Sexo va por fila. En Ecuestre el número queda en la celda y la nota («5 + 3 suplentes») va como comentario (triángulo rojo).', who: ['Diseño', 'Backend'] },
     { n: 4, t: 'Numeración de páginas e impresión.', s: 'El «N» de «Pág 1 de N» es una estimación con las ' + F.length.toLocaleString('es-CO') + ' filas reales.', who: ['Backend'] },
     { n: 5, t: 'Logo de Naowee en el pie.', s: 'Se inserta en el .xlsx; el logo en vector sale del Manual de Marca.', who: ['Brand Book', 'Backend'] }
   ]);
@@ -426,7 +429,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     ['Generar el .xlsx del reporte consolidado', 'Imagen del membrete, 12 columnas, cabecera verde, anchos, filtros, panel congelado, pie y número de página.', 'Backend'],
     ['PDF generado por backend con paginación', 'Reemplaza la hoja dibujada del demo; pagina por filas, repite el membrete y se puede descargar las veces que se quiera al terminar la fase.', 'Backend'],
     ['Logo de Naowee restaurado en el pie del certificado del demo', 'Hoy sale como texto «naowee».', 'Diseño'],
-    ['Definir cómo viaja «Cupos mixtos»', 'Número en la celda y la nota aparte, para poder filtrar y sumar.', 'Diseño']
+    ['Definir cómo viaja «Cupos mixtos» en Ecuestre', 'Número en la celda y la nota aparte, para poder filtrar y sumar; las demás modalidades la dejan vacía.', 'Diseño']
   ].forEach(function (r, i) {
     var m = { 'Brand Book': 'bb', Backend: 'be', Diseño: 'dis' }[r[2]];
     document.getElementById('falta').appendChild(h('li', {}, [

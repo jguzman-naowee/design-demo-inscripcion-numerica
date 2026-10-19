@@ -227,6 +227,7 @@ tr.sel-r td{background:#fff7ed}tr[data-m]{cursor:pointer}
 </head><body>
 <script src="../shared/datos-inscnum.js"></script>
 <script src="../shared/datos-consolidado.js"></script>
+<script src="../shared/limites-conjuntos.js?v=0.1.0"></script>
 <main>
 <div class="board cur" id="a1" data-board><div class="app" id="a1-app"></div></div>
 <div class="board" id="a2" data-board><div class="app" id="a2-app"></div></div>
@@ -241,9 +242,9 @@ var $=function(s,r){return (r||document).querySelector(s)};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
 var SEARCH='<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>';
 /* Header único de las 6 pantallas. o: {title, sub, actions, tab:'a1'|'a4'|'a5' (pestañas), back (enlace a Cupos)}. */
-var CTX='XXIII Juegos Deportivos Nacionales · Inscripción numérica',TABS=[['a1','Cupos'],['a4','Modalidades mixtas'],['a5','Ventana de la fase']];
+var CTX='XXIII Juegos Deportivos Nacionales · Inscripción numérica',TABS=[['a1','Cupos'],['a4','Límites conjuntos'],['a5','Ventana de la fase']];
 /* Con pestañas, el título y la bajada no cambian entre vistas; lo propio de cada una va como texto bajo las pestañas. */
-var HTIT='Parametrización de la fase de inscripción numérica',HSUB='Cupos, modalidades mixtas y ventana de registro de las delegaciones; se define al crear el evento.';
+var HTIT='Parametrización de la fase de inscripción numérica',HSUB='Cupos, límites conjuntos y ventana de registro de las delegaciones; se define al crear el evento.';
 function header(o){
  var fijo=!!o.tab;
  var tabs=o.tab?'<div class="tabs" role="tablist" aria-label="Secciones de la fase">'+TABS.map(function(t){var on=t[0]===o.tab;return '<button type="button" role="tab" data-go="'+t[0]+'" aria-selected="'+on+'" tabindex="'+(on?0:-1)+'"'+(on?' class="on"':'')+'>'+t[1]+'</button>'}).join('')+'</div>':'';
@@ -286,10 +287,9 @@ function cmpText(c){var p=[],m=partG('MASC','hombres',c.M),f=partG('FEM','mujere
  if(c.A)t+=(t?' + ':'')+c.A+(c.A===1?' suplente':' suplentes')+(c.Ag?' de cualquier género':'');
  return t||'Sin definir'}
 function cmpTotal(c){if(c.T!=null)return c.T;if(c.M[1]!=null&&c.F[1]!=null)return c.M[1]+c.F[1];return null}
-function cmpFalta(c){if(c.T!=null)return '';var f=[];if(c.M[1]==null)f.push('MASC');if(c.F[1]==null)f.push('FEM');return f.join(' y ')}
 
 /* Estado en memoria; se guarda en sessionStorage solo para sobrevivir a una recarga de la pestaña. */
-var SKEY='naowee-inscnum-admin-st-v2',ST=null,BYID={};
+var SKEY='naowee-inscnum-admin-st-v3',ST=null,BYID={};
 function freshState(){
  var s={reglas:clone(DATA.reglas),imp:null,log:[['Carga inicial desde la hoja de reglas: '+DATA.reglas.length+' modalidades','Admin de plataforma',fdate(DATA.meta.generado)]]};
  s.reglas.forEach(function(r){r.cmp=r.mixtaComposicion?parseCmp(r.mixtaComposicion):null});return s}
@@ -299,7 +299,22 @@ function decorate(){BYID={};ST.reglas.forEach(function(r){var mx=r.cmpOk?null:cm
   /* D14: topes por prueba fuera de la fase; Ecuestre es el único mixto abierto. */
   if(r.topeDelegacion&&r.topeDelegacion.por==='prueba')r.topeDelegacion=null;
   if(/^ecuestre$/i.test(r.deporte)){r.generos.X=true;r.mixtoAbierto=true}
-  BYID[r.id]=r})}
+  d19(r);BYID[r.id]=r})}
+/* D19: el cupo mixto de la hoja pasa a ser un límite conjunto Hombres + Mujeres; solo Ecuestre conserva Mixto. */
+function lcOf(r){var c=r.cmp;if(!c)return {atletas:null,suplentes:null,fuente:null,cita:''};
+ var ins=r.cmpMx!=null,b=(window.INSCNUM_LC||{})[r.id];
+ /* La base sale de shared/limites-conjuntos.js (fuente única de los tres roles). */
+ return {atletas:b?b.a:null,suplentes:b?b.s:null,fuente:b?(ins?'instructivo':'hoja'):null,cita:b?(ins?r.cmpMx:(r.mixtaComposicion||'')):''}}
+function d19(r){if(r.d19||r.mixtoAbierto||!r.generos.X)return;
+ r.d19=true;r.lc=lcOf(r);r.generos.X=false;
+ [['H','masc'],['M','fem']].forEach(function(g){if(r.generos[g[0]])return;r.generos[g[0]]=true;var s=r[g[1]];
+  if(s.atletas==null){s.soloLc=true;if(!r.sinCupo)s.sinTope=true;s.nota='Sin cupo propio en la hoja; habilitado por el límite conjunto (D19).'}})}
+function lcDef(r){return !!r.lc&&(r.lc.atletas!=null||r.lc.suplentes!=null)}
+function lcLine(r){var l=r.lc;if(!lcDef(r))return '';return (l.atletas!=null?pl(l.atletas,'atleta','atletas'):'')+(l.suplentes!=null?(l.atletas!=null?' + ':'')+pl(l.suplentes,'suplente','suplentes'):'')}
+/* El límite queda por debajo del cupo de un género: ese cupo no se puede completar. */
+function lcRev(r){if(!r.lc||r.lc.atletas==null)return false;var m=Math.max(r.generos.H&&r.masc.atletas!=null?r.masc.atletas:0,r.generos.M&&r.fem.atletas!=null?r.fem.atletas:0);return m>r.lc.atletas}
+function lcSrc(r){var l=r.lc;if(!l||l.fuente==='admin'||!l.fuente)return '';
+ return ' <span class="pc mx" title="'+esc((l.fuente==='instructivo'?'Instructivo: «':'Hoja de reglas: «')+l.cita+'»')+'">según '+(l.fuente==='instructivo'?'instructivo':'hoja')+'</span>'}
 function save(){try{sessionStorage.setItem(SKEY,JSON.stringify(ST))}catch(_){}}
 function loadState(){try{var j=sessionStorage.getItem(SKEY);if(j){var s=JSON.parse(j);if(s&&s.reglas&&s.reglas.length===DATA.reglas.length)return s}}catch(_){}return null}
 ST=loadState()||freshState();decorate();
@@ -318,13 +333,14 @@ function rowsAll(){var out=[];ST.reglas.forEach(function(r){GEN.forEach(function
 function rowByKey(k){var p=k.split('|'),r=BYID[p[0]];if(!r)return null;for(var i=0;i<GEN.length;i++)if(GEN[i][0]===p[1])return {r:r,g:p[1],gn:GEN[i][1],sk:GEN[i][2],side:GEN[i][2]?r[GEN[i][2]]:null,key:k};return null}
 /* Sin tope (D4): Billar, Lucha y géneros en blanco; no es un pendiente, la delegación solo declara que va. */
 function info(x){var r=x.r;return {
- sin:!!r.sinCupo||(x.g!=='X'&&!!x.side.sinTope&&x.side.atletas==null),
+ sin:!!r.sinCupo||(x.g!=='X'&&!!x.side.sinTope&&x.side.atletas==null&&!(x.side.soloLc&&r.lc&&r.lc.atletas!=null)),
  her:!!(r.heredado&&x.sk&&(r.heredadoCampos||[]).indexOf(x.sk)>=0)}}
 /* Criterios sin topes por prueba ni matriz (D14); sin cita cuando se reescribe el texto. */
 var CFIX={'Criterio oficial':['Manda lo documentado: instructivo de competencia > hoja de reglas > texto de las HU. Donde dos fuentes dicen cosas distintas pero compatibles, se aplican las dos.'],
  'Tenis de Campo':['Cupo 4 + 1 por modalidad y género (hoja). Los topes por prueba quedan fuera de esta fase.',''],
  'Atletismo':['Hasta 90 atletas en total (hoja). Los topes por prueba quedan fuera de esta fase.',''],
- 'Natación artística':['Equipo de 4 a 8 atletas + 2 reservas (instructivo). Las pruebas mixtas se rigen por el instructivo y no se componen en esta fase.','El «10» de la hoja es 8 atletas + 2 reservas.'],
+ 'Natación artística':['Equipo de 4 a 8 atletas + 2 reservas (instructivo); el límite conjunto Hombres + Mujeres es de 8 atletas + 2 suplentes (D19).','El «10» de la hoja es 8 atletas + 2 reservas.'],
+ 'Géneros no habilitados':['Antes quedaban filas de V3 con un género que la hoja no habilitaba (Ajedrez Hombres y Ecuestre Mixto). Se habilitaron por D14 y D19; el consolidado actual no trae filas con un género sin habilitar.',null],
  'Patinaje':['Artístico y Skateboarding no llevan tope por delegación; los topes por prueba quedan fuera de esta fase.',''],
  'Triatlón y Duatlón':[null,'El instructivo da un tope distinto para cada modalidad; la HU-IN-09 decía 4 para las dos.'],
  'Tejo':['Cupo 10 + 1 (hoja).',''],
@@ -334,7 +350,8 @@ var CRIT=(DATA.criteriosAplicados||[]).map(function(k){var o=clone(k),f=CFIX[k.t
  if(f){if(f[0])o.criterio=f[0];if(f[1]!=null)o.porque=f[1];if(f[0]&&f.length>1)o.citas=null}
  o.criterio=o.criterio.replace(/\(matriz\)/g,'(instructivo)').replace(/de la matriz/g,'del instructivo').replace(/La matriz/g,'El instructivo').replace(/, matriz\)/g,', instructivo)').replace(/Ecuestre\/[^;]*\/Mixto;\s*/g,'');
  o.porque=String(o.porque||'').replace(/([Ll])a matriz/g,function(m,c){return c==='L'?'El instructivo':'el instructivo'});return o});
-CRIT.push({tema:'Ecuestre',tipo:'decision',criterio:'Es la única modalidad mixta abierta: la delegación declara Mixto sin composición fija. Las demás modalidades con Mixto tienen pruebas mixtas con especificaciones del instructivo, que no se componen en esta fase.',porque:'Decisión del 16-oct-2026 (D14).'});
+CRIT.push({tema:'Ecuestre',tipo:'decision',criterio:'Es la única modalidad completamente mixta: la delegación declara Mixto sin composición fija y conserva el cupo mixto.',porque:'Decisiones del 16-oct-2026 (D14) y del 19-oct-2026 (D19).'});
+CRIT.push({tema:'Límite conjunto Hombres + Mujeres',tipo:'decision',criterio:'En las modalidades con cupos mixtos por sus pruebas (las que traían Mixto en la hoja, salvo Ecuestre) se habilitan Hombres y Mujeres, y el límite general es la suma de ambos: atletas con atletas y suplentes con suplentes, contra el cupo mixto total de la hoja. Si la modalidad ya tiene cupo por género, cada uno se mantiene y además aplica el límite conjunto.',porque:'Decisión de Daniel del 19-oct-2026 (D19).'});
 /* Universo de delegaciones: 33 con intención + Vichada habilitada de forma preventiva; no depende de que el consolidado ya la traiga. */
 var UNIV=Math.max(34,(CON.delegaciones||[]).length);
 function counts(){var R=ST.reglas;return {n:R.length,sin:rowsAll().filter(function(x){return info(x).sin}).length,her:rowsAll().filter(function(x){return info(x).her}).length,conf:CRIT.length}}
@@ -359,17 +376,15 @@ function supLabel(x){var su=x.side.suplentes;
 function cupoCells(x){var i=info(x),r=x.r;
  if(i.sin)return '<td colspan="2"><span class="badge" title="La delegación solo declara que va; no se valida un tope">Sin tope en el instructivo</span> <button class="lk" data-go="a3" data-mx="'+r.id+'">Poner tope</button></td>';
  if(x.g==='X'){
-  if(r.mixtoAbierto)return '<td colspan="2">Mixto abierto <span class="sub">sin composición fija</span></td>';
-  if(r.cmp)return '<td colspan="2">'+esc(cmpText(r.cmp))+mxSrc(r)+'</td>';
-  return '<td colspan="2"><span class="dim" title="Pruebas mixtas: se rigen por el instructivo y no se componen en esta fase">Según el instructivo</span></td>'}
+  return '<td colspan="2">Mixto abierto <span class="sub">sin composición fija</span></td>'}
+ if(x.side.soloLc&&x.side.atletas==null&&r.lc&&r.lc.atletas!=null)return '<td colspan="2"><span class="badge mx" title="La hoja no trae cupo propio para este género: lo acota el límite conjunto">Rige el límite conjunto</span><span class="sub">'+lcLine(r)+' entre Hombres y Mujeres</span></td>';
  var a=(x.side.hasta?'hasta ':'')+x.side.atletas,s=x.side.suplentes==null?'suplentes sin definir':(x.side.suplentes===0?'sin suplentes':pl(x.side.suplentes,'suplente','suplentes'));
  if(i.her)return '<td colspan="2">'+a+' atletas + '+s+' <span class="badge wa" title="Celda combinada en la hoja: por revisar">Heredado</span><span class="sub">celda combinada de «'+esc(origen(r))+'»</span></td>';
  var mz=x.side.fuente==='MATRIZ'?src(r.minimo&&r.minimo.fuente==='MATRIZ'?r.minimo:{fuente:'MATRIZ',citaMatriz:''}):'';
  return '<td class="num">'+a+mz+'</td><td class="num">'+(supNd(x)||x.side.suplentes===0?supLabel(x):x.side.suplentes==null?DIM:x.side.suplentes)+'</td>'}
-/* Cupo mixto informativo: viene del instructivo o de la hoja. */
-function mxSrc(r){var f=cmpFalta(r.cmp);
- if(r.cmpMx!=null)return ' <span class="pc mx" title="'+esc('Instructivo: «'+r.cmpMx+'»')+'">según instructivo</span>';
- return ' <span class="pc mx" title="'+esc('Hoja de reglas: «'+(r.mixtaComposicion||'')+'»'+(f?'. La hoja no define '+f:''))+'">según hoja</span>'}
+/* Indicación del límite conjunto en las filas Hombres y Mujeres de la modalidad. */
+function lcNote(x){var r=x.r;if(!r.lc||x.g==='X')return '';
+ return '<span class="lcn"><b>Límite conjunto Hombres + Mujeres:</b> '+(lcDef(r)?lcLine(r)+lcSrc(r):'<span class="dim">sin definir en la hoja</span>')+'</span>'}
 function genCell(x){return x.g==='X'?'<button class="badge mx" data-go="a4" data-mx="'+x.r.id+'" style="border:0;cursor:pointer">Mixto</button>':x.gn}
 
 /* ---------- A1 ---------- */
@@ -382,7 +397,7 @@ function a1View(){
  '<div class="toolbar"><div class="search" style="flex:1 1 230px;width:auto;min-width:0">'+SEARCH+'<input id="a1-q" placeholder="Buscar deporte o modalidad" style="border:0;outline:0;font:inherit;flex:1;min-width:0;background:none" aria-label="Buscar"></div>'+
  '<select class="sel" id="a1-s" aria-label="Deporte"><option value="">Deportes</option></select>'+
  '<select class="sel" id="a1-g" aria-label="Género"><option value="">Géneros</option><option value="H">Hombres</option><option value="M">Mujeres</option><option value="X">Mixto</option></select>'+
- '<select class="sel" id="a1-e" aria-label="Estado"><option value="">Estados</option><option value="sin">Sin tope en el instructivo</option><option value="nos">Sin suplentes</option><option value="her">Heredado (por revisar)</option><option value="dist">Cupo distinto por género</option></select>'+
+ '<select class="sel" id="a1-e" aria-label="Estado"><option value="">Estados</option><option value="sin">Sin tope en el instructivo</option><option value="nos">Sin suplentes</option><option value="her">Heredado (por revisar)</option><option value="dist">Cupo distinto por género</option><option value="lc">Con límite conjunto Hombres + Mujeres</option></select>'+
  '<label class="swt"><span class="swt-l">Cupos distintos por género</span><input type="checkbox" role="switch" id="a1-e-dist"><span class="swt-t" aria-hidden="true"></span></label></div></div>'+
  '<section class="card nb"><table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Cupo atletas</th><th class="num">Cupo suplentes</th><th>Mínimo</th><th>Tope por delegación</th><th>Notas</th><th></th></tr></thead><tbody id="a1-b"></tbody></table>'+
  '<div class="bar" style="margin-top:14px;padding-top:24px;justify-content:center"><div class="pager"><button class="lk" id="a1-prev" aria-label="Página anterior">‹ Anterior</button>Página <span class="box" id="a1-p">1</span> de <b style="font-weight:600" id="a1-pn">1</b><button class="lk" id="a1-next" aria-label="Página siguiente">Siguiente ›</button></div></div></section></div>'+
@@ -393,7 +408,7 @@ function a1Match(x){
  if(q&&norm(x.r.nombre.d+' '+x.r.nombre.m+' '+x.r.deporte+' '+x.r.modalidad).indexOf(q)<0)return false;
  if(A1.s&&x.r.deporte!==A1.s)return false;if(A1.g&&x.g!==A1.g)return false;
  var i=info(x),r=x.r;
- if(A1.e==='sin')return i.sin;if(A1.e==='her')return i.her;if(A1.e==='nos')return x.g!=='X'&&!i.sin&&x.side.suplentes===0;
+ if(A1.e==='lc')return x.g!=='X'&&lcDef(r);if(A1.e==='sin')return i.sin;if(A1.e==='her')return i.her;if(A1.e==='nos')return x.g!=='X'&&!i.sin&&x.side.suplentes===0;
  if(A1.e==='dist')return !!(r.generos.H&&r.generos.M&&r.masc.atletas!=null&&r.fem.atletas!=null&&r.masc.atletas!==r.fem.atletas&&x.g!=='X');
  return true}
 /* Marca la tabla como «pegada» solo cuando el scroll ya pasó su cabecera. */
@@ -413,7 +428,7 @@ function a1Draw(){
  var im=$('#a1-imp');if(ST.imp){im.hidden=false;im.textContent='Última importación: '+ST.imp.n+' filas guardadas ('+ST.imp.a+' con alerta) y '+ST.imp.e+' omitidas por error.'}else im.hidden=true;
  var page=list.slice((A1.p-1)*PER,A1.p*PER);
  $('#a1-b').innerHTML=page.length?page.map(function(x){var nt=notasOf(x);
-  return '<tr data-k="'+x.key+'"><td><b>'+esc(x.r.nombre.d)+'</b></td><td>'+esc(x.r.nombre.m)+'</td><td>'+genCell(x)+'</td>'+cupoCells(x)+'<td>'+minCell(x)+'</td><td>'+topeCell(x)+'</td><td class="mini">'+(nt.length?esc(nt.join(' · ')):DIM)+'</td><td><button class="lk" data-go="'+(x.g==='X'?'a4':'a3')+'" data-mx="'+x.r.id+'">Editar</button></td></tr>'}).join(''):'<tr><td colspan="9"><div class="empty"><b>Sin resultados</b>Prueba con otro deporte, género o término.</div></td></tr>';
+  return '<tr data-k="'+x.key+'"><td><b>'+esc(x.r.nombre.d)+'</b></td><td>'+esc(x.r.nombre.m)+'</td><td>'+genCell(x)+'</td>'+cupoCells(x)+'<td>'+minCell(x)+'</td><td>'+topeCell(x)+'</td><td class="mini">'+(lcNote(x)||'')+(lcNote(x)&&nt.length?'<br>':'')+(nt.length?esc(nt.join(' · ')):(lcNote(x)?'':DIM))+'</td><td><button class="lk" data-go="'+(x.g==='X'?'a4':'a3')+'" data-mx="'+x.r.id+'">Editar</button></td></tr>'}).join(''):'<tr><td colspan="9"><div class="empty"><b>Sin resultados</b>Prueba con otro deporte, género o término.</div></td></tr>';
  $('#a1-p').textContent=A1.p;$('#a1-pn').textContent=pn;stk();
  $('#a1-prev').disabled=A1.p<=1;$('#a1-next').disabled=A1.p>=pn;
  $('#a1-prev').style.opacity=A1.p<=1?'.4':'1';$('#a1-next').style.opacity=A1.p>=pn?'.4':'1';
@@ -453,7 +468,7 @@ function a2Facts(rows){
  var nm=DATA.mapaNombres.filter(function(m){return m.confianza!=='alta'}).length,eq=(DATA.equivalencias||[]).length,
   typos=ST.reglas.filter(function(r){return (PAIRS[r.id]||[]).some(function(m){return m.confianza==='alta'&&(hamming(norm(r.deporte),norm(m.deporte))<=2&&norm(r.deporte)!==norm(m.deporte)||hamming(norm(r.modalidad),norm(m.modalidad))<=2&&norm(r.modalidad)!==norm(m.modalidad))})}),
   sdr=ST.reglas.filter(function(r){return !(PAIRS[r.id]||[]).length}),
-  gen=CRIT.filter(function(k){return k.tipo==='genero'})[0];
+  vg=v3Genero(),lcN=ST.reglas.filter(function(r){return r.lc}).length,lcD=ST.reglas.filter(lcDef).length,rv=ST.reglas.filter(lcRev).length;
  var L=[];
  L.push(pl(sin,'fila sin tope en el instructivo (no es error: solo se declara que va)','filas sin tope en el instructivo (no es error: solo se declara que va)'));
  L.push(pl(her,'fila con cupo heredado (celda combinada)','filas con cupo heredado (celda combinada)'));
@@ -461,8 +476,18 @@ function a2Facts(rows){
  if(nm)L.push(pl(nm,'nombre de V3 sin equivalente en la hoja','nombres de V3 sin equivalente en la hoja'));
  var ts={};typos.forEach(function(r){var t='Error de escritura: «'+r.deporte+'» en la hoja contra «'+PAIRS[r.id][0].deporte+'» en V3';if(!ts[t]){ts[t]=1;L.push(t)}});
  sdr.forEach(function(r){L.push('Regla sin declaraciones: '+r.nombre.d+' · '+r.nombre.m)});
- if(gen)L.push(Math.max(0,gen.filas-3)+' filas de V3 con un género que la hoja no habilita (se revisan aparte)');
+ L.push(pl(lcD,'modalidad con límite conjunto Hombres + Mujeres reconocido','modalidades con límite conjunto Hombres + Mujeres reconocido')+' ('+pl(lcN-lcD,'sin límite en la hoja','sin límite en la hoja')+'); la columna «Cupos mixtos» solo aplica a Ecuestre');
+ if(rv)L.push(pl(rv,'límite conjunto menor que el cupo de un género','límites conjuntos menores que el cupo de un género')+': se guardan y quedan «Por revisar» en Límites conjuntos');
+ L.push(vg.no?vg.no+' filas de V3 con un género que la hoja no habilita (se revisan aparte)':'Todas las filas de V3 caen en un género habilitado (Ajedrez Hombres y Ecuestre Mixto, habilitados por D14 y D19)');
+ if(vg.lcm)L.push(vg.lcm+' filas de V3 declaran Mixto en modalidades con límite conjunto (se revisan aparte, D19)');
  return L}
+/* Filas de V3 cuyo género no habilita ninguna regla; el Mixto de las modalidades con límite conjunto se cuenta aparte. */
+function v3Genero(){var by={},sx={Hombres:'H',Mujeres:'M',Mixto:'X'},no=0,lcm=0;
+ DATA.mapaNombres.forEach(function(m){by[m.deporte+'|'+m.modalidad]=m.reglaIds});
+ CON.filas.forEach(function(f){var ids=by[f[1]+'|'+f[2]],g=sx[f[3]];if(!ids||!g)return;
+  if(ids.some(function(id){return BYID[id]&&BYID[id].generos[g]}))return;
+  if(g==='X'&&ids.some(function(id){return BYID[id]&&BYID[id].lc}))lcm++;else no++});
+ return {no:no,lcm:lcm}}
 var A2={p:1,k:'all',st:'vacio',csv:''};
 function steps(n){
  var t=['Subir archivo','Vista previa','Confirmar'];
@@ -474,7 +499,7 @@ function sc(t,body,x){return '<section class="card"><div class="card-h"><h2 clas
 function stc(n){return '<section class="card steps-c" aria-label="Progreso de la importación">'+steps(n)+'</section>'}
 function a2Pane(st){
  var FILE='DEPORTES MODALIDADES JN 2027.xlsx';
- if(st==='vacio')return stc(1)+sc('Subir archivo','<div class="drop" id="a2-drop"><b>Arrastra el archivo aquí o selecciónalo</b>Formato .xlsx · se lee la primera hoja<div style="margin-top:14px"><button class="btn sec sm" id="a2-pick">Seleccionar archivo</button></div></div><p class="mini" style="margin:14px 0 0">Archivos de referencia: Inscripción_Numérica_V3.xlsx · '+FILE+' · <button class="lk">Descargar plantilla</button></p><div class="foot" style="display:flex;justify-content:flex-end;gap:10px;margin-top:22px"><button class="btn ter" id="a2-cancel">Cancelar</button><button class="btn pri" id="a2-cont" disabled>Continuar</button></div>');
+ if(st==='vacio')return stc(1)+sc('Subir archivo','<div class="drop" id="a2-drop"><b>Arrastra el archivo aquí o selecciónalo</b>Formato .xlsx · se lee la primera hoja<div style="margin-top:14px"><button class="btn sec sm" id="a2-pick">Seleccionar archivo</button></div></div><p class="mini" style="margin:14px 0 0">Columnas de la plantilla: Deporte · Modalidad · Género · Cupo atletas · Cupo suplentes · Mínimo · Tope por delegación · Límite conjunto atletas · Límite conjunto suplentes. La columna «Cupos mixtos» solo se llena en Ecuestre.</p><p class="mini" style="margin:8px 0 0">Archivos de referencia: Inscripción_Numérica_V3.xlsx · '+FILE+' · <button class="lk">Descargar plantilla</button></p><div class="foot" style="display:flex;justify-content:flex-end;gap:10px;margin-top:22px"><button class="btn ter" id="a2-cancel">Cancelar</button><button class="btn pri" id="a2-cont" disabled>Continuar</button></div>');
  var rows=a2Rows(),s=a2Sum(rows);
  if(st==='errores'){
   var vis=rows.filter(function(r){return A2.k==='all'||r.sev===A2.k}),pn=Math.max(1,Math.ceil(vis.length/8));if(A2.p>pn)A2.p=pn;
@@ -483,9 +508,9 @@ function a2Pane(st){
   '<div class="sum s4" style="margin-top:16px"><div><b>'+s.t+'</b><span>Filas leídas</span></div><div class="v"><b>'+s.ok+'</b><span>Válidas</span></div><div><b style="color:var(--warn-700)">'+s.wa+'</b><span>Válidas con alerta</span></div><div class="e"><b>'+s.er+'</b><span>Con error</span></div></div>'+
   '<div class="warnb"><b style="display:block;margin-bottom:4px">Calidad de datos entre hojas</b><ul style="margin:0;padding-left:20px">'+a2Facts(rows).map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul></div>')+
   sc('Vista previa de las filas','<div class="chips" style="margin-bottom:14px" id="a2-f">'+[['all','Todas ('+s.t+')'],['er','Con error ('+s.er+')'],['wa','Con alerta ('+s.wa+')'],['ok','Válidas ('+s.ok+')']].map(function(b){return '<button class="'+(A2.k===b[0]?'on':'')+'" data-k="'+b[0]+'">'+b[1]+'</button>'}).join('')+'</div>'+
-  '<table class="tbl c"><thead><tr><th>Fila</th><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Atletas</th><th class="num">Suplentes</th><th>Resultado</th></tr></thead><tbody id="a2-t">'+
-  pg.map(function(r){var x=r.x,at=x.g==='X'?(x.r.cmp?cmpText(x.r.cmp):'—'):(x.side.atletas==null?'—':x.side.atletas),su=x.g==='X'||x.side.suplentes==null?'—':x.side.suplentes;
-   return '<tr data-k="'+r.sev+'"><td>'+r.n+'</td><td>'+esc(x.r.nombre.d)+'</td><td>'+esc(x.r.nombre.m)+'</td><td>'+x.gn+'</td><td class="num">'+esc(at)+'</td><td class="num">'+su+'</td><td><span class="badge '+r.sev+'">'+({ok:'Válida',wa:'Alerta',er:'Error'})[r.sev]+'</span> <span class="'+(r.sev==='er'?'msg':'mini')+'">'+a2Msg(r)+'</span></td></tr>'}).join('')+(pg.length?'':'<tr><td colspan="7"><div class="empty"><b>Sin filas</b>No hay filas con ese resultado.</div></td></tr>')+'</tbody></table>'+
+  '<table class="tbl c"><thead><tr><th>Fila</th><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Atletas</th><th class="num">Suplentes</th><th>Límite conjunto H + M</th><th>Resultado</th></tr></thead><tbody id="a2-t">'+
+  pg.map(function(r){var x=r.x,at=x.g==='X'||x.side.atletas==null?'—':x.side.atletas,su=x.g==='X'||x.side.suplentes==null?'—':x.side.suplentes,lcl=x.g!=='X'&&lcDef(x.r)?lcLine(x.r):'—';
+   return '<tr data-k="'+r.sev+'"><td>'+r.n+'</td><td>'+esc(x.r.nombre.d)+'</td><td>'+esc(x.r.nombre.m)+'</td><td>'+x.gn+'</td><td class="num">'+esc(at)+'</td><td class="num">'+su+'</td><td>'+esc(lcl)+'</td><td><span class="badge '+r.sev+'">'+({ok:'Válida',wa:'Alerta',er:'Error'})[r.sev]+'</span> <span class="'+(r.sev==='er'?'msg':'mini')+'">'+a2Msg(r)+'</span></td></tr>'}).join('')+(pg.length?'':'<tr><td colspan="8"><div class="empty"><b>Sin filas</b>No hay filas con ese resultado.</div></td></tr>')+'</tbody></table>'+
   '<div class="bar" style="margin-top:10px"><span class="mini">'+vis.length+' filas · página '+A2.p+' de '+pn+'</span><div class="pager"><button class="lk" id="a2-prev"'+(A2.p<=1?' disabled':'')+'>‹ Anterior</button><button class="lk" id="a2-next"'+(A2.p>=pn?' disabled':'')+'>Siguiente ›</button></div></div>'+
   '<div class="warnb" style="margin:16px 0 14px">Se guardan las '+s.save+' filas válidas ('+s.wa+' con alerta, que se marcan para revisar). Las '+s.er+' con error quedan en un informe descargable y se corrigen en el archivo o fila por fila.</div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><button class="btn ter" id="a2-back">Atrás</button><button class="btn sec sm" id="a2-dl">Descargar errores (.csv)</button></div><button class="btn pri" id="a2-go">Importar '+s.save+' filas, '+s.wa+' con alerta</button></div>');
  }
@@ -523,25 +548,26 @@ function a2Mount(){
 
 /* ---------- A3 ---------- */
 var a3Draw=function(){},EDIT={key:null};
-var EXK={bal:'baloncesto--conjunto-5x5|H',box:'boxeo--unica|M',tiro:'tiro-deportivo--rifle|H'};
-var FL={max:'El cupo de atletas',sup:'El cupo de suplentes',min:'El mínimo',tope:'El tope por delegación',arman:'El máximo de suplentes por arma'};
+var EXK={lc:'porrismo-exhibicion--cheer-nivel-4|H',bal:'baloncesto--conjunto-5x5|H',box:'boxeo--unica|M',tiro:'tiro-deportivo--rifle|H'};
+var FL={lca:'El límite conjunto de atletas',lcs:'El límite conjunto de suplentes',max:'El cupo de atletas',sup:'El cupo de suplentes',min:'El mínimo',tope:'El tope por delegación',arman:'El máximo de suplentes por arma'};
 function intv(id,s){s=String(s).trim();if(s==='')return {v:null};
  if(/^-\d+$/.test(s))return {e:FL[id]+' no puede ser negativo.'};
  if(!/^\d+$/.test(s))return {e:FL[id]+' debe ser un número entero.'};return {v:+s}}
 function num(id,v,ph){return '<input class="in" type="text" inputmode="numeric" autocomplete="off" id="'+id+'" value="'+(v==null?'':v)+'" placeholder="'+(ph||'Sin definir')+'" aria-describedby="e-'+id.slice(2)+'">'}
+function declLc(r){var s={};['H','M'].forEach(function(g){declOrgs(r.id,g).forEach(function(k){s[k]=1})});return Object.keys(s)}
 function a3Form(x){
  var r=x.r,m=r.minimo,t=r.topeDelegacion,ar=m&&m.maxSuplentesPorArma!=null,
   pcm=m&&m.atletas!=null&&m.confirmado===false,pct=t&&t.atletas!=null&&t.confirmado===false;
- return '<h3>Editar cupo</h3><p>Los tres primeros datos identifican la fila y no se editan. El mínimo y el tope aplican a toda la modalidad.</p>'+
+ return '<h3>Editar cupo</h3><p>Los tres primeros datos identifican la fila y no se editan. El mínimo, el tope y el límite conjunto aplican a toda la modalidad.</p>'+
  '<div class="g3"><div class="fl"><label>Deporte</label><input class="in" readonly value="'+esc(r.nombre.d)+'"></div><div class="fl"><label>Modalidad</label><input class="in" readonly value="'+esc(r.nombre.m)+'"></div><div class="fl"><label>Género</label><input class="in" readonly value="'+x.gn+'"></div></div>'+
  '<div class="g3"><div class="fl" style="grid-column:span 1"><label for="f-max">Cupo máximo de atletas</label>'+num('f-max',x.side.atletas)+'<small class="e" id="e-max" hidden></small></div><div class="fl"><label for="f-sup">Cupo máximo de suplentes</label>'+num('f-sup',x.side.suplentes)+'<small class="e" id="e-sup" hidden></small></div><div class="fl"><label for="f-min">Mínimo de atletas</label>'+num('f-min',m&&m.atletas)+'<small class="e" id="e-min" hidden></small>'+(pcm?'<small>Valor de las historias, por confirmar.</small>':(m&&m.fuente==='MATRIZ'?'<small>Según el instructivo: «'+esc(m.citaMatriz)+'».</small>':''))+'</div></div>'+
  '<div class="fl"><label class="ck"><input type="checkbox" id="f-arma"'+(ar||(x.side.nota&&/arma/i.test(x.side.nota))?' checked':'')+'> Suplentes por arma</label><div id="f-armas" style="margin-top:10px" '+(ar||(x.side.nota&&/arma/i.test(x.side.nota))?'':'hidden')+'><label for="f-arman" style="font-size:13px;color:var(--g-700)">Máximo de suplentes por arma</label>'+num('f-arman',ar?m.maxSuplentesPorArma:'')+'<small class="e" id="e-arman" hidden></small></div></div>'+
  '<div class="g2"><div class="fl"><label for="f-tope">Tope por delegación</label>'+num('f-tope',t&&t.atletas,'Sin tope')+'<small class="e" id="e-tope" hidden></small>'+(pct?'<small>Valor de las historias, por confirmar.</small>':(t&&t.fuente==='MATRIZ'?'<small>Según el instructivo: «'+esc(t.citaMatriz)+'».</small>':''))+'</div><div class="fl"><label for="f-por">El tope se cuenta</label><select class="in" id="f-por"><option value="delegacion">por delegación</option><option value="genero">por género</option></select></div></div>'+
- '<div class="fl"><label class="ck"><input type="checkbox" id="f-mx"'+(r.generos.X?' checked':'')+'> Modalidad mixta (habilita el género Mixto)</label><div id="f-mxn" class="mini" style="margin-top:6px" hidden>Las pruebas mixtas se rigen por el instructivo y no se componen en esta fase.</div></div>'+
+ (r.lc?'<div class="fl" id="f-lc"><label><b>Límite conjunto Hombres + Mujeres</b></label><small>Hombres + mujeres no pueden superar este total: atletas con atletas y suplentes con suplentes. Cada género conserva su propio cupo.</small><div class="g2" style="margin-top:8px"><div class="fl"><label for="f-lca">Atletas (hombres + mujeres)</label>'+num('f-lca',r.lc.atletas,'Sin límite')+'<small class="e" id="e-lca" hidden></small></div><div class="fl"><label for="f-lcs">Suplentes (hombres + mujeres)</label>'+num('f-lcs',r.lc.suplentes,'Sin límite')+'<small class="e" id="e-lcs" hidden></small></div></div>'+(r.lc.fuente&&r.lc.fuente!=='admin'?'<small>Según '+(r.lc.fuente==='instructivo'?'el instructivo':'la hoja')+': «'+esc(r.lc.cita)+'».</small>':'')+'<div class="warnb" id="f-lcw" role="status" style="margin-top:10px" hidden></div></div>':'')+
  '<div class="foot" style="align-items:center"><span class="msg" id="f-why" role="alert" style="margin-right:auto"></span><button class="btn ter" id="f-cancel">Cancelar</button><button class="btn pri" id="f-ok">Guardar cupo</button></div>';
 }
 function a3Mount(){
- $('#a3-app').innerHTML='<div class="page">'+a1Head()+'<div class="chips" id="a3-ex"><button class="on" data-e="bal">Ejemplo: Baloncesto 5x5 · Hombres</button><button data-e="box">Ejemplo: Boxeo · Mujeres</button><button data-e="tiro">Ejemplo: Tiro · Rifle</button></div><section class="card"><div class="card-h"><h2 class="ini-k">Cupos de la modalidad</h2></div><table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Cupo atletas</th><th class="num">Cupo suplentes</th></tr></thead><tbody id="a3-bg"></tbody></table></section></div><div class="modal-bg"><div class="modal w" id="a3-m" role="dialog" aria-label="Editar cupo"></div></div>';
+ $('#a3-app').innerHTML='<div class="page">'+a1Head()+'<div class="chips" id="a3-ex"><button class="on" data-e="bal">Ejemplo: Baloncesto 5x5 · Hombres</button><button data-e="lc">Ejemplo: Cheer Nivel 4 · límite conjunto</button><button data-e="box">Ejemplo: Boxeo · Mujeres</button><button data-e="tiro">Ejemplo: Tiro · Rifle</button></div><section class="card"><div class="card-h"><h2 class="ini-k">Cupos de la modalidad</h2></div><table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Cupo atletas</th><th class="num">Cupo suplentes</th></tr></thead><tbody id="a3-bg"></tbody></table></section></div><div class="modal-bg"><div class="modal w" id="a3-m" role="dialog" aria-label="Editar cupo"></div></div>';
  var curKey=null;
  function draw(k){
   var key=EXK[k]||(k==='row'&&EDIT.key)||EXK.bal,x=rowByKey(key);if(!x){key=EXK.bal;x=rowByKey(key)}
@@ -549,21 +575,27 @@ function a3Mount(){
   $('#a3-m').innerHTML=a3Form(x);
   $('#f-por').value=(x.r.topeDelegacion&&x.r.topeDelegacion.por)||'delegacion';
   $$('#a3-ex button').forEach(function(b){b.className=b.getAttribute('data-e')===k?'on':''});
-  $('#a3-bg').innerHTML=rowsAll().filter(function(y){return y.r.id===x.r.id}).slice(0,6).map(function(y){var i=info(y);return '<tr'+(y.key===key?' class="hl"':'')+'><td>'+esc(y.r.nombre.d)+'</td><td>'+esc(y.r.nombre.m)+'</td><td>'+y.gn+'</td><td class="num">'+(y.side&&y.side.atletas!=null?y.side.atletas:'—')+'</td><td class="num">'+(y.side&&y.side.suplentes!=null?y.side.suplentes:'—')+'</td></tr>'}).join('');
-  function read(){var o={},err=null;['max','sup','min','tope','arman'].forEach(function(f){var p=intv(f,$('#f-'+f).value),e=$('#e-'+f);o[f]=p.v==null?null:p.v;
+  $('#a3-bg').innerHTML=rowsAll().filter(function(y){return y.r.id===x.r.id}).slice(0,6).map(function(y){var i=info(y);return '<tr'+(y.key===key?' class="hl"':'')+'><td>'+esc(y.r.nombre.d)+'</td><td>'+esc(y.r.nombre.m)+'</td><td>'+y.gn+'</td><td class="num">'+(y.side&&y.side.atletas!=null?y.side.atletas:'—')+'</td><td class="num">'+(y.side&&y.side.suplentes!=null?y.side.suplentes:'—')+'</td></tr>'}).join('')+(x.r.lc?'<tr><td>'+esc(x.r.nombre.d)+'</td><td>'+esc(x.r.nombre.m)+'</td><td><b>Hombres + Mujeres</b> <span class="sub">límite conjunto</span></td><td class="num">'+(x.r.lc.atletas!=null?x.r.lc.atletas:'—')+'</td><td class="num">'+(x.r.lc.suplentes!=null?x.r.lc.suplentes:'—')+'</td></tr>':'');
+  var FS=['max','sup','min','tope','arman'].concat(x.r.lc?['lca','lcs']:[]),lcO=x.r.lc?declLc(x.r):[];
+  function lcw(o){var w=$('#f-lcw');if(!w)return;var r=x.r,oth=x.g==='H'?r.fem:r.masc,og=x.g==='H'?'M':'H',m=Math.max(o.max==null?0:o.max,r.generos[og]&&oth.atletas!=null?oth.atletas:0),t=[];
+   if(o.lca!=null&&m>o.lca)t.push('El límite conjunto ('+o.lca+') es menor que el cupo de un género ('+m+'): ese cupo no se podrá completar.');
+   if(lcO.length&&((o.lca!=null&&r.lc.atletas!=null&&o.lca<r.lc.atletas)||(o.lcs!=null&&r.lc.suplentes!=null&&o.lcs<r.lc.suplentes)))t.push(pl(lcO.length,'delegación ya declaró','delegaciones ya declararon')+' esta modalidad: al guardar se recalcula, se avisa a las afectadas y se registra.');
+   w.hidden=!t.length;w.textContent=t.join(' ')}
+  function read(){var o={},err=null;FS.forEach(function(f){var p=intv(f,$('#f-'+f).value),e=$('#e-'+f);o[f]=p.v==null?null:p.v;
     e.hidden=!p.e;e.textContent=p.e||'';$('#f-'+f).className='in'+(p.e?' bad':'');if(p.e&&!err)err=p.e});
    if(!err&&o.min!=null&&o.max!=null&&o.min>o.max){err='El mínimo no puede superar el cupo máximo de atletas.';$('#e-min').hidden=false;$('#e-min').textContent=err;$('#f-min').className='in bad'}
-   return {o:o,err:err}}
+   lcw(o);return {o:o,err:err}}
   function chk(){var v=read();$('#f-ok').disabled=!!v.err;$('#f-why').textContent=v.err?'No se puede guardar: '+v.err:''}
-  ['max','sup','min','tope','arman'].forEach(function(f){$('#f-'+f).oninput=chk});
+  FS.forEach(function(f){$('#f-'+f).oninput=chk});chk();
   $('#f-arma').onchange=function(){$('#f-armas').hidden=!this.checked};
-  $('#f-mx').onchange=function(){$('#f-mxn').hidden=!this.checked};
   $('#f-ok').onclick=function(){
    var v=read();if(v.err)return;
-   var e={atletas:v.o.max,suplentes:v.o.sup,minimo:v.o.min,tope:v.o.tope,por:$('#f-por').value,arman:$('#f-arma').checked?v.o.arman:null,mx:$('#f-mx').checked};
+   var e={atletas:v.o.max,suplentes:v.o.sup,minimo:v.o.min,tope:v.o.tope,por:$('#f-por').value,arman:$('#f-arma').checked?v.o.arman:null};
+   if(x.r.lc){e.lca=v.o.lca;e.lcs=v.o.lcs}
    var old=x.side.atletas,n=old!=null&&e.atletas!=null&&e.atletas<old?declOrgs(x.r.id,x.g).length:0;
    if(n>0){nav('a6',{ctx:{key:key,old:old,nw:e.atletas,edit:e}});return}
-   var ch=applyEdit(key,e);nav('a1',{notice:ch?'Cupo guardado.':'Sin cambios en el cupo.'})};
+   var nl=0,o=x.r.lc;if(o&&((e.lca!=null&&o.atletas!=null&&e.lca<o.atletas)||(e.lcs!=null&&o.suplentes!=null&&e.lcs<o.suplentes)))nl=lcO.length;
+   var ch=applyEdit(key,e,nl>0?nl:undefined);nav('a1',{notice:ch?(nl>0?'Cupo guardado: se recalculó el límite conjunto y se avisó a '+pl(nl,'delegación','delegaciones')+'.':'Cupo guardado.'):'Sin cambios en el cupo.'})};
   $('#f-cancel').onclick=function(){nav('a1')};
  }
  a3Draw=draw;
@@ -583,27 +615,32 @@ function applyEdit(key,e,nDel){
   var t=r.topeDelegacion||{};t.atletas=e.tope;t.por=e.por;t.confirmado=true;t.fuente='admin';r.topeDelegacion=(t.atletas==null&&t.equiposMixtos==null)?null:t}
  var am=r.minimo&&r.minimo.maxSuplentesPorArma!=null?r.minimo.maxSuplentesPorArma:null;
  if(e.arman!==am&&(e.arman!=null||am!=null)){ch.push('suplentes por arma '+(am==null?'sin definir':am)+' → '+(e.arman==null?'sin definir':e.arman));if(!r.minimo)r.minimo={atletas:null};r.minimo.maxSuplentesPorArma=e.arman}
- if(e.mx!==!!r.generos.X){ch.push(e.mx?'habilita el género Mixto':'quita el género Mixto');r.generos.X=e.mx}
+ if(r.lc&&e.lca!==undefined){var l=r.lc;
+  if(e.lca!==l.atletas){ch.push('límite conjunto de atletas '+(l.atletas==null?'sin definir':l.atletas)+' → '+(e.lca==null?'sin definir':e.lca));l.atletas=e.lca;l.fuente='admin'}
+  if(e.lcs!==l.suplentes){ch.push('límite conjunto de suplentes '+(l.suplentes==null?'sin definir':l.suplentes)+' → '+(e.lcs==null?'sin definir':e.lcs));l.suplentes=e.lcs;l.fuente='admin'}}
  if(r.sinCupo&&!['H','M'].some(function(g){return r.generos[g]&&r[g==='H'?'masc':'fem'].atletas==null}))r.sinCupo=false;
  if(ch.length)logIt(r.nombre.d+' '+r.nombre.m+' · '+x.gn+' · '+ch.join(' · ')+(nDel!=null?' · recalculado y avisado a '+pl(nDel,'delegación','delegaciones'):''),nDel);
  save();return ch.length}
 function nav(id,o){go(id,o)}
 
 /* ---------- A4 ---------- */
-/* D14: solo Ecuestre es mixto abierto; las demás son pruebas mixtas del instructivo, informativas y sin editor. */
+/* D19: las modalidades con cupos mixtos por sus pruebas llevan un límite conjunto Hombres + Mujeres; Ecuestre es el único mixto abierto. */
 var MXSEL=null;
-function sideTxt(r,sd){if(r.sinCupo||!sd||sd.atletas==null)return '<span class="dim">Sin tope en el instructivo</span>';return sd.atletas+' atletas'+(sd.suplentes?' + '+pl(sd.suplentes,'suplente','suplentes'):'')}
+function sideTxt(r,sd){if(r.sinCupo||!sd||sd.atletas==null)return '<span class="dim">Sin tope en el instructivo</span>';return pl(sd.atletas,'atleta','atletas')+(sd.suplentes?' + '+pl(sd.suplentes,'suplente','suplentes'):'')}
+function sideLc(r,sd){if(sd&&sd.atletas==null&&lcDef(r)&&!r.sinCupo)return '<span class="dim">Solo límite conjunto</span>';return sideTxt(r,sd)}
+function lcBadge(r){if(!lcDef(r))return '<span class="badge" title="La hoja no trae cupo mixto para esta modalidad: no se valida un límite conjunto">Sin límite definido</span>';
+ return lcRev(r)?'<span class="badge wa" title="El límite conjunto es menor que el cupo de un género: ese cupo no se puede completar">Por revisar</span>':'<span class="badge ok">Definido</span>'}
 function a4Mount(){
- var ab=ST.reglas.filter(function(r){return r.mixtoAbierto}),pm=ST.reglas.filter(function(r){return r.generos.X&&!r.mixtoAbierto});
- var h='<div class="page">'+header({title:'Modalidades mixtas',sub:'Solo Ecuestre es mixto abierto; las demás modalidades traen pruebas mixtas que se rigen por el instructivo y no se componen en esta fase.',tab:'a4'})+
- '<section class="card" id="a4-mixto"><div class="card-h"><h2 class="ini-k">Mixto abierto</h2><span class="badge mx">Ecuestre</span></div>'+
- '<p class="mini" style="margin:0 0 14px">Hombres y mujeres compiten juntos: la delegación declara su participación en Mixto sin composición fija. El cupo por género es el de la hoja de reglas.</p>'+
+ var ab=ST.reglas.filter(function(r){return r.mixtoAbierto}),lm=ST.reglas.filter(function(r){return r.lc}),nd=lm.filter(lcDef).length;
+ var h='<div class="page">'+header({title:'Límites conjuntos',sub:'En las modalidades con cupos mixtos por sus pruebas, Hombres y Mujeres comparten un límite general; Ecuestre, completamente mixto, conserva el cupo mixto.',tab:'a4'})+
+ '<section class="card" id="a4-limites"><div class="card-h"><h2 class="ini-k">Límite conjunto Hombres + Mujeres</h2><span class="badge mx">'+pl(lm.length,'modalidad','modalidades')+'</span></div>'+
+ '<p class="mini" style="margin:0 0 14px">El límite general es la suma de hombres y mujeres, atletas con atletas y suplentes con suplentes, contra el cupo mixto total de la hoja: «4 en total · 2 MASC + 2 FEM» significa hombres + mujeres ≤ 4. Si la modalidad ya tiene cupo propio por género, cada uno se mantiene y además aplica el límite conjunto. '+pl(nd,'modalidad trae','modalidades traen')+' el límite en la hoja; las otras '+(lm.length-nd)+' no lo definen y no se valida.</p>'+
+ '<table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Hombres</th><th>Mujeres</th><th class="num">Límite atletas</th><th class="num">Límite suplentes</th><th>Estado</th><th></th></tr></thead><tbody id="m-b">'+
+ lm.map(function(r){var l=r.lc;return '<tr data-r="'+r.id+'" data-k="'+r.id+'|H"><td><b>'+esc(r.nombre.d)+'</b></td><td>'+esc(r.nombre.m)+'</td><td>'+sideLc(r,r.masc)+'</td><td>'+sideLc(r,r.fem)+'</td><td class="num">'+(l.atletas==null?DIM:l.atletas+lcSrc(r))+'</td><td class="num">'+(l.suplentes==null?DIM:l.suplentes)+'</td><td>'+lcBadge(r)+'</td><td><button class="lk" data-go="a3" data-mx="'+r.id+'">Editar límite</button></td></tr>'}).join('')+'</tbody></table></section>'+
+ '<section class="card" id="a4-mixto"><div class="card-h"><h2 class="ini-k">Mixto abierto</h2><span class="badge mx">Solo Ecuestre</span></div>'+
+ '<p class="mini" style="margin:0 0 14px">Hombres y mujeres compiten juntos: la delegación declara su participación en Mixto sin composición fija y conserva el cupo mixto. El cupo por género es el de la hoja de reglas.</p>'+
  '<table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Mixto</th><th>Hombres</th><th>Mujeres</th><th></th></tr></thead><tbody>'+
- ab.map(function(r){return '<tr data-r="'+r.id+'" data-k="'+r.id+'|H"><td><b>'+esc(r.nombre.d)+'</b></td><td>'+esc(r.nombre.m)+'</td><td><span class="badge mx">Mixto abierto</span></td><td>'+sideTxt(r,r.masc)+'</td><td>'+sideTxt(r,r.fem)+'</td><td><button class="lk" data-go="a3" data-mx="'+r.id+'">Editar cupos</button></td></tr>'}).join('')+'</tbody></table></section>'+
- '<section class="card" id="a4-pruebas"><div class="card-h"><h2 class="ini-k">Modalidades con pruebas mixtas</h2><span class="badge">'+pl(pm.length,'modalidad','modalidades')+'</span></div>'+
- '<p class="mini" style="margin:0 0 14px">Tienen pruebas mixtas con especificaciones propias del instructivo de competencia. En esta fase no se componen ni se validan: el cupo mixto que trae la hoja se muestra solo como referencia.</p>'+
- '<table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Cupo mixto de la hoja</th><th class="num">Atletas en total</th></tr></thead><tbody id="m-b">'+
- pm.map(function(r){var t=r.cmp?cmpTotal(r.cmp):null;return '<tr data-r="'+r.id+'"><td><b>'+esc(r.nombre.d)+'</b></td><td>'+esc(r.nombre.m)+'</td><td>'+(r.cmp?esc(cmpText(r.cmp))+mxSrc(r):'<span class="dim">Sin cupo mixto en la hoja</span>')+'</td><td class="num">'+(t==null?DIM:t)+'</td></tr>'}).join('')+'</tbody></table></section></div>';
+ ab.map(function(r){return '<tr data-r="'+r.id+'" data-k="'+r.id+'|H"><td><b>'+esc(r.nombre.d)+'</b></td><td>'+esc(r.nombre.m)+'</td><td><span class="badge mx">Mixto abierto</span></td><td>'+sideTxt(r,r.masc)+'</td><td>'+sideTxt(r,r.fem)+'</td><td><button class="lk" data-go="a3" data-mx="'+r.id+'">Editar cupos</button></td></tr>'}).join('')+'</tbody></table></section></div>';
  $('#a4-app').innerHTML=h;
  a4Select=function(rid){MXSEL=rid||null;$$('#a4-app tr[data-r]').forEach(function(tr){tr.className=rid&&tr.getAttribute('data-r')===rid?'sel-r':''})};
  a4Select(null);
@@ -694,7 +731,7 @@ function a6Mount(){
   (dn?'<section class="card" id="g-ok" role="status"><div class="card-h"><h2 class="ini-k">Cambio aplicado</h2></div><div class="okbox"><b>'+esc(r.nombre.d+' '+r.nombre.m)+' · '+x.gn+': cupo de atletas '+dn.old+' → '+dn.nw+'</b>'+dn.when+' · Tú (admin de plataforma)</div><div style="margin-top:14px">'+a6Res(dn.n,dn.old,dn.nw,true)+'</div><div style="display:flex;justify-content:flex-end;margin-top:16px"><button class="btn pri sm" data-go="a1">Volver a Cupos</button></div></section>':'')+
   '<section class="card"><div class="card-h"><h2 class="ini-k">Cupo a modificar</h2></div><table class="tbl c"><thead><tr><th>Deporte</th><th>Modalidad</th><th>Género</th><th class="num">Cupo atletas</th><th>Declarado hasta ahora</th></tr></thead><tbody><tr class="hl"><td><b>'+esc(r.nombre.d)+'</b></td><td>'+esc(r.nombre.m)+'</td><td>'+x.gn+'</td><td class="num"><input class="in" id="g-v" type="text" inputmode="numeric" value="'+SC.nw+'" style="width:90px;height:36px;text-align:right" aria-label="Cupo de atletas"> <span class="mini">antes: '+SC.old+'</span></td><td>'+pl(n,'delegación declaró','delegaciones declararon')+' esta modalidad<span class="sub">Afectadas: '+n+' de '+UNIV+' delegaciones</span></td></tr></tbody></table><div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:16px"><span class="msg" id="g-why" role="alert" style="margin-right:auto"></span><button class="btn pri sm" id="g-s">Guardar cupo</button></div></section>'+
   '<section class="card" id="g-que"><div class="card-h"><h2 class="ini-k">Si el cupo baja y ya hay declaraciones</h2></div>'+(dn?'':a6Res(n,SC.old,SC.nw,false))+
-  '<div class="warnb" style="margin-top:14px">El encargado departamental solo puede cambiar dentro de la ventana de la fase; fuera de ella la plataforma no permite cambios, salvo un cambio extraordinario autorizado por el comité.</div>'+
+  '<p class="mini" style="margin:14px 0 0">El límite conjunto Hombres + Mujeres se baja con el mismo procedimiento: se recalcula, se avisa y se registra.</p><div class="warnb" style="margin-top:14px">El encargado departamental solo puede cambiar dentro de la ventana de la fase; fuera de ella la plataforma no permite cambios, salvo un cambio extraordinario autorizado por el comité.</div>'+
   '<p class="mini" style="margin:12px 0 0">El universo son '+UNIV+' delegaciones: 33 con intención en deportes y modalidades y Vichada, habilitada de forma preventiva por un posible permiso extraordinario.</p></section>'+
   '<section class="card"><div class="card-h"><h2 class="ini-k">Registro de cambios</h2></div><table class="tbl c"><thead><tr><th>Cambio</th><th>Quién</th><th>Cuándo</th><th>Delegaciones avisadas</th></tr></thead><tbody id="g-reg"></tbody></table></section>'+
   '<div class="modal-bg" id="g-m"'+(modal?'':' hidden')+'><div class="modal w2" role="alertdialog" aria-label="Confirmar cambio de cupo"><div><h3>'+pl(n,'delegación declaró','delegaciones declararon')+' '+esc(r.nombre.d+' '+r.nombre.m)+' · '+x.gn+'</h3><p>Estás bajando el cupo de atletas de '+SC.old+' a '+SC.nw+'.'+(grp?' La hoja V3 agrupa varias modalidades de la hoja de reglas bajo este nombre.':'')+' Al confirmar ocurre lo siguiente:</p></div>'+a6Res(n,SC.old,SC.nw,false)+'<div class="sel-sum">'+orgNames(ids).map(function(t){return '<div>'+esc(t)+'</div>'}).join('')+'</div><p class="mini" style="margin:0 0 4px">V3 dice qué modalidades declaró cada delegación, no cuántos atletas.</p><div class="foot"><button class="btn ter" id="g-c">Cancelar</button><button class="btn pri" id="g-a">Recalcular, avisar y registrar</button></div></div></div>';
@@ -708,7 +745,7 @@ function a6Mount(){
  }
  function commit(notify){
   var x=rowByKey(SC.key),n=declOrgs(x.r.id,x.g).length;
-  var e=SC.edit||{atletas:SC.nw,suplentes:x.side.suplentes,minimo:x.r.minimo&&x.r.minimo.atletas!=null?x.r.minimo.atletas:null,tope:x.r.topeDelegacion&&x.r.topeDelegacion.atletas!=null?x.r.topeDelegacion.atletas:null,por:(x.r.topeDelegacion&&x.r.topeDelegacion.por)||'delegacion',arman:x.r.minimo&&x.r.minimo.maxSuplentesPorArma!=null?x.r.minimo.maxSuplentesPorArma:null,mx:!!x.r.generos.X};
+  var e=SC.edit||{atletas:SC.nw,suplentes:x.side.suplentes,minimo:x.r.minimo&&x.r.minimo.atletas!=null?x.r.minimo.atletas:null,tope:x.r.topeDelegacion&&x.r.topeDelegacion.atletas!=null?x.r.topeDelegacion.atletas:null,por:(x.r.topeDelegacion&&x.r.topeDelegacion.por)||'delegacion',arman:x.r.minimo&&x.r.minimo.maxSuplentesPorArma!=null?x.r.minimo.maxSuplentesPorArma:null};
   e.atletas=SC.nw;
   var old=SC.old;applyEdit(SC.key,e,notify?n:null);SC.old=SC.nw;
   if(notify){SC.done={n:n,old:old,nw:SC.nw,when:stamp()};SC.edit=null;render(false);toast('Cupo actualizado: se recalculó, se avisó a '+pl(n,'delegación','delegaciones')+' y quedó registrado.');window.scrollTo(0,0)}
@@ -752,7 +789,7 @@ function show(id,o){
   if(id==='a1')a1Draw();
   if(id==='a2')a2Set('vacio');
   if(id==='a3'){a3Draw(EDIT.key?'row':'bal');EDIT.key=null}
-  if(id==='a4')a4Select(o&&o.ctx&&o.ctx.rid);
+  if(id==='a4'){a4Mount();a4Select(o&&o.ctx&&o.ctx.rid)}
   if(id==='a6')a6Load(o&&o.ctx&&o.ctx.key?o.ctx:null);
   $$('#pbar .sim-slot').forEach(function(s){s.hidden=s.getAttribute('data-for')!==id&&s.getAttribute('data-for')!=='*'});
   simOpen(false);
@@ -774,7 +811,7 @@ function buildBar(){
  document.body.appendChild(bar);
  var panel=$('.sim-panel',bar),rst=document.createElement('button');
  rst.type='button';rst.className='btn sec sm';rst.id='sim-reset';rst.textContent='Reiniciar cambios de la sesión';
- rst.onclick=function(){resetState();if(window.a5Reset)window.a5Reset();A1.p=1;a1Draw();a2Set(A2.st);a3Draw('bal');a4Select(null);a6Load(null);toast('Sesión reiniciada: vuelven los cupos de la hoja.')};
+ rst.onclick=function(){resetState();if(window.a5Reset)window.a5Reset();A1.p=1;a1Draw();a2Set(A2.st);a3Draw('bal');a4Mount();a6Load(null);toast('Sesión reiniciada: vuelven los cupos de la hoja.')};
  [['a2','Estado del archivo',$('#a2-st')],['a3','Ejemplo',$('#a3-ex')],['a5','Fecha de hoy',$('#w-now').closest('label')],['a6','Ejemplo',$('#g-r')],['*','Datos de la sesión',rst]].forEach(function(x){
   var s=document.createElement('div');s.className='sim-slot';s.setAttribute('data-for',x[0]);s.hidden=true;
   s.innerHTML='<div class="sim-cap">'+x[1]+'</div>';s.appendChild(x[2]);panel.appendChild(s)});
@@ -793,7 +830,7 @@ mountTour({
   steps:[
    {board:'a1',sel:'#a1 .tabs button.on',body:'Los cupos viven en una pestaña <b>«Cupos»</b> del catálogo deportivo del evento, junto a las modalidades.'},
    {board:'a1',sel:'#a1-app thead',body:'Por cada combinación <b>deporte + modalidad + género</b> el sistema guarda el cupo máximo de atletas y el de suplentes.'},
-   {board:'a1',sel:'#a1-b tr:nth-child(1)',body:'Cada fila es <b>una modalidad y un género</b>: Hombres y Mujeres traen su cupo de atletas y de suplentes; Mixto, el cupo informativo del instructivo.'},
+   {board:'a1',sel:'#a1-b tr:nth-child(1)',body:'Cada fila es <b>una modalidad y un género</b>: Hombres y Mujeres traen su cupo de atletas y de suplentes; si la modalidad tenía cupo mixto, la fila lleva el <b>límite conjunto Hombres + Mujeres</b> y solo Ecuestre conserva la fila Mixto.'},
    {board:'a1',sel:'#a1-b tr[data-k="boxeo--unica|M"]',open:'#a1-e-dist',body:'<b>El cupo no es una constante</b>: en Boxeo los hombres llevan 13 atletas y las mujeres 12. Es un dato parametrizable por modalidad y género.'},
    {board:'a2',sel:'#a2-app .drop',body:'Los cupos se cargan <b>por archivo Excel</b>, con vista previa que separa filas válidas, con alerta y con error, y confirmación.'},
    {board:'a3',sel:'#a3 #f-max',body:'Las correcciones puntuales se hacen en este formulario, con <b>campos estructurados</b> y sin texto libre: aquí el cupo máximo de atletas.'},
@@ -802,10 +839,10 @@ mountTour({
  'HU-IN-02':{rol:'Administrador de la plataforma',title:'Cupos de las modalidades mixtas',
   purpose:'Como administrador de la plataforma, quiero parametrizar el cupo de las modalidades de composición mixta, para que las delegaciones puedan declarar equipos mixtos dentro del tope reglamentario.',
   steps:[
-   {board:'a3',sel:'#a3 #f-mx',body:'Una modalidad se marca como <b>«Modalidad mixta»</b> (género Mixto). Las pruebas mixtas se rigen por el instructivo y <b>no se componen en esta fase</b>.'},
-   {board:'a4',sel:'#a4-mixto',body:'Solo <b>Ecuestre es mixto abierto</b>: hombres y mujeres compiten juntos y la delegación declara Mixto sin composición fija.'},
-   {board:'a4',sel:'#a4-pruebas',body:'Las demás modalidades con Mixto en la hoja tienen <b>pruebas mixtas con especificaciones del instructivo</b>. Se muestran como referencia, sin alertas ni editor de composición.'},
-   {board:'a4',sel:'#a4-pruebas tr[data-r="porrismo-exhibicion--cheer-nivel-4"]',body:'Por ejemplo, Porrismo Nivel 4 (Cheer): el cupo mixto que trae la hoja, <b>4 MASC + 8 FEM + 1 suplente de cualquier género</b>, es informativo.'}
+   {board:'a4',sel:'#a4-limites',body:'Las modalidades con cupos mixtos por sus pruebas habilitan <b>Hombres y Mujeres</b>, y el límite general es la <b>suma de ambos</b>: atletas con atletas y suplentes con suplentes.'},
+   {board:'a4',sel:'#a4-limites tr[data-r="porrismo-exhibicion--cheer-nivel-4"]',body:'Por ejemplo, Porrismo Nivel 4 (Cheer): 4 hombres y 8 mujeres, y un límite conjunto de <b>12 atletas + 1 suplente</b>. Cada género conserva su cupo y además aplica el total.'},
+   {board:'a3',sel:'#a3 #f-lca',open:'#a3-ex button[data-e="lc"]',body:'El límite conjunto se edita aquí: <b>no admite negativos</b> y, si ya hay delegaciones que declararon la modalidad, avisa antes de guardar.'},
+   {board:'a4',sel:'#a4-mixto',body:'Solo <b>Ecuestre es mixto abierto</b>: hombres y mujeres compiten juntos, la delegación declara Mixto sin composición fija y conserva el cupo mixto.'}
   ]},
  'HU-IN-03':{rol:'Administrador de la plataforma',title:'Ventana de la fase de inscripción numérica',
   purpose:'Como administrador de la plataforma, quiero definir la fecha y hora de apertura y de cierre de la fase de inscripción numérica, para que las delegaciones solo registren dentro del plazo oficial y el cierre dispare la emisión de certificados.',
