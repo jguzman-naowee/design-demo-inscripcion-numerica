@@ -167,25 +167,24 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .dsh .sb{margin:2px 0 0;font-weight:600;font-size:14px}
 .dtop{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
 .dtop small{display:block;text-align:right;letter-spacing:.08em;font-size:10.5px;color:var(--g-700);font-weight:700}
-.dfil{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;background:#fff;border:1px solid var(--g-200);border-radius:14px;padding:14px 16px;position:relative}
-.dfil .df{display:inline-flex;align-items:center;gap:8px;flex:0 1 auto;min-width:0;background:#fafbff;border:1px solid var(--g-200);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.dfil{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--g-200);border-radius:14px;padding:14px 16px;position:relative}
+.dfil .df{flex:0 1 auto;min-width:0;white-space:nowrap}
 .di{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;flex:none}
 .di svg,.ic svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
 .dfil .sp{flex:1}
+/* Filtros en una sola fila; buscar y limpiar son botones de ícono. */
+.ibtn{width:40px;height:40px;padding:0;justify-content:center;flex:none}
+@media(min-width:1100px){.dfil{flex-wrap:nowrap;gap:8px}.dfil .df{padding:0 10px;gap:4px}.dfil .df .di{display:none}}
 /* Una sola línea: los selectores ceden ancho antes que partir la barra. */
-.dfil .gm,.dfil .dlk,.dfil .dap{flex:none;white-space:nowrap}
-@media(max-width:1280px){.dfil .df .di{display:none}.dfil .df{padding:8px 10px}}
-.dfil .df select{font:inherit;font-weight:600;border:0;background:transparent;max-width:210px;min-width:0;width:100%;text-overflow:ellipsis;cursor:pointer;color:inherit}
-.dfil .df select:focus-visible,.dlk:focus-visible,.dap:focus-visible{outline:2px solid #ff6a00;outline-offset:2px}
-.dlk,.dap{cursor:pointer}
-.dlk{color:var(--g-700);font-weight:700;font-size:13px;background:none;border:0}
-.dap{background:#ff6a00;color:#fff;font-weight:700;font-size:13px;border:0;border-radius:10px;padding:10px 16px;box-shadow:0 6px 14px -6px rgba(255,106,0,.7)}
+.dfil .gm{flex:none;white-space:nowrap}
+.dfil .df select{font:inherit;font-size:13px;max-width:210px;min-width:0;width:100%;text-overflow:ellipsis;cursor:pointer}
+.dfil .df select:focus-visible,.gm>button:focus-visible{outline:2px solid var(--n-700);outline-offset:2px}
 .gm{position:relative;display:inline-block}
-.gm>button{font:inherit;display:inline-flex;align-items:center;gap:10px;background:#fff7f0;border:1px solid #ffb98a;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--g-900)}
+.gm>button{font:inherit;font-size:13px;cursor:pointer;color:var(--g-900)}
 .gmenu{position:absolute;top:calc(100% + 6px);left:0;width:330px;background:#fff;border:1px solid var(--g-200);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:8px;z-index:8}
 .gmenu label{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13.5px;cursor:pointer}
 .gmenu label:hover{background:var(--g-100)}
-.gmenu input{width:16px;height:16px;accent-color:#ff6a00}
+.gmenu input{width:16px;height:16px;accent-color:var(--n-700)}
 .gmenu .gx{display:flex;gap:14px;padding:6px 10px 8px;border-bottom:1px solid var(--g-200);margin-bottom:4px}
 .gmenu .gx button{background:none;border:0;color:var(--n-700);font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
 .dkp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
@@ -639,7 +638,7 @@ function modelo(a){
   seed:vac?7:7+hsh(JSON.stringify(a))%89,cf:dep/GW[0]}}
 function dFil(){
  var g=S.c6.g,n=GRUPOS.filter(function(x,i){return g[i]}).length,d=S.c6.d;
- var sl=function(k,lab,p,fg,bg,o){return '<label class="df">'+ic(p,fg,bg,'di')+'<select data-a="c6f:'+k+'" aria-label="'+lab+'">'+o+'</select></label>'};
+ var sl=function(k,lab,p,fg,bg,o){return '<label class="sel df"><select data-a="c6f:'+k+'" aria-label="'+lab+'">'+o+'</select></label>'};
  var dl=DEPS.filter(function(x){return !d.tipo||tipoDe(x)===d.tipo});
  var di=regIdx(d.reg);
  var h=sl('per','Periodo',IC.cal,'#2563eb','#eaf0ff',PERS.map(function(p,i){return '<option value="'+i+'"'+(+d.per===i?' selected':'')+'>'+p[0]+'</option>'}).join(''))+
@@ -648,10 +647,10 @@ function dFil(){
   sl('tipo','Tipo de deporte',IC.trophy,'#ea8a00','#fff3df',opts(TIPOS,d.tipo,'Tipo de Deporte'))+
   sl('dpt','Deporte',IC.ball,'#e0433a','#fdecea',opts(dl,d.dpt,'Deporte'));
  var lab=n===0?'Grupos de inscripción':(n===GRUPOS.length?'Todos los grupos':'Grupos de inscripción · '+n);
- h+='<span class="gm" data-t="f-grupos"><button type="button" data-a="c6gm" aria-expanded="'+S.c6.gm+'" aria-haspopup="true">'+ic(IC.grp,'#d74009','#ffe9d9','di')+lab+' ▾</button>'+
+ h+='<span class="gm" data-t="f-grupos"><button type="button" class="sel" data-a="c6gm" aria-expanded="'+S.c6.gm+'" aria-haspopup="true">'+lab+' ▾</button>'+
   (S.c6.gm?'<div class="gmenu" data-t="f-grupos-menu" role="group" aria-label="Grupos de inscripción"><div class="gx"><button type="button" data-a="c6ga">Seleccionar todos</button><button type="button" data-a="c6gc">Limpiar</button></div>'+GRUPOS.map(function(x,i){return '<label><input type="checkbox" data-a="c6g:'+i+'"'+(g[i]?' checked':'')+'>'+x+'</label>'}).join('')+'</div>':'')+'</span>';
- h+='<span class="sp"></span><button type="button" class="dlk" data-a="c6lp">✕ Limpiar</button><button type="button" class="dap" data-a="c6ap">Aplicar filtros</button>';
- return '<div class="dfil">'+h+'</div>'}
+ h+='<span class="sp"></span><button type="button" class="btn sec ibtn" data-a="c6lp" aria-label="Limpiar filtros" title="Limpiar filtros"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg></button><button type="button" class="btn pri ibtn" data-a="c6ap" aria-label="Aplicar filtros" title="Aplicar filtros"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/></svg></button>';
+ return '<div class="dfil toolbar">'+h+'</div>'}
 function distCard(m){
  var segs=[],leg='',k=m.gv[0]+m.gv[1];
  /* Solo Deportistas y Personal de Apoyo tienen cifra; los demás grupos no tienen fase numérica. */
