@@ -898,6 +898,12 @@ function mkInst(o){
  return x;
 }
 /* Tope duro: lo tecleado, pegado o sumado se limita al máximo permitido de la celda. */
+/* Lo guardado o confirmado sobrevive a recargas y lo lee el inicio; «Reiniciar demo» lo borra por el prefijo. */
+var DK='naowee-inscnum-declaracion';
+function saveDecl(x){try{localStorage.setItem(DK,JSON.stringify({v:x.v,last:x.meta.last,conf:x.meta.conf||null,confirmed:!!x.confirmed}))}catch(_){}}
+function loadDecl(x){try{var j=JSON.parse(localStorage.getItem(DK)||'null');if(!j||typeof j.v!=='object')return;
+ Object.keys(j.v).forEach(function(k){var n=+j.v[k];if(ROWS[parseInt(k,10)]&&n>0)x.v[k]=Math.min(999,n)});
+ if(j.last)x.meta.last=new Date(j.last);if(j.conf)x.meta.conf=new Date(j.conf);x.confirmed=!!j.confirmed&&Object.keys(x.v).length>0}catch(_){}}
 function setV(x,k,n){x.v[k]=Math.max(0,Math.min(999,limOf(x,k).max,n||0));x.meta.last=new Date();(x.rm=x.rm||{})[parseInt(k,10)]={t:x.meta.last,rol:x.role};x.dirty=true;x.confirmed=false;x.toast=''}
 function autoOpen(x){
  var q=norm(x.q||'');if(q.length<2)return;
@@ -915,7 +921,7 @@ function instClick(b,e){
   var a=t.getAttribute('data-act');
   if(a==='save')x.sv=true;
   else if(a==='svclose')x.sv=false;
-  else if(a==='svok'){x.sv=false;x.dirty=false;x.toast='Borrador guardado';window.scrollTo(0,0)}
+  else if(a==='svok'){x.sv=false;x.dirty=false;saveDecl(x);x.go='n1';x.goMsg='Borrador guardado'}
   else if(a==='modify'){x.editing=true;x.toast='Puede modificar la declaración hasta el cierre'}
   else if(a==='confirm'){if(analyze(x).all.length){x.tried=true;x.toast='';x.capsOpen=true;x.focusErrs=true}else x.go=WIN==='cerrada'?'n7':'n6'}
   else if(a==='cert'){if(b.id==='n7')x.cert=true;else{x.go='n7';x.goCert=true}}
@@ -978,7 +984,7 @@ function n1Ahora(b){
    '<div><dt>Total mujeres (M)</dt><dd>'+tot2(t.am,t.sm)+'</dd></div></dl>'+
   '<div class="ini-pn"><div class="ini-pz"><span>'+plazo[0]+'<span>'+plazo[1]+'</span></span><span class="chs"><span class="ini-b '+plazo[2]+'">'+plazo[3]+'</span></span></div>'+
    '<div class="ini-ac">'+cta+'<p class="ini-hp">'+IC.inf+'<span>'+ayuda+'</span></p></div></div>'+
-  '</div></div></section></div></div></div>';
+  '</div></div></section></div></div>'+(b.toast?'<div class="toast"><b>'+b.toast+'</b><span>'+nowHM()+'</span></div>':'')+'</div>';
 }
 
 function n6Data(){
@@ -1145,7 +1151,7 @@ function estTxt(x){return x[0]==='Abierta'?pillTxt()+'. Puede modificar la decla
 function estAhora(b){var x=EST[{abre:0,abierta:1,cerrada:2}[b.state]];return '<div class="app">'+nav(['Inicio',DELE,'Inscripción numérica'])+'<div class="page"><div class="card"><div class="emp"><div class="ic">'+x[1]+'</div><b>'+x[2]+'</b><p>'+estTxt(x)+'</p>'+x[4]+'</div></div></div></div>'}
 var BOARDS=[
  {id:'n1',ahora:n1Ahora,state:'activa',ctl:{label:'Estado',opts:[['abre','Aún no abre'],['activa','Activa'],['cerrada','Cerrada']]}},
- {id:'n2',win:true,mk:function(){return mkInst({caps:true,filters:true,conf:true,sports:SPN,open:['Actividades Subacuáticas']})}},
+ {id:'n2',win:true,mk:function(){var x=mkInst({caps:true,filters:true,conf:true,sports:SPN,open:['Actividades Subacuáticas']});loadDecl(x);return x}},
  {id:'n3',mk:function(){return mkInst({sports:['Actividades Subacuáticas','Esgrima'],open:['Actividades Subacuáticas'],caps:true,capsOpen:true,v:pv([['Actividades Subacuáticas','Cortas - Piscina','Hombres','ah',2],['Actividades Subacuáticas','Cortas - Piscina','Hombres','sh',2],['Actividades Subacuáticas','Cortas - Piscina','Mujeres','am',2],['Actividades Subacuáticas','Cortas - Piscina','Mujeres','sm',1]])})}},
  {id:'n4',mk:function(){return mkInst({sports:['Baloncesto','Tiro Deportivo'],open:['Baloncesto','Tiro Deportivo'],caps:true,v:pv([['Baloncesto','Conjunto 5x5','Hombres','ah',8],['Baloncesto','Conjunto 5x5','Mujeres','am',12],['Tiro Deportivo','Pistola','Hombres','sh',1]])})},
   ctl:{label:'Vista',opts:[['edit','Al editar'],['conf','Al confirmar']]}},
@@ -1220,6 +1226,7 @@ function show(id){
 /* La grilla (N2) sigue a la ventana: solo lectura al cerrar, deshabilitada antes de abrir. */
 function syncWin(){if(BN.n2&&BN.n2.x){BN.n2.x.ro=WIN==='cerrada';BN.n2.x.dis=WIN==='abre'}}
 function go(id,cert){show(id);if(id==='n7'&&cert){BN.n7.x.cert=true;draw(BN.n7)}}
+function flash1(msg){var b=BN.n1;b.toast=msg;draw(b);clearTimeout(b.tt);b.tt=setTimeout(function(){b.toast='';draw(b)},2800)}
 function flash(b,msg){b.x.toast=msg;draw(b);clearTimeout(b.tt);b.tt=setTimeout(function(){b.x.toast='';draw(b)},2800)}
 /* Marca la barra del deporte como «pegada» solo cuando el scroll ya pasó su posición natural. */
 function stk(){var tb=document.querySelector('.scr.cur .tbar')||document.querySelector('.tbar');if(tb)document.documentElement.style.setProperty('--tbarh',tb.offsetHeight+'px');Array.prototype.forEach.call(document.querySelectorAll('.pruebas.g .gr.gh'),function(h){var p=h.parentElement,top=parseFloat(getComputedStyle(h).top)||0,nat=p.getBoundingClientRect().top+(parseFloat(getComputedStyle(p).paddingTop)||0);var st=nat<top-0.5;h.style.setProperty('--ghh',h.offsetHeight+'px');h.classList.toggle('is-stuck',st);h.classList.toggle('is-pin',st&&Math.abs(h.getBoundingClientRect().top-top)<1)})}
@@ -1252,13 +1259,13 @@ BOARDS.forEach(function(b){
   var t;
   if(e.target.closest('[data-av]')){BN.n2.x.av=true;go('n2');return}
   if((t=e.target.closest('[data-win]'))){SIMWIN=WIN=t.getAttribute('data-win');syncWin();if(WIN==='cerrada'&&b.id!=='n7')go('n7');else if(WIN!=='cerrada'&&b.id==='n7')go('n2');else draw(b);return}
-  if(e.target.closest('[data-n6]')){if(b.state!=='err'){BN.n2.x.dirty=false;BN.n2.x.confirmed=true;BN.n2.x.editing=false;BN.n2.x.meta.conf=new Date();go('n2');flash(BN.n2,'Declaración confirmada')}return}
+  if(e.target.closest('[data-n6]')){if(b.state!=='err'){BN.n2.x.dirty=false;BN.n2.x.confirmed=true;BN.n2.x.editing=false;BN.n2.x.meta.conf=new Date();saveDecl(BN.n2.x);go('n1');flash1('Declaración confirmada')}return}
   if((t=e.target.closest('[data-go]'))){go(t.getAttribute('data-go'),t.hasAttribute('data-cert'));return}
   var c=e.target.closest('[data-ctl]');
   if(c){setCtl(b,c.getAttribute('data-ctl'));draw(b);return}
   if(b.x&&e.target.closest('.stage')&&instClick(b,e)){
    var g=b.x.go,gc=b.x.goCert;b.x.go=null;b.x.goCert=false;draw(b);
-   if(g)go(g,gc);
+   if(g){go(g,gc);if(b.x.goMsg){flash1(b.x.goMsg);b.x.goMsg=''}}
    else if(b.x.toast){clearTimeout(b.tt);b.tt=setTimeout(function(){b.x.toast='';draw(b)},2800)}
   }
  });
