@@ -226,12 +226,17 @@ body.en-shell .sim-d{display:none}
 .caps .cp{grid-template-columns:minmax(150px,215px) minmax(40px,1fr) 80px}
 .caps .cp small{display:block;margin:0}
 .caps .cp .pc{margin:2px 0 0;display:inline-block}
-.tbar{gap:14px}
 @media(max-width:1100px){.caps .cps{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){.caps{padding:0 12px}.caps .cp{grid-template-columns:minmax(0,1fr) 72px;row-gap:4px}.caps .cp>span:first-child{grid-column:1/-1}.caps .cp .trk{grid-column:1}.caps .cp .v{grid-column:2;white-space:nowrap}}
-/* El nombre toma más ancho (hasta 420 px) y puede ocupar dos líneas; la barra no salta de fila desde 1300 px. */
-.tbar .own{flex:1 1 300px;min-width:120px;max-width:420px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
-@media(min-width:1300px){.tbar{flex-wrap:nowrap}}
+/* Tres columnas: organización y rol a la izquierda, totales y revisión al centro, acciones a la derecha. */
+.tbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:20px;align-items:center}
+.tb-l{display:flex;align-items:center;gap:12px;min-width:0}
+.tb-c{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.tb-c .tot{min-width:64px}
+.tb-r{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.tbar .own{min-width:0;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
+.tb-l .rolchip{flex:none}
+@media(max-width:1100px){.tbar{grid-template-columns:minmax(0,1fr)}.tb-r{justify-content:flex-start}.tb-c{justify-content:flex-start}}
 /* Ventana, avisos y hero de cinco fases */
 .sim-n{margin:0;max-width:300px;font-size:11.5px;line-height:1.4;color:var(--muted);white-space:normal}
 .stp button[disabled],.stp input[disabled]{opacity:.5;cursor:not-allowed}
@@ -835,11 +840,11 @@ function bar(x,an){
   var nbe=x.tried?an.all.length:0,ncp=an.topes.length;
   var side=(x.caps||x.tried)&&(ncp||nbe)?'<button type="button" class="sp-btn'+(x.capsOpen?' on':'')+'" data-act="caps" aria-expanded="'+!!x.capsOpen+'" aria-controls="caps-'+x.id+'" title="Topes y validaciones" aria-label="Revisión: topes y validaciones ('+(nbe||ncp)+')"><span class="sp-l">Revisión</span>'+I.shield+'<span class="sp-n'+(nbe?' err':'')+'">'+(nbe||ncp)+'</span></button>':'';
   var dav=x.id==='n2'?(x.dis?'<span title="La inscripción aún no abre"><button class="btn sec sm" type="button" disabled>'+I.dl+'Descargar avance</button></span>':'<button class="btn sec sm" type="button" data-act="avance" title="Descarga un borrador con lo declarado hasta ahora">'+I.dl+'Descargar avance</button>'):'';
-  right=side+(x.dis?'':lk?'<button class="btn pri sm" type="button" data-act="modify">Modificar declaración</button>':(x.dirty?'<button class="btn sec sm" type="button" data-act="save">Guardar borrador</button>':'')+
+  right=(x.dis?'':lk?'<button class="btn pri sm" type="button" data-act="modify">Modificar declaración</button>':(x.dirty?'<button class="btn sec sm" type="button" data-act="save">Guardar borrador</button>':'')+
    (noConf?'<span title="'+noConf+'"><button class="btn pri sm" type="button" disabled>Confirmar</button></span>':'<button class="btn pri sm" type="button" data-act="confirm">Confirmar</button>'));
  }
  var role=x.ro?'':'<span class="rolchip">'+(x.role==='aux'?'Auxiliar':'Gestor')+'</span>';
- return '<div class="tbar"><span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span>'+role+'<span class="sp"></span>'+tiles+'<span class="sp"></span>'+right+'</div>';
+ return '<div class="tbar"><div class="tb-l"><span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span>'+role+'</div><div class="tb-c">'+tiles+side+'</div><div class="tb-r">'+right+'</div></div>';
 }
 function filterBar(x,an,extra){
  var ch=[['todos','Todos',x.sports.length],['pend','Pendientes',an.pend],['err','Con error',an.err]];
@@ -880,7 +885,7 @@ function gridApp(x){
   '<section class="ini-card ini-flt" aria-label="Filtros de la declaración">'+(function(){var bt='<span class="sp"></span><button class="btn ter" type="button" data-act="expand">Expandir todo</button><button class="btn ter" type="button" data-act="collapse">Contraer todo</button>';return x.filters&&!x.ro?filterBar(x,an,bt):'<div class="fbar">'+bt+'</div>'})()+'</section>'+
   '<div class="list">'+list+'</div>'+
   (x.conf?confNote(x):'')+
-  '</div></div>'+((x.caps||x.tried)?capsPanel(x,an):'')+'</div>'+bar(x,an)+(x.toast?'<div class="toast"><b>'+x.toast+'</b><span>'+nowHM()+'</span></div>':'')+(x.av?'<div class="modal-bg cert-bg"><div class="cert-pan">'+avBar(x)+'<div class="docbg">'+avHtml(x)+'</div></div></div>':'')+'</div>';
+  '</div></div>'+((x.caps||x.tried)?capsPanel(x,an):'')+'</div>'+bar(x,an)+(x.toast?'<div class="toast"><b>'+x.toast+'</b><span>'+nowHM()+'</span></div>':'')+(x.sv?modal('<h3>Guardar borrador</h3><p>Se guardará lo declarado hasta ahora. Podrá seguir editando y confirmar la declaración más adelante, hasta el cierre.</p><div class="foot"><button class="btn sec sm" type="button" data-act="svclose">Cancelar</button><button class="btn pri sm" type="button" data-act="svok">Guardar borrador</button></div>'):'')+(x.av?'<div class="modal-bg cert-bg"><div class="cert-pan">'+avBar(x)+'<div class="docbg">'+avHtml(x)+'</div></div></div>':'')+'</div>';
 }
 /* El rol lo manda el panel del shell (localStorage + postMessage). */
 function rolVer(){var v='gestor';try{v=localStorage.getItem('naowee-inscnum-rol-ver')==='auxiliar'?'aux':'gestor'}catch(_){}return v}
@@ -908,7 +913,9 @@ function instClick(b,e){
  if((t=e.target.closest('[data-goto]'))){var gd=t.getAttribute('data-gd');if(gd){x.open[gd]=true;x.q='';x.chip='todos';x.focusK=t.getAttribute('data-goto');x.focusD=gd}return true}
  if((t=e.target.closest('[data-act]'))){
   var a=t.getAttribute('data-act');
-  if(a==='save'){x.dirty=false;x.toast='Borrador guardado'}
+  if(a==='save')x.sv=true;
+  else if(a==='svclose')x.sv=false;
+  else if(a==='svok'){x.sv=false;x.dirty=false;x.toast='Borrador guardado';window.scrollTo(0,0)}
   else if(a==='modify'){x.editing=true;x.toast='Puede modificar la declaración hasta el cierre'}
   else if(a==='confirm'){if(analyze(x).all.length){x.tried=true;x.toast='';x.capsOpen=true;x.focusErrs=true}else x.go=WIN==='cerrada'?'n7':'n6'}
   else if(a==='cert'){if(b.id==='n7')x.cert=true;else{x.go='n7';x.goCert=true}}
