@@ -44,7 +44,7 @@
   /* [id, código, título, notas opcionales que se listan en Configuraciones → Pantallas] */
   var FASE = {
     delegado: [['n1', 'N1', 'Hero con fases'], ['n2', 'N2', 'Grilla de captura'], ['n3', 'N3', 'Error de cupo'], ['n4', 'N4', 'Composición de equipo'], ['n5', 'N5', 'Tope de delegación'], ['n6', 'N6', 'Guardar y confirmar'], ['n7', 'N7', 'Cerrada y certificado'], ['estados', 'EV', 'Estados de la ventana']],
-    admin: [['a1', 'A1', 'Pestaña Cupos'], ['a2', 'A2', 'Importar desde Excel'], ['a3', 'A3', 'Editar una fila'], ['a4', 'A4', 'Modalidades mixtas'], ['a5', 'A5', 'Ventana de la fase'], ['a6', 'A6', 'Cambios a mitad de fase']],
+    admin: [['a5', 'A5', 'Ventana de la fase'], ['a1', 'A1', 'Pestaña Cupos'], ['a2', 'A2', 'Importar desde Excel'], ['a3', 'A3', 'Editar el cupo de una modalidad'], ['a4', 'A4', 'Límites conjuntos'], ['a6', 'A6', 'Cambios a mitad de fase']],
     comite: [['c1', 'C1', 'Consolidado con cupos'], ['c2', 'C2', 'Declarado contra cupo'], ['c3', 'C3', 'Quién falta'], ['c4', 'C4', 'Exportar'], ['c5', 'C5', 'Reporte consolidado'], ['c6', 'C6', 'Tablero y membrete', ['Diseño del cambio: el tablero real vive en un dashboard externo, no en este repo.', 'Las cifras son de ejemplo (modelo simple y determinista); solo «Delegaciones Registradas» (33 sin filtros) es real.']]]
   };
 

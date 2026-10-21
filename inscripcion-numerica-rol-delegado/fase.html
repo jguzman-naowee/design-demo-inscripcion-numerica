@@ -138,7 +138,7 @@ body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
 .tbar .own{font-weight:700;font-size:15px;padding-left:2px}
 .tbar .tot{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;min-width:72px}
 .tbar .tot b{font-size:22px;line-height:1.1;font-weight:700}
-.tbar .tot small{font-size:11px;line-height:1.2;color:var(--g-700)}
+.tbar .tot small{font-size:11px;line-height:1.2;color:var(--g-700);width:64px;min-height:2.4em}
 .tbar .sp{flex:1}
 .rolchip{font-size:12px;font-weight:600;color:var(--n-900);background:var(--n-050);border-radius:99px;padding:4px 10px}
 .hintx{font-size:12px;color:var(--g-700)}
@@ -306,10 +306,16 @@ body.en-shell .sim-d{display:none}
 .ini-b{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
 .ini-b.ok{background:#defade;color:#17641a}.ini-b.inf{background:#cef4ff;color:#002b5b}.ini-b.gr{background:#f4f5f9;color:#282834}.ini-b.wa{background:#ffedc7;color:#942700}
 .ini-row{display:flex;flex-wrap:wrap;gap:20px;align-items:stretch}
-.ini-dl{flex:999 1 560px;min-width:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1px;background:#e7e9f3;border:1px solid #e7e9f3;border-radius:8px;overflow:hidden}
-.ini-dl>div{background:#fff;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
-.ini-dl dt{font-size:13px;font-weight:600;color:#646587}
-.ini-dl dd{margin:0;display:flex;flex-direction:column;gap:10px}
+.ini-dl{flex:999 1 560px;min-width:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));grid-auto-rows:1fr;gap:1px;background:#e7e9f3;border:1px solid #e7e9f3;border-radius:8px;overflow:hidden}
+.ini-dl>div{background:#fff;padding:20px 24px;display:flex;flex-direction:column;gap:10px;min-height:132px}
+.ini-dl dt{font-size:13px;line-height:18px;min-height:36px;font-weight:600;color:#646587}
+.ini-dl dd{margin:0;flex:1;display:flex;flex-direction:column;gap:10px}
+.ini-dl dd>.ini-v{margin-block:0}
+/* Pie al fondo: el avance y el apoyo de las tres celdas quedan a la misma altura. */
+.ini-dl .ft{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.ini-dl dd>.sp,.ini-dl dd>.r{margin-top:auto}
+/* El apoyo de H y M reserva la altura del pie con barra para que los números coincidan. */
+.ini-dl dd>.sp{min-height:31px;display:flex;align-items:flex-end;gap:.3em}
 .ini-v{display:flex;align-items:baseline;gap:6px;font-size:15px;font-weight:600;color:#646587}
 .ini-v b{font-size:32px;line-height:1;font-weight:800;letter-spacing:-.02em;color:#282834}
 .ini-dl.pre .ini-v b{color:#646587}
@@ -317,14 +323,14 @@ body.en-shell .sim-d{display:none}
 .ini-pg i{display:block;height:6px;border-radius:99px;background:#d74009}
 .ini-dl .r{font-size:13px;color:#646587}
 .ini-dl .sp{font-size:14px;color:#282834}.ini-dl .sp b{font-weight:700}
-.ini-pn{flex:1 1 300px;min-width:0;background:#f5f6fa;border-radius:8px;padding:20px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.ini-pn{flex:1 1 380px;min-width:min(380px,100%);background:#f5f6fa;border-radius:8px;padding:20px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
 .ini-pz{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .ini-pz>span:first-child{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:#282834}
 .ini-pz svg{width:18px;height:18px;flex:none;stroke:#646587;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ini-pz .chs{display:flex;flex-wrap:wrap;gap:8px}
 .ini-pz .ini-b.gr{background:#fff}
 .ini-ac{display:flex;flex-direction:column;gap:12px}
-.ini-cta{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:0 20px;border-radius:8px;background:#d74009;color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(215,64,9,.24);text-align:center}
+.ini-cta{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:0 20px;white-space:nowrap;border-radius:8px;background:#d74009;color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(215,64,9,.24);text-align:center}
 .ini-cta:hover{background:#942700}
 .ini-cta:focus-visible{outline:2px solid #d74009;outline-offset:2px}
 .ini-cta svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -369,8 +375,9 @@ body.en-shell .sim-d{display:none}
 /* Un indicador por card, en una fila que baja a 2 y 1 columnas según el ancho. */
 .ini-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .ini-k1{padding:0;gap:0;overflow:hidden}
-.ini-k1 .ini-dl{flex:none;width:100%;display:block;border:0;background:none;border-radius:0}
-.ini-k1 .ini-dl>div{height:100%}
+.ini-k1{display:flex;flex-direction:column}
+.ini-k1 .ini-dl{flex:1;width:100%;display:flex;flex-direction:column;border:0;background:none;border-radius:0}
+.ini-k1 .ini-dl>div{flex:1;min-height:0}
 @container (max-width:900px){.ini-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container (max-width:520px){.ini-kpis{grid-template-columns:minmax(0,1fr)}}
 .ini-hd .kst{display:flex;align-items:center;min-height:32px}
@@ -710,16 +717,16 @@ function limOf(x,k,tp){
  return lim;
 }
 function analyze(x){
- var an={ri:{},sp:{},t:{ah:0,sh:0,am:0,sm:0,mx:0},all:[],nd:0,pend:0,err:0};
+ var an={ri:{},sp:{},t:{ah:0,sh:0,am:0,sm:0,mx:0},all:[],nd:0,pend:0};
  x.sports.forEach(function(n){an.sp[n]={n:0,tot:0,err:false,bad:false}});
  x.rows.forEach(function(row){
   var s=an.sp[row.dep],iss=rowIss(x,row),sum=0;an.ri[row.i]=iss;
   FL.forEach(function(f){var v=gv(x,row,f[0]);an.t[f[0]]+=v;sum+=v});
   if(!row.dis){s.tot++;if(sum>0)s.n++}
-  iss.forEach(function(i){i.ri=row.i;if(!blocks(i))return;an.all.push(i);s.bad=true;if(red(i,x))s.err=true});
+  iss.forEach(function(i){i.ri=row.i;if(!blocks(i))return;an.all.push(i);s.bad=true});
  });
  an.topes=topes(x);
- x.sports.forEach(function(n){var s=an.sp[n];s.k=s.n===0?'none':(s.n===s.tot&&!s.bad?'full':'part');s.l={none:'Sin declarar',part:'Parcial',full:'Completo'}[s.k];if(s.n)an.nd++;if(s.k!=='full')an.pend++;if(s.err)an.err++});
+ x.sports.forEach(function(n){var s=an.sp[n];s.k=s.n===0?'none':(s.n===s.tot&&!s.bad?'full':'part');s.l={none:'Sin declarar',part:'Parcial',full:'Completo'}[s.k];if(s.n)an.nd++;if(s.k!=='full')an.pend++;});
  return an;
 }
 function ruleTxt(row){
@@ -797,7 +804,6 @@ function visSports(x,an){
  return x.sports.filter(function(n){
   var s=an.sp[n];
   if(x.chip==='pend'&&s.k==='full')return false;
-  if(x.chip==='err'&&!s.err)return false;
   if(q&&norm(n).indexOf(q)<0&&!x.by[n].some(function(r){return norm(r.mod).indexOf(q)>=0}))return false;
   return true;
  });
@@ -839,10 +845,10 @@ function bar(x,an){
    (noConf?'<span title="'+noConf+'"><button class="btn pri sm" type="button" disabled>Confirmar</button></span>':'<button class="btn pri sm" type="button" data-act="confirm">Confirmar</button>'));
  }
  var role=x.ro?'':'<span class="rolchip">'+(x.role==='aux'?'Auxiliar':'Gestor')+'</span>';
- return '<div class="tbar"><div class="tb-l"><span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span>'+role+'</div><div class="tb-c">'+tiles+side+'</div><div class="tb-r">'+right+'</div></div>';
+ return '<div class="tbar"><div class="tb-l">'+role+'<span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span></div><div class="tb-c">'+tiles+side+'</div><div class="tb-r">'+right+'</div></div>';
 }
 function filterBar(x,an,extra){
- var ch=[['todos','Todos',x.sports.length],['pend','Pendientes',an.pend],['err','Con error',an.err]];
+ var ch=[['todos','Todos',x.sports.length],['pend','Pendientes',an.pend]];
  return '<div class="fbar"><label class="search">'+I.search+'<input type="search" data-q value="'+esc(x.q||'')+'" placeholder="Buscar deporte o modalidad" aria-label="Buscar deporte o modalidad" autocomplete="off"></label><div class="fchips" role="group" aria-label="Filtro por estado">'+ch.map(function(c){return '<button type="button" class="fch" data-chip="'+c[0]+'" aria-pressed="'+(x.chip===c[0])+'">'+c[1]+' ('+c[2]+')</button>'}).join('')+'</div>'+(extra||'')+'</div>';
 }
 function confNote(x){
@@ -863,7 +869,7 @@ function hdCard(x,an){
  return '<section class="ini-card ini-hd" aria-labelledby="n2-h1">'+
   '<div class="hdr"><div><h1 id="n2-h1">Declaración numérica de la delegación</h1><p>Indique cuántos atletas y suplentes, hombres y mujeres, llevará '+esc(DELE)+' en cada modalidad.</p></div>'+'</div></section>'+
   '<div class="ini-kpis" role="group" aria-label="Resumen de la declaración">'+
-  kpi('Deportes con inscripción numérica',nd,'de '+tot,'<span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span>')+
+  kpi('Deportes con inscripción numérica',nd,'de '+tot,'<span class="ft"><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></span>')+
   kpi('Total atletas',at,at===1?'atleta':'atletas',sub(t.ah,t.am))+
   kpi('Total suplentes',su,su===1?'suplente':'suplentes',sub(t.sh,t.sm))+
   card1('<div><dt>Estado de la declaración</dt><dd><span class="kst"><span class="ini-b '+st[0]+'">'+st[1]+'</span></span><span class="r">'+st[2]+'</span></dd></div>')+'</div>';
@@ -967,7 +973,7 @@ function n1Ahora(b){
  var plazo=cl?[IC.lock,'Cerró el '+cie,'gr','Solo lectura']:(pre?[IC.cal,'Abre el '+abr+' (presunta, sin confirmación oficial)','inf',abreChip()]:[IC.cal,'Cierra el '+cie,'wa',cierraChip()]);
  var ayuda=cl?'La ventana cerró: solo puede consultar la declaración y descargar los reportes y el certificado.':(pre?'La declaración se habilita cuando abra la ventana de inscripción.':'Puede modificar la declaración cuantas veces quiera hasta el cierre; vale la última versión guardada.');
  var cta=cl?'<button class="ini-cta" type="button" data-go="n7" data-cert>'+IC.dl+'Descargar certificado</button>'+'<button class="ini-cta sec" type="button" data-go="n7">Ver declaración</button>'
-  :'<button class="ini-cta" type="button" data-go="n2"'+(pre?' disabled':'')+'>'+ctaLbl()+(pre?'':IC.arr)+'</button>'+(pre?'':'<button class="ini-cta sec" type="button" data-av>'+IC.dl+'Descargar avance</button>');
+  :'<button class="ini-cta" type="button" data-go="n2"'+(pre?' disabled':'')+'>'+ctaLbl()+'</button>'+(pre?'':'<button class="ini-cta sec" type="button" data-av>'+IC.dl+'Descargar avance</button>');
  var tot2=function(a,s){return '<span class="ini-v"><b>'+a+'</b>'+(a===1?'atleta':'atletas')+'</span><span class="sp"><b>'+s+'</b> '+(s===1?'suplente':'suplentes')+'</span>'};
  return '<div class="app ini-app"><div class="ini"><div class="ini-m">'+
   '<section class="ini-h" aria-labelledby="ini-org"><span class="ini-av" aria-hidden="true">A</span><div class="ini-hx"><span class="ini-ev">XXIII Juegos Deportivos Nacionales · Córdoba – Sucre 2027</span><h1 id="ini-org">'+esc(DELE)+'</h1>'+
@@ -976,7 +982,7 @@ function n1Ahora(b){
   '<section class="ini-card" aria-labelledby="ini-etapa">'+
   '<div class="ini-sec"><div class="ini-et"><div><span class="ini-en'+(cl?' gr':'')+'" aria-hidden="true">3</span><h2 id="ini-etapa"><span class="ini-sr">Etapa 3 de 5: </span>Inscripción numérica</h2><span class="ini-b '+badge[0]+'">'+badge[1]+'</span></div><p>'+(cl?'Resumen de lo que la delegación declaró al cierre de la ventana.':'Declare por deporte cuántos atletas y suplentes inscribirá la delegación.')+'</p></div>'+
   '<div class="ini-row"><dl class="ini-dl'+(pre?' pre':'')+'">'+
-   '<div><dt>Deportes con inscripción numérica</dt><dd><span class="ini-v"><b>'+nd+'</b>de '+tot+'</span><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></dd></div>'+
+   '<div><dt>Deportes con inscripción numérica</dt><dd><span class="ini-v"><b>'+nd+'</b>de '+tot+'</span><span class="ft"><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></span></dd></div>'+
    '<div><dt>Total hombres (H)</dt><dd>'+tot2(t.ah,t.sh)+'</dd></div>'+
    '<div><dt>Total mujeres (M)</dt><dd>'+tot2(t.am,t.sm)+'</dd></div></dl>'+
   '<div class="ini-pn"><div class="ini-pz"><span>'+plazo[0]+'<span>'+plazo[1]+'</span></span><span class="chs"><span class="ini-b '+plazo[2]+'">'+plazo[3]+'</span></span></div>'+

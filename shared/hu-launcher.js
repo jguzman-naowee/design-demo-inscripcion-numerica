@@ -55,7 +55,8 @@
       var notas = (f[3] || []).map(function (n) { return '<span class="tt-scr-n">' + esc(n) + '</span>'; }).join('');
       return '<button type="button" class="tt-scr' + (f[0] === activeScreen ? ' is-active' : '') + '" data-id="' + esc(f[0]) + '"><b>' + esc(f[1]) + '</b><span class="tt-scr-b"><span class="tt-scr-t">' + esc(f[2]) + '</span>' + notas + '</span></button>';
     }).join('');
-    var perf = N.ORDER.map(function (c) {
+    /* Admin primero, igual que en la portada. */
+    var perf = ['admin'].concat(N.ORDER.filter(function (c) { return c !== 'admin'; })).map(function (c) {
       var r = N.ROLES[c], on = c === role;
       return '<a class="tt-seg-b' + (on ? ' is-active' : '') + '" href="' + r.page + '" data-perfil="' + c + '"' + (on ? ' aria-current="page"' : '') + '>' + esc(CORTO[c] || r.label) + '</a>';
     }).join('');
@@ -78,7 +79,6 @@
       '<div class="tt-body">' +
       '<div class="tt-grp">Perfil (simulado)</div><div class="tt-seg" role="group" aria-label="Perfil">' + perf + '</div>' +
       (esDelegado ? '<div class="tt-grp">Ver como</div>' + seg('rolver', rolVer, [['gestor', 'Gestor'], ['auxiliar', 'Auxiliar']]) : '') +
-      simHtml() +
       (sim ? '<div class="tt-grp">Simular</div><div class="tt-sim">' + sim + '</div>' : '') +
       '<div class="tt-grp">Mostrar</div>' + seg('vista', vista, [['historias', 'Historias'], ['pantallas', 'Pantallas']]);
     if (vista === 'pantallas') {

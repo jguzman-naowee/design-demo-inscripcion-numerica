@@ -23,6 +23,7 @@
 **Criterios de aceptación:**
 
 - El sistema almacena, por cada combinación deporte + modalidad + género, el cupo máximo de atletas y el de suplentes.
+- En la pestaña Cupos cada fila es una modalidad: una sola celda «Hombres / Mujeres» resume el cupo de atletas y de suplentes de ambos géneros (un solo valor si son iguales) y un solo botón «Editar cupo» abre un formulario donde se escoge el género (Hombres, Mujeres y, solo en Ecuestre, Mixto).
 - El cupo NO es una constante: «los instructivos de competencia tienen parámetros diferentes entre ellos. Es un dato parametrizable por modalidad.
 
 **Adjuntos/referencias:** Inscripción_Numérica_V3.xlsx · DEPORTES MODALIDADES JN 2027.xlsx
@@ -135,3 +136,10 @@
 - **Por confirmar con Daniel:** en 8 modalidades el límite de la hoja o del instructivo (equipos de 2 a 4) es menor que el cupo de un género (por ejemplo Subacuáticas 4 frente a 18). Se aplica tal cual y se marcan «Por revisar».
 - **Membrete:** queda como está (banner del certificado de referencia) y rige para todas las descargas. En el Admin la única vista con formato es el certificado de cierre, que ya lo lleva; el informe de errores .csv es un archivo de datos sin membrete.
 
+### Ajustes de diseño del 21-oct-2026 (DC-249, DC-250, DC-253)
+
+- **DC-249 · Orden de pestañas:** «Ventana de la fase» (A5) pasa a ser la primera pestaña y la pantalla de entrada al Admin sin hash; luego «Cupos» y «Límites conjuntos». Los hashes `#a1`…`#a6` no cambian.
+- **DC-250 · A1:** el título «Cupos por modalidad», la búsqueda y los selectores quedan dentro de la misma card que la tabla y la paginación.
+- **DC-253 · Una fila por modalidad (A1/A3):** la tabla pierde la columna Género y las filas por género; la celda «Cupo Hombres / Mujeres» resume ambos («H: 13 + 3 · M: 12 + 3», o «12 + 3 · Hombres y Mujeres» si son iguales; en Ecuestre se agrega «Mixto»). El contador del encabezado cuenta modalidades. Los filtros de género, «Cupo distinto por género», «Sin suplentes» y «Con límite conjunto» actúan sobre la modalidad (basta con que un género cumpla). A3 es un formulario por modalidad con selector de género; el mínimo, el tope y el límite conjunto son de toda la modalidad. Se guarda todo junto, pero el registro de cambios anota una línea por género y otra «toda la modalidad». Si un género baja con declaraciones, rige el flujo de A6 (recalcula, avisa, registra). A2 sigue leyendo filas H/M/X y las agrupa por modalidad. El cupo Mixto de Ecuestre, antes sin dato, ahora es editable.
+- **DC-254 · A1:** se quita el interruptor «Cupos distintos por género»; la opción «Cupo distinto por género» del selector «Estados» queda como único acceso.
+- **DC-255 · A1:** la caja de búsqueda crece y ocupa el espacio sobrante de la fila; «Deportes», «Géneros» y «Estados» van a su derecha con su ancho natural. Una fila desde 900 px; apilado en móvil.
