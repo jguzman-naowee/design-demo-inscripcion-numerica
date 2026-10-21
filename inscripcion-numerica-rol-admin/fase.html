@@ -142,6 +142,11 @@ body{margin:0;background:#f5f6fa;color:var(--fg);font-family:var(--font);line-he
 .modal.w{width:640px}.modal.w2{width:560px}
 .modal-bg{z-index:50;align-items:flex-start;overflow:auto}
 .modal{margin-block:auto}
+/* Editar cupo: alto máx. 90vh, scroll interno y encabezado fijo. */
+#a3-m{max-height:90vh;overflow-y:auto;padding-top:0}
+#a3-m .ed-h{position:sticky;top:0;z-index:3;background:#fff;margin:0 -28px 12px;padding:24px 28px 12px;border-bottom:1px solid #e7e9f3}
+#a3-m .ed-h h3{margin:0 0 6px}#a3-m .ed-h p{margin:0}
+@media(max-width:560px){#a3-m .ed-h{margin:0 -16px 12px;padding:20px 16px 12px}}
 .ck{display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer}.ck input{width:18px;height:18px;accent-color:#d74009}
 .steps{display:flex;gap:0;margin-bottom:22px}
 .steps div{flex:1;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--g-700);font-weight:500}
@@ -578,7 +583,7 @@ function gblk(r,GK,f,x){var at=f==='max',two=GK.length>1,lk=at?'lca':'lcs',lv=r.
   (at&&tu!=null?'<p class="tp" id="f-tope-info">Tope por delegación: '+tu+(t.por==='genero'?' por género':'')+'</p>':'')+'</div>'}
 function a3Form(x){
  var r=x.r,m=r.minimo,GK=gKeys(r),ar=armasAplica(r),av=m&&m.maxSuplentesPorArma!=null?m.maxSuplentesPorArma:null;
- return '<h3>Editar cupo</h3><p>'+GK.map(function(g){return SXL[g]}).join(', ').replace(/, ([^,]*)$/,' y $1')+(GK.length>1?' se editan a la vez.':' se edita aquí.')+' El mínimo aplica a toda la modalidad.</p>'+
+ return '<div class="ed-h"><h3>Editar cupo</h3><p>'+GK.map(function(g){return SXL[g]}).join(', ').replace(/, ([^,]*)$/,' y $1')+(GK.length>1?' se editan a la vez.':' se edita aquí.')+' El mínimo aplica a toda la modalidad.</p></div>'+
  '<div class="g2"><div class="fl"><label>Deporte</label><input class="in" readonly value="'+esc(r.nombre.d)+'"></div><div class="fl"><label>Modalidad</label><input class="in" readonly value="'+esc(r.nombre.m)+'"></div></div>'+
  '<div id="f-grid">'+gblk(r,GK,'max',x)+gblk(r,GK,'sup',x)+'</div>'+
   (ar?'<div class="blk" id="f-armas"><h4>Suplentes por arma</h4><p class="bh" id="f-armat"></p><div class="fl"><label for="f-arman">Máximo de suplentes por arma</label>'+num('f-arman',av)+'<small class="e" id="e-arman" hidden></small></div><div class="armc" id="f-armac" aria-label="Armas del deporte"></div></div>':'')+
