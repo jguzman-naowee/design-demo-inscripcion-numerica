@@ -1974,7 +1974,7 @@ window.INSCNUM_DATA = {
    },
    "mixtaComposicion": null,
    "notas": [
-    "Las reglas oficiales no mencionan suplentes"
+    "Sin suplentes definidos"
    ],
    "minimo": null,
    "topeDelegacion": null,
@@ -2144,7 +2144,7 @@ window.INSCNUM_DATA = {
    },
    "mixtaComposicion": null,
    "notas": [
-    "Las reglas oficiales no mencionan suplentes"
+    "Sin suplentes definidos"
    ],
    "minimo": null,
    "topeDelegacion": null,
@@ -2640,7 +2640,7 @@ window.INSCNUM_DATA = {
    },
    "mixtaComposicion": "8 ; máximo 2 hombres + 2 suplentes",
    "notas": [
-    "La hoja trae «10 ; máximo 2 hombres»: 8 atletas + 2 reservas = 10"
+    "«10 ; máximo 2 hombres»: 8 atletas + 2 reservas = 10"
    ],
    "minimo": {
     "atletas": 4,
@@ -7970,8 +7970,8 @@ window.INSCNUM_DATA = {
    "ref": "natacion--artistica",
    "tipo": "complementario",
    "tema": "Natación artística",
-   "criterio": "Equipo de 4 a 8 atletas + 2 reservas (matriz) y máximo 2 hombres en los equipos mixtos (hoja). El delegado lo valida: mínimo 4 y máximo 8 atletas, 2 suplentes, y el mixto con hasta 2 hombres.",
-   "porque": "El «10» de la hoja es 8 atletas + 2 reservas; HU-IN-08 dice lo mismo que la matriz.",
+   "criterio": "Equipo de 4 a 8 atletas + 2 reservas y máximo 2 hombres en los equipos mixtos. El delegado lo valida: mínimo 4 y máximo 8 atletas, 2 suplentes, y el mixto con hasta 2 hombres.",
+   "porque": "El «10» del cupo es 8 atletas + 2 reservas; HU-IN-08 dice lo mismo.",
    "citas": {
     "hoja": "10 ; máximo 2 hombres",
     "matriz": "Cada equipo debe estar conformado entre cuatro (4) y ocho (8) atletas, más dos (2) reservas. Se puede incluir máximo 2 hombres para las pruebas de equipos mixtos",
@@ -8048,7 +8048,7 @@ window.INSCNUM_DATA = {
    "ref": "esgrima--unica",
    "tipo": "equivalencia",
    "tema": "Esgrima",
-   "criterio": "Espada, Florete y Sable (V3) son la modalidad «Única» de la hoja: el cupo 12 + 3 se suma entre las tres armas, por género.",
+   "criterio": "Espada, Florete y Sable comparten la modalidad «Única»: el cupo 12 + 3 se suma entre las tres armas, por género.",
    "porque": "Sin la suma, la delegación podría declarar 12 por arma (36 en total).",
    "citas": {
     "hoja": "12 + 3 suplentes (Única)"
@@ -8066,8 +8066,8 @@ window.INSCNUM_DATA = {
    ],
    "tipo": "complementario",
    "tema": "Deportes de conjunto",
-   "criterio": "Máximo de la hoja y mínimo por equipo de la matriz: Baloncesto 5x5 10 a 12, Balonmano 14 a 16, Béisbol 9 a 22, Voleibol coliseo 9 a 14, Tenis de Mesa 3 a 4 por equipo.",
-   "porque": "La matriz confirma el máximo de la hoja y agrega el mínimo; la HU no menciona suplentes y se conservan los de la hoja."
+   "criterio": "Máximo y mínimo por equipo: Baloncesto 5x5 10 a 12, Balonmano 14 a 16, Béisbol 9 a 22, Voleibol coliseo 9 a 14, Tenis de Mesa 3 a 4 por equipo.",
+   "porque": "El mínimo se suma al máximo ya definido; la HU no menciona suplentes y se conservan los del cupo."
   },
   {
    "id": "boxeo",

@@ -23,13 +23,13 @@
 
 - **Submódulo:** —
 
-**Historia:** Como comité organizador, quiero ver el cupo máximo de atletas y suplentes de cada deporte y modalidad en la pantalla de consolidado de intenciones, para contrastar de un vistazo lo declarado contra el tope reglamentario.
+**Historia:** Como comité organizador, quiero ver el cupo máximo de atletas y suplentes de cada deporte y modalidad en la pantalla de consolidado de intenciones, para comparar de un vistazo lo declarado con el tope del reglamento.
 
 **Criterios de aceptación:**
 
 - En la pantalla «Consolidado de intenciones» se agregan cuatro columnas entre Modalidad y los indicadores de género: bajo MASC «Cupos» y «Suplentes», y bajo FEM «Cupos» y «Suplentes».
 - Los valores anotados a mano por Daniel en el mockup son: Actividades Subacuáticas Cortas-Piscina y Largas-Aguas Abiertas = 18 y 2 en ambos géneros; Ajedrez Blitz, Clásico y Rápido = 5 y 1 en ambos géneros; Arquería Compuesto y Recurvo = 4 y 1 en ambos géneros.
-- Se conserva lo existente en la pantalla: pestañas «Por deporte» / «Por organización», filtros, selector de organización, paginación, conteo de organizaciones por fila y botón Exportar.
+- Se conserva lo existente en la pantalla: pestañas «Por deporte» / «Por delegación», filtros, selector de delegación, paginación, conteo de delegaciones por fila y botón Exportar.
 - (D19, 19-oct-2026) No hay columna de cupos mixtos. En las modalidades con cupos mixtos por sus pruebas (todas, salvo Ecuestre) se agrega una columna «Límite conjunto H+M» y el género «Mixto» del filtro queda solo para Ecuestre.
 
 **Adjuntos/referencias:** Levantamiento Inscripción Numérica.docx (mockup a mano) · Inscripción_Numérica_V3.xlsx
@@ -94,7 +94,7 @@
 
 - **Submódulo:** Reportes
 
-**Historia:** Como comité organizador, quiero descargar un reporte consolidado de lo declarado por todas las delegaciones, para hacer seguimiento y soportar la planeación del evento.
+**Historia:** Como comité organizador, quiero descargar un reporte consolidado de lo declarado por todas las delegaciones, para hacer seguimiento y apoyar la planeación del evento.
 
 **Criterios de aceptación:**
 
@@ -113,7 +113,7 @@
 **Criterios de aceptación:**
 
 - El botón «Exportar» de la pantalla «Consolidado de intenciones» incluye las nuevas columnas de cupos y cantidades.
-- La exportación respeta los filtros y la pestaña activa (Por deporte / Por organización).
+- La exportación respeta los filtros y la pestaña activa (Por deporte / Por delegación).
 - (propuesta — validar) Ninguno de los insumos habla del botón Exportar; se deduce de que ya existe en la pantalla base.
 
 **Adjuntos/referencias:** Levantamiento Inscripción Numérica.docx — imagen 1
@@ -141,7 +141,7 @@ Hallazgos del código de `suite-web-v2` (verificados):
 
 ## Notas de revisión (8-oct-2026)
 
-- Consolidado: la pantalla real es una lista de filas desplegables con chips Hombre / Mujer / Mixto y «N organizaciones». Las columnas de Daniel (HU-IN-05) van entre la modalidad y los chips, no entre los indicadores de género.
+- Consolidado: la pantalla real es una lista de filas desplegables con chips Hombre / Mujer / Mixto y «N delegaciones». Las columnas de Daniel (HU-IN-05) van entre la modalidad y los chips, no entre los indicadores de género.
 - HU-IN-10 a HU-IN-13: ya tienen capturas del tablero real (Intercolegiados) como referencia en ADJUNTOS/REFERENCIAS/images/.
 - HU-IN-17: el certificado real ya trae un banner superior con los logos del evento, que puede ser el membrete. Confirmado por negocio el 19-oct-2026 (ver D19).
 - HU-IN-15 sigue marcada «(propuesta — validar)».
@@ -150,7 +150,7 @@ Hallazgos del código de `suite-web-v2` (verificados):
 
 - **D1 · HU-IN-07:** el exceso de cupo **bloquea**. «Cupo excedido: Bloquea» es el valor por defecto; el interruptor «Solo avisa» de «Simular» queda solo como herramienta de demo.
 - **D2/D3 · Criterio oficial:** manda lo documentado, con precedencia matriz (transcribe el instructivo de competencia) > hoja de reglas > texto de las HU. Muchos «conflictos» eran complementarios: la hoja da el total por modalidad y la matriz el tope por prueba. Tenis de Campo: 4 + 1 por modalidad y, por prueba, 2 en Individual y 1 pareja en Dobles. Atletismo: hasta 90 en total y 3 por prueba (aviso). Natación artística: equipo de 4 a 8 + 2 reservas (matriz) con máximo 2 hombres en el mixto (hoja), confirmado y validado. Patinaje: el tope de 2 por delegación es solo de Velocidad y por prueba (aviso). Duatlón 3 y Triatlón 4 por género, sin sumarse. Boxeo 13 + 3 / 12 + 3 queda tal cual (sin contraste). `conflictos[]` pasa a `criteriosAplicados[]` y la pantalla dice «Criterio aplicado: …» con la cita; ya no queda ningún dato «por confirmar».
-- **D4 · Sin cupo = sin tope:** Billar, Lucha y los géneros en blanco (Atletismo y Ecuestre femenino) se etiquetan «Sin tope en el instructivo»: se capturan sin validar tope y no cuentan como pendientes. (Natación artística femenino toma el 8 + 2 de la matriz, por D3.)
+- **D4 · Sin cupo = sin tope:** Billar, Lucha y los géneros en blanco (Atletismo y Ecuestre femenino) se etiquetan «Sin tope»: se capturan sin validar tope y no cuentan como pendientes. (Natación artística femenino toma el 8 + 2 de la matriz, por D3.)
 - **D5 · Suplentes en blanco = sin suplentes (cupo 0):** la celda queda deshabilitada con «Sin suplentes». Excepciones documentadas: Surf Shortboard (1 por género, nota de la hoja) y Natación artística (2 reservas, matriz). Si atletas y suplentes están en blanco, es «sin tope».
 - **D6 · HU-IN-13:** se queda el filtro de región (Caribe, Andina, Pacífica, Orinoquía, Amazonía, Insular), combinable con los demás; la Federación Deportiva Militar queda «Sin región». «Regionales» como indicador y gráfico sigue retirado (HU-IN-12).
 - **D7 · Propuestas P01 a P09:** validadas por Jorge Guzmán.
@@ -164,11 +164,11 @@ Hallazgos del código de `suite-web-v2` (verificados):
 ### Decisiones del 16-oct-2026 (respuesta de Daniel, negocio)
 
 - **D14 · Aplicación de las respuestas de Daniel en el comité:**
-  1. **34 delegaciones** (32 departamentos + Bogotá D.C. + Federación Deportiva Militar). Se agrega VICHADA al consolidado sin filas ni correo: «Sin intención · habilitada preventivamente» (no hizo la intención; posible permiso extraordinario del comité). Se muestra «34 · 33 con intención + 1 habilitada» en C1, C2, C3, C5 y el tablero; el tablero suma la habilitada solo según región y departamento. Vichada no entra en el avance global ni en «Sin declarar», y no tiene «Recordar» (sin correo).
-  2. **Pruebas fuera de esta fase:** la unidad es deporte + modalidad + género; «Varía por prueba» pasa a «Varía según la modalidad». No había columna de matriz en C1/C2.
+  1. **34 delegaciones** (32 departamentos + Bogotá D.C. + Federación Deportiva Militar). Se agrega VICHADA al consolidado sin filas ni correo: «Sin intención · habilitada preventivamente» (no hizo la intención; posible permiso extraordinario del comité). Se muestra «34 · 33 con intención + 1 habilitada» en C1, C3, C5 y el tablero; el tablero suma la habilitada solo según región y departamento. Vichada no entra en el avance global ni en «Sin declarar», y no tiene «Recordar» (sin correo).
+  2. **Pruebas fuera de esta fase:** la unidad es deporte + modalidad + género; «Varía por prueba» pasa a «Varía según la modalidad». No había columna de matriz en C1.
   3. **Reporte en Excel real** (.xlsx con SheetJS 0.18.5 desde cdnjs, carga perezosa; si falla, CSV con aviso). Doce columnas: Delegación, Deporte, Modalidad, Sexo, Cupos Masculinos, Suplentes Masculinos, Cupos Femeninos, Suplentes Femeninos, Cupos Mixtos, Fecha de registro, Rol registrador, Correo electrónico. Hoja inicial «Membrete» y hoja «Consolidado». C4 respeta los filtros; C5 es siempre el reporte completo. «Rol registrador» = Gestor o Auxiliar (el insumo solo trae Gestor). «Fecha de registro» es la de la intención (2026).
   4. **Etapas oficiales:** Intención de participación (cerró 30-08-2025), Intención en deportes y modalidades (cerró 30-08-2026), Inscripción numérica (presunta apertura 01-03-2027, cierra 30-03-2027), Lista larga (30-05-2027), Nominal (30-09-2027). Se retira «Preinscripción de delegaciones». El indicador del tablero «Preinscripciones» pasa a «Intenciones registradas» (solo rótulo; cifra de ejemplo).
-  5. **Tablero C6:** Prensa, Voluntarios, Federaciones, Comités y Proveedores no tienen fase numérica (se inscriben en convocatoria o nominal) y Personal de Apoyo entra desde Lista larga. Se mantiene «sin dato» con el motivo y el indicador «Personal de Apoyo Registrado». Se quita la franja «En proceso · Datos pendientes» y el atenuado en gris: el tablero se ve a color y con los filtros activos.
+  5. **Tablero C6:** Prensa, Voluntarios, Federaciones, Comités y Proveedores no tienen fase numérica (se inscriben en convocatoria o nominal) y Personal de Apoyo entra desde Lista larga. Se mantiene «sin dato» con el motivo en la leyenda de la distribución (sin párrafo aparte) y el indicador «Personal de Apoyo Registrado». Se quita la franja «En proceso · Datos pendientes» y el atenuado en gris: el tablero se ve a color y con los filtros activos.
   6. **Edad:** nada que mostrar (aplica desde lista larga).
 ### Decisiones del 19-oct-2026 (Daniel, negocio)
 
@@ -176,7 +176,7 @@ Hallazgos del código de `suite-web-v2` (verificados):
   - **Qué modalidades:** 25 combinaciones (27 reglas de la hoja), exactamente la lista de «Límites conjuntos» del Admin (A4): 13 con límite definido y 12 sin definir (se rotulan «Sin tope»). Casos de borde: Ajedrez (3 modalidades) tiene Mixto en la hoja pero no filas; Porrismo Performance Cheer era solo Mixto y ahora se declara en Hombres y Mujeres (la hoja solo trae cupo masculino). Natación Carreras, Gimnasia Trampolín y Squash tienen filas Mixto en el consolidado aunque la hoja no habilita Mixto: no tienen límite conjunto (columna «—») y cada género se compara con su propio cupo.
   - **Qué número es el límite:** el que parametriza el Admin, leído de `shared/limites-conjuntos.js` (fuente única de los tres roles; ya no se deriva sumando cupos). Donde la hoja no trae cifra el límite queda sin definir y el comité lo rotula «Sin tope»: no se valida un tope conjunto. En las agrupaciones (Vela Bote) se muestra el rango de las reglas del grupo (2–3); la delegación valida el mayor. **Pendiente de confirmar con negocio (ver P7 en PREGUNTAS-PARA-DANIEL.md).**
   - **C1:** sin columna de cupos mixtos; nueva columna «Límite conjunto H+M» donde corresponde; el filtro de género «Mixto» queda solo para Ecuestre.
-  - **C2:** en las modalidades con límite definido la columna de cada género muestra solo lo declarado y el estado (falta, completo, excede) compara la suma H + M contra el límite conjunto; donde el límite no está definido, cada género se compara con su propio cupo.
+  - **C1, por delegación** (antes C2, «Declarado vs cupo», que ya no es pantalla aparte): en las modalidades con límite definido la columna de cada género muestra solo lo declarado y el estado (falta por declarar o completo) compara la suma H + M contra el límite conjunto; ningún valor puede superar su cupo; donde el límite no está definido, cada género se compara con su propio cupo.
   - **C3:** sin cambio; los conteos por modalidad no dependen del género.
   - **C4 y C5:** el Excel conserva sus **doce columnas exactas, en el mismo orden**. «Cupos Mixtos» queda vacía salvo Ecuestre (valor derivado: 5 + 3 suplentes, de la hoja); las modalidades con límite conjunto salen con sus cupos y suplentes masculinos y femeninos, y en «Sexo» el valor de cada fila. Al pie de la vista previa de C5 (y de C4) se agrega la nota «Límite conjunto Hombres + Mujeres».
   - **Datos de ejemplo:** `shared/datos-consolidado.js` pasa de 3.916 a 3.467 filas: 513 filas Mixto fuera de Ecuestre se reemplazan por Hombres y Mujeres (64 filas nuevas, las que faltaban), se conservan las 33 de Ecuestre, las 34 delegaciones y Vichada sin filas. El detalle queda en el campo `conjunto` del archivo.
@@ -186,6 +186,8 @@ Hallazgos del código de `suite-web-v2` (verificados):
 ## Historias propuestas (validadas por Jorge Guzmán, 9-oct-2026)
 
 ## HU-IN-P08 — Declarado contra cupo en el consolidado
+
+_Vive en «Consolidado», vista «Por delegación»: lista de delegaciones a la izquierda y, a la derecha, una tabla por deporte con lo declarado frente al cupo de cada modalidad. No hay pestaña aparte._
 
 - **Submódulo:** Consolidado de intenciones
 
@@ -216,3 +218,12 @@ Hallazgos del código de `suite-web-v2` (verificados):
 **Adjuntos/referencias:** HU-IN-14 (columna Correo Electrónico del reporte).
 
 **Nota:** Propuesta del equipo de diseño. Validada por Jorge Guzmán el 9-oct-2026.
+
+### Decisión del 21-oct-2026 (Jorge): «Declarado vs cupo» se fusiona en el consolidado
+
+- La pestaña «Declarado vs cupo» (C2) se retira; `#c2` lleva a C1 por delegación. «Por delegación» pasa a dos paneles (lista y detalle) con el estado por modalidad (falta por declarar o completo) y, en la cabecera de cada deporte, el máximo que la delegación puede inscribir (suma de los máximos de sus modalidades). «Por deporte» no cambia.
+- Las cantidades declaradas de ejemplo salen de un solo generador por delegación, modalidad y celda: alimenta el detalle, el avance de la lista, «Quién falta» (C3) y el estado de cada delegación.
+
+### Decisión del 21-oct-2026 (Jorge): textos en lenguaje sencillo
+
+- Los textos de las pantallas y de los recorridos del comité se reescribieron en lenguaje natural (tuteo, frases cortas). No cambian reglas, cifras, columnas del Excel ni estados. Se quitó de pantalla la procedencia de los datos (hojas, actas, códigos de decisión).

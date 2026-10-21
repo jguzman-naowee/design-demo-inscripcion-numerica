@@ -3,7 +3,7 @@
 > Fuente: Google Sheet `PR-08_VM_2026-10-01_MODULO_INSCRIPCION_NUMERICA.xlsx` (propietario d***@naowee.com, modificado 2026-10-05).
 > Hoja: https://docs.google.com/spreadsheets/d/1Qhh1jiNRdnF5628IZlsMCULt3c1aELsD2XuZrz7RNJM
 > Bajado el 2026-10-08, solo la primera pestaña (gid=0). 17 historias, HU-IN-01 a HU-IN-17.
-> Solo las 6 HU del gestor de una organización (delegado). Las otras 11 son de los roles admin y comité; ver ../inscripcion-numerica-fuente/.
+> Solo las 6 HU del gestor de una delegación (delegado). Las otras 11 son de los roles admin y comité; ver ../inscripcion-numerica-fuente/.
 
 ## Índice
 
@@ -14,7 +14,7 @@
 
 - **Submódulo:** Captura de cantidades
 
-**Historia:** Como Gestor de una Organización, quiero ver los deportes y modalidades en los que mi delegación declaró intención de participación y registrar allí las cantidades, para declarar el tamaño de mi delegación sin salirme de lo que ya manifesté.
+**Historia:** Como Gestor de una Delegación, quiero ver los deportes y modalidades en los que mi delegación declaró intención de participación y registrar allí las cantidades, para declarar el tamaño de mi delegación sin salirme de lo que ya manifesté.
 
 **Criterios de aceptación:**
 
@@ -28,7 +28,7 @@
 
 - **Submódulo:** —
 
-**Historia:** Como Gestor de una Organización, quiero ingresar la cantidad de atletas y de suplentes por deporte, modalidad y género, para declarar formalmente cuántas personas llevará mi delegación.
+**Historia:** Como Gestor de una Delegación, quiero ingresar la cantidad de atletas y de suplentes por deporte, modalidad y género, para declarar formalmente cuántas personas llevará mi delegación.
 
 **Criterios de aceptación:**
 
@@ -41,7 +41,7 @@
 
 - **Submódulo:** Validaciones
 
-**Historia:** Como sistema, quiero validar que la cantidad de atletas y suplentes registrada no exceda el cupo del instructivo para esa combinación de deporte, modalidad y género, para que ninguna delegación declare por encima del tope oficial.
+**Historia:** Como sistema, quiero validar que la cantidad de atletas y suplentes registrada no exceda el cupo oficial para esa combinación de deporte, modalidad y género, para que ninguna delegación declare por encima del tope oficial.
 
 **Criterios de aceptación:**
 
@@ -59,7 +59,7 @@
 
 **Criterios de aceptación:**
 
-- El instructivo oficial define reglas que no son un simple máximo. Ejemplos textuales: Baloncesto 5x5 «máximo 12, mínimo 10 atletas por equipo»; Balonmano «máximo 16, mínimo 14»; Béisbol «máximo 22, mínimo 9»; Voleibol coliseo «mínimo 9, máx 14»; Natación artística equipos «entre 4 y 8 atletas más 2 reservas»; Tiro Deportivo «máx 1 suplente por arma».
+- Las reglas oficiales definen reglas que no son un simple máximo. Ejemplos textuales: Baloncesto 5x5 «máximo 12, mínimo 10 atletas por equipo»; Balonmano «máximo 16, mínimo 14»; Béisbol «máximo 22, mínimo 9»; Voleibol coliseo «mínimo 9, máx 14»; Natación artística equipos «entre 4 y 8 atletas más 2 reservas»; Tiro Deportivo «máx 1 suplente por arma».
 
 **Adjuntos/referencias:** DEPORTES MODALIDADES JN 2027.xlsx
 
@@ -71,7 +71,7 @@
 
 **Criterios de aceptación:**
 
-- El instructivo oficial trae topes por delegación en varias modalidades: Patinaje «hasta 2 atletas por delegación» por prueba, Tenis «2 atletas por delegación», Triatlón «máx 4 atletas por delegación y género», Tiro Deportivo «máx 2 equipos mixtos por delegación», Tejo «1 atleta por delegación» en individual.
+- Las reglas oficiales traen topes por delegación en varias modalidades: Patinaje «hasta 2 atletas por delegación» por prueba, Tenis «2 atletas por delegación», Triatlón «máx 4 atletas por delegación y género», Tiro Deportivo «máx 2 equipos mixtos por delegación», Tejo «1 atleta por delegación» en individual.
 
 **Adjuntos/referencias:** DEPORTES MODALIDADES JN 2027.xlsx
 
@@ -81,7 +81,7 @@
 
 - **Submódulo:** Certificado de cierre
 
-**Historia:** Como Gestor de una Organización, quiero descargar el certificado oficial de mi inscripción numérica al cierre de la fase, para tener el soporte formal de lo que declaró mi delegación.
+**Historia:** Como Gestor de una Delegación, quiero descargar el certificado oficial de mi inscripción numérica al cierre de la fase, para tener el soporte formal de lo que declaró mi delegación.
 
 **Criterios de aceptación:**
 
@@ -112,7 +112,7 @@
 
 - **D1 · HU-IN-07:** el exceso de cupo **bloquea**. «Cupo excedido: Bloquea» es el valor por defecto; el interruptor «Solo avisa» de «Simular» queda solo como herramienta de demo. **Reemplazada por D13:** el interruptor ya no existe.
 - **D2/D3 · Criterio oficial:** manda lo documentado, con precedencia matriz (transcribe el instructivo de competencia) > hoja de reglas > texto de las HU. Muchos «conflictos» eran complementarios: la hoja da el total por modalidad y la matriz el tope por prueba. Tenis de Campo: 4 + 1 por modalidad y, por prueba, 2 en Individual y 1 pareja en Dobles. Atletismo: hasta 90 en total y 3 por prueba (aviso). Natación artística: equipo de 4 a 8 + 2 reservas (matriz) con máximo 2 hombres en el mixto (hoja), confirmado y validado. Patinaje: el tope de 2 por delegación es solo de Velocidad y por prueba (aviso). Duatlón 3 y Triatlón 4 por género, sin sumarse. Boxeo 13 + 3 / 12 + 3 queda tal cual (sin contraste). **Lo que dice «por prueba» queda superado por D14.** `conflictos[]` pasa a `criteriosAplicados[]` y la pantalla dice «Criterio aplicado: …» con la cita; ya no queda ningún dato «por confirmar».
-- **D4 · Sin cupo = sin tope:** Billar, Lucha y los géneros en blanco (Atletismo y Ecuestre femenino) se etiquetan «Sin tope en el instructivo»: se capturan sin validar tope y no cuentan como pendientes. (Natación artística femenino toma el 8 + 2 de la matriz, por D3.)
+- **D4 · Sin cupo = sin tope:** Billar, Lucha y los géneros en blanco (Atletismo y Ecuestre femenino) se etiquetan «Sin tope»: se capturan sin validar tope y no cuentan como pendientes. (Natación artística femenino toma el 8 + 2 de la matriz, por D3.)
 - **D5 · Suplentes en blanco = sin suplentes (cupo 0):** la celda queda deshabilitada con «Sin suplentes». Excepciones documentadas: Surf Shortboard (1 por género, nota de la hoja) y Natación artística (2 reservas, matriz). Si atletas y suplentes están en blanco, es «sin tope».
 - **D6 · HU-IN-13:** se queda el filtro de región (Caribe, Andina, Pacífica, Orinoquía, Amazonía, Insular), combinable con los demás; la Federación Deportiva Militar queda «Sin región». «Regionales» como indicador y gráfico sigue retirado (HU-IN-12).
 - **D7 · Propuestas P01 a P09:** validadas por Jorge Guzmán.
@@ -121,7 +121,7 @@
 - **D10 · Hero:** la etapa actual es «Inscripción numérica». Las etapas y fechas pasan a ser las oficiales por D16.
 - **D11 · Rol auxiliar:** ~~captura pero no confirma~~; la grilla arranca vacía. **Reemplazada por D15** en lo de confirmar: la grilla vacía sigue vigente.
 - **D12 · Delegaciones:** se usan las 33 de la hoja. El acta menciona 34: queda como diferencia sin resolver.
-- **D13 · HU-IN-07, HU-IN-08 y HU-IN-09 (9-oct-2026):** Negocio: los topes no se pueden superar; la grilla limita al máximo y no muestra error. Al teclear, pegar o sumar, el valor se limita al menor entre el cupo de la fila y lo que queda del tope de la delegación (por género, equipos mixtos); junto al campo se lee «máx. N» y, al llegar al límite, un aviso informativo «Tope alcanzado: N de N» sin color de error. Se elimina el interruptor «Cupo excedido: Bloquea | Solo avisa», el estado de celda en error por exceso y los mensajes de exceso; Confirmar ya no se bloquea por topes. Siguen igual los mínimos de equipo (HU-IN-08), que bloquean al confirmar; los topes por prueba, que eran solo informativos, **salen de esta fase por D14**. El panel «Topes y validaciones» muestra el uso («val de max») y «Tope alcanzado». Los textos de las HU quedan fieles al original.
+- **D13 · HU-IN-07, HU-IN-08 y HU-IN-09 (9-oct-2026):** Negocio: los topes no se pueden superar; la grilla limita al máximo y no muestra error. Al teclear, pegar o sumar, el valor se limita al menor entre el cupo de la fila y lo que queda del tope de la delegación (por género, equipos mixtos); junto al campo se lee «máx. N» y, al llegar al límite, el botón «+» se deshabilita (sin etiqueta adicional). Se elimina el interruptor «Cupo excedido: Bloquea | Solo avisa», el estado de celda en error por exceso y los mensajes de exceso; Confirmar ya no se bloquea por topes. Siguen igual los mínimos de equipo (HU-IN-08), que bloquean al confirmar; los topes por prueba, que eran solo informativos, **salen de esta fase por D14**. El panel «Topes y validaciones» muestra el uso («val de max») y «Tope alcanzado». Los textos de las HU quedan fieles al original.
 - Fechas de intención (D9): 72 filas del consolidado (entre ellas las 5 de Vela de Atlántico) traen fecha 01-09-2026, posterior al cierre del 30-08-2026 a las 23:59. Son casos excepcionales y válidos: la grilla y el certificado las muestran sin marca.
 - Ventana (D10, actualizada por D16): el demo usa por defecto apertura 01-03-2027 a las 08:00 (presunta, sin confirmación oficial) y cierre 30-03-2027 a las 23:59, igual en las pantallas del admin y del delegado, con un «hoy» simulado de 15-03-2027 a las 12:00; todo en `localStorage['naowee-inscnum-ventana']` = `{abre:'2027-03-01T08:00', cierra:'2027-03-30T23:59', hoy:'2027-03-15T12:00'}`. Si el admin guarda `hoy: null`, el estado se calcula con el reloj real.
 
@@ -132,7 +132,7 @@
 - **D16 · Etapas y fechas oficiales (HU-IN-P01 y D10):** 1 Intención de participación (cerró 30-08-2025); 2 Intención de participación en deportes y modalidades (cerró 30-08-2026); 3 Inscripción numérica (activa; abre 01-03-2027, presunta y sin confirmación oficial, y cierra 30-03-2027); 4 Inscripción lista larga (hasta 30-05-2027); 5 Inscripción nominal (hasta 30-09-2027). Desaparece «Preinscripción de delegaciones».
 - **D17 · Editar tras confirmar (HU-IN-P02, HU-IN-P03 y HU-IN-16):** el delegado puede modificar su declaración cuantas veces quiera mientras la ventana esté abierta; vale la última versión guardada. Tras confirmar, la grilla queda a la vista con «Modificar declaración» hasta el cierre. Al cierre solo hay lectura, reportes y certificado, salvo un cambio extraordinario autorizado por el comité. El certificado se habilita al terminar la fase, se descarga las veces que se quiera y es siempre el mismo.
 - **D18 · Reporte de avance en Excel real (HU-IN-P10):** «Descargar avance» genera un .xlsx (SheetJS, carga perezosa desde cdnjs, versión 0.18.5) con una hoja «Membrete» y una hoja «Avance». Si la librería no carga, se descarga el CSV anterior con un aviso. Se mantiene la vista previa PDF del borrador con su leyenda. Columnas exactas y en este orden: Delegación, Deporte, Modalidad, Sexo, Cupos Masculinos, Suplentes Masculinos, Cupos Femeninos, Suplentes Femeninos, Cupos Mixtos, Fecha de registro, Rol registrador, Correo electrónico.
-- **D19 · Cupos mixtos como suma de hombres + mujeres (19-oct-2026, Daniel):** la columna «Cupos mixtos» no sirve. En las modalidades cuya fila de hoja trae «Cupos Mixtos» por sus pruebas (todas las que hoy traen género Mixto en la hoja de reglas, **excepto Ecuestre**, que es completamente mixto y conserva el cupo mixto), la grilla muestra Atletas y Suplentes de Hombres y de Mujeres, y el **límite general es la suma de ambas columnas** contra el cupo mixto total de la hoja (atletas con atletas, suplentes con suplentes). Ejemplo: «4 en total · 2 MASC + 2 FEM» → hombres + mujeres ≤ 4. Si la modalidad ya tenía filas Hombres y Mujeres con cupo propio, se mantiene el tope de cada género y además aplica el límite conjunto (vale el menor); si solo existía la fila Mixto, se crean las filas de hombres y mujeres, limitadas solo por la suma. El límite es duro (motor `limOf`/`setV`): al llegar a la suma el valor se limita y se lee «Tope alcanzado: N de N (suma hombres + mujeres)»; el panel «Topes y validaciones» lista «Hombres + Mujeres: val de max». La fila Mixto desaparece de la grilla, de los contadores y de los totales: «Cupos mixtos» en la barra inferior y en el resumen solo cuenta Ecuestre y se oculta cuando es 0. El xlsx de «Descargar avance» mantiene las 12 columnas exactas; «Cupos Mixtos» solo se llena en Ecuestre. **Reemplaza** la parte de cupos mixtos de HU-IN-06 y HU-IN-16, de las notas de revisión («Mixto es un sexo propio de cada fila»), de HU-IN-P01 y de D18.
+- **D19 · Cupos mixtos como suma de hombres + mujeres (19-oct-2026, Daniel):** la columna «Cupos mixtos» no sirve. En las modalidades cuya fila de hoja trae «Cupos Mixtos» por sus pruebas (todas las que hoy traen género Mixto en la hoja de reglas, **excepto Ecuestre**, que es completamente mixto y conserva el cupo mixto), la grilla muestra Atletas y Suplentes de Hombres y de Mujeres, y el **límite general es la suma de ambas columnas** contra el cupo mixto total de la hoja (atletas con atletas, suplentes con suplentes). Ejemplo: «4 en total · 2 MASC + 2 FEM» → hombres + mujeres ≤ 4. Si la modalidad ya tenía filas Hombres y Mujeres con cupo propio, se mantiene el tope de cada género y además aplica el límite conjunto (vale el menor); si solo existía la fila Mixto, se crean las filas de hombres y mujeres, limitadas solo por la suma. El límite es duro (motor `limOf`/`setV`): al llegar a la suma el valor se limita y el botón «+» queda deshabilitado; el panel «Topes y validaciones» lista «Hombres + Mujeres: val de max». La fila Mixto desaparece de la grilla, de los contadores y de los totales: «Cupos mixtos» en la barra inferior y en el resumen solo cuenta Ecuestre y se oculta cuando es 0. El xlsx de «Descargar avance» mantiene las 12 columnas exactas; «Cupos Mixtos» solo se llena en Ecuestre. **Reemplaza** la parte de cupos mixtos de HU-IN-06 y HU-IN-16, de las notas de revisión («Mixto es un sexo propio de cada fila»), de HU-IN-P01 y de D18.
   - Interpretación del demo: el límite conjunto sale de `shared/limites-conjuntos.js`, el mismo que parametriza el Admin (A4) y que lee el comité (C1); la grilla ya no lo deriva. Hoy: 15 reglas con límite definido (p. ej. Triatlón Triathlon 4, Natación artística 8 + 2, Cheer 12 + 1; en una agrupación vale el mayor del grupo) y 12 sin definir (Ajedrez ×3, Arquería Compuesto, Atletismo, Bádminton, Billar ×2, Patinaje artístico, Taekwondo, Tenis de Campo y Tenis de Mesa): ahí no se valida un tope conjunto, solo se quita la fila Mixto y cada género conserva su cupo.
   - Ajedrez (la hoja lo trae con mixto y sin cupo numérico, es decir, sin límite conjunto definido): las filas de Hombres que estaban deshabilitadas por la hoja pasan a habilitarse, con su cupo por género. Ecuestre: sus tres filas Mixto estaban deshabilitadas por no tener regla; se habilitan «sin tope» para que el cupo mixto exista. Ambas lecturas se pueden revertir sin tocar el resto.
   - Efecto en la grilla: de 182 declaraciones de intención se pasa a 163 filas de captura (se retiran 22 filas Mixto y se crean 3 de hombres o mujeres que no existían).
@@ -145,7 +145,7 @@
 
 - **Submódulo:** Inicio
 
-**Historia:** Como Gestor de una Organización, quiero ver en la parte superior en qué fase está la inscripción y cuál es el estado de mi delegación, para saber qué puedo hacer hoy y cuánto falta para el cierre.
+**Historia:** Como Gestor de una Delegación, quiero ver en la parte superior en qué fase está la inscripción y cuál es el estado de mi delegación, para saber qué puedo hacer hoy y cuánto falta para el cierre.
 
 **Criterios de aceptación:**
 
@@ -161,7 +161,7 @@
 
 - **Submódulo:** Ventana de inscripción
 
-**Historia:** Como Gestor de una Organización, quiero saber de un vistazo si la ventana está cerrada, abierta o aún no abre, para no intentar registrar fuera de plazo.
+**Historia:** Como Gestor de una Delegación, quiero saber de un vistazo si la ventana está cerrada, abierta o aún no abre, para no intentar registrar fuera de plazo.
 
 **Criterios de aceptación:**
 
@@ -180,7 +180,7 @@
 
 - **Submódulo:** Captura de cantidades
 
-**Historia:** Como Gestor de una Organización, quiero saber cuándo tengo cambios sin guardar y confirmar antes de guardar, para no perder ni enviar cifras por error.
+**Historia:** Como Gestor de una Delegación, quiero saber cuándo tengo cambios sin guardar y confirmar antes de guardar, para no perder ni enviar cifras por error.
 
 **Criterios de aceptación:**
 
@@ -197,7 +197,7 @@
 
 - **Submódulo:** Resumen
 
-**Historia:** Como Gestor de una Organización, quiero ver el total de mi delegación por género y el estado de cada deporte, para revisar mi declaración antes del cierre.
+**Historia:** Como Gestor de una Delegación, quiero ver el total de mi delegación por género y el estado de cada deporte, para revisar mi declaración antes del cierre.
 
 **Criterios de aceptación:**
 
@@ -229,7 +229,7 @@
 
 - **Submódulo:** Captura de cantidades
 
-**Historia:** Como Gestor de una Organización, quiero descargar un reporte ligero de mi avance mientras inscribo, para revisar cómo voy antes de confirmar.
+**Historia:** Como Gestor de una Delegación, quiero descargar un reporte ligero de mi avance mientras inscribo, para revisar cómo voy antes de confirmar.
 
 **Criterios de aceptación:**
 

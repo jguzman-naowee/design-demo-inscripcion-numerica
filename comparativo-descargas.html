@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Code:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/tokens.css?v=0.1.0">
 <link rel="stylesheet" href="shared/components.css?v=0.1.0">
 
@@ -29,13 +29,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, .scroll:focus-visibl
 .top__logos img { height: 40px; width: auto; display: block; }
 .top__sep { width: 1px; height: 30px; background: var(--border-dark); }
 .top__back { margin-left: auto; }
-h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; letter-spacing: -.3px; }
+h1 { font-size: 30px; line-height: 1.2; font-weight: 700; margin: 0 0 8px; letter-spacing: -.3px; }
 .lead { color: var(--text-secondary); max-width: 80ch; margin: 0 0 8px; }
 .lead b { color: var(--text-primary); }
 
 /* Secciones */
 .sec { margin-top: 44px; }
-.sec h2 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+.sec h2 { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
 .sec__sub { color: var(--text-secondary); margin: 0 0 16px; max-width: 90ch; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
 .col { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -43,7 +43,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .col__head h3 { font-size: 15px; font-weight: 700; margin: 0; }
 .col__head .naowee-badge { height: 24px; font-size: 11px; padding: 2px 10px; }
 .col__head .naowee-badge--neutral.naowee-badge--quiet { color: #3d3f58; }
-.col__file { color: var(--text-secondary); font-size: 12px; margin-left: auto; font-family: ui-monospace, Menlo, monospace; }
+.col__file { color: var(--text-secondary); font-size: 12px; margin-left: auto; font-family: var(--font-mono, 'Google Sans Code', ui-monospace, SFMono-Regular, Menlo, monospace); }
 
 .scroll { flex: 1; overflow: auto; background: #e9ebf3; border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px; }
 .stage { width: max-content; margin: 0 auto; }
@@ -54,7 +54,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   position: absolute; z-index: 5; display: grid; place-items: center;
   width: calc(26px * var(--inv, 1)); height: calc(26px * var(--inv, 1));
   border-radius: 50%; background: var(--pin); color: #fff;
-  font: 800 calc(14px * var(--inv, 1))/1 Inter, sans-serif;
+  font: 700 calc(14px * var(--inv, 1))/1 'Google Sans', system-ui, sans-serif;
   border: calc(2px * var(--inv, 1)) solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .35);
   transform: translate(-50%, -50%);
 }
@@ -76,7 +76,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .chip--ok  { background: #e6f4e7; color: #14561a; border-color: #b7dfb9; }
 
 /* ───────── Excel simulado (ancho de diseño 1006 px) ───────── */
-.xl { width: 1006px; background: #fff; border: 1px solid #c8c8c8; font: 11px/1.25 Inter, sans-serif; color: #1f1f1f; }
+.xl { width: 1006px; background: #fff; border: 1px solid #c8c8c8; font: 11px/1.25 'Google Sans', system-ui, sans-serif; color: #1f1f1f; }
 .xl__title { background: #107c41; color: #fff; padding: 4px 10px; font-size: 11px; display: flex; gap: 10px; align-items: center; }
 .xl__title i { width: 9px; height: 9px; border-radius: 50%; background: #fff; opacity: .7; display: inline-block; }
 .xl__fx { display: flex; align-items: center; border-bottom: 1px solid #d0d0d0; background: #f3f3f3; height: 24px; font-size: 11px; }
@@ -91,7 +91,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .xl .bn { aspect-ratio: 1545 / 218; background: url(shared/certificado-referencia.png) top / 100% auto no-repeat; }
 .xl td.banner { padding: 0; }
 .xl tr.b4 td.rn { height: 34.5px; }
-.xl .titulo { text-align: center; font-weight: 800; font-size: 14px; color: var(--verde); height: 26px; }
+.xl .titulo { text-align: center; font-weight: 700; font-size: 14px; color: var(--verde); height: 26px; }
 .xl .gen { text-align: center; color: #444; }
 .xl tr.hd td { background: var(--verde); color: #fff; font-weight: 700; height: 32px; white-space: normal; border-color: #0d4331; border-bottom: 3px solid #0d4331; }
 .xl tr.hd .c { white-space: normal; padding-right: 14px; position: relative; line-height: 1.15; }
@@ -108,7 +108,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .xl__tab { padding: 3px 14px; background: #fff; border: 1px solid #c8c8c8; border-top: 0; border-bottom: 3px solid #107c41; font-weight: 700; color: #107c41; }
 
 /* ───────── Hoja A4 simulada (794 x 1123) ───────── */
-.a4 { width: 794px; height: 1123px; background: #fff; position: relative; box-shadow: 0 2px 14px rgba(0, 0, 0, .18); font-family: Inter, sans-serif; color: #1f1f1f; overflow: hidden; }
+.a4 { width: 794px; height: 1123px; background: #fff; position: relative; box-shadow: 0 2px 14px rgba(0, 0, 0, .18); font-family: 'Google Sans', system-ui, sans-serif; color: #1f1f1f; overflow: hidden; }
 .a4 .bn { aspect-ratio: 1545 / 218; background: url(shared/certificado-referencia.png) top / 100% auto no-repeat; }
 .a4--mal .bnw { overflow: hidden; }
 .a4--mal .bn { background-size: 108% auto; background-position: 38% top; filter: blur(1px) contrast(.9) saturate(.85); transform: scale(1.02); }
@@ -116,7 +116,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 .a4 .ev { text-align: center; margin-top: 38px; line-height: 1.25; }
 .a4 .ev b { display: block; color: var(--verde); font-size: 15px; font-weight: 700; }
 .a4 .ev span { font-size: 17px; }
-.a4 h4 { text-align: center; margin: 26px 0 0; font-size: 19px; line-height: 1.2; font-weight: 800; }
+.a4 h4 { text-align: center; margin: 26px 0 0; font-size: 19px; line-height: 1.2; font-weight: 700; }
 .a4 .act { text-align: center; margin-top: 18px; font-size: 13px; line-height: 1.5; }
 .a4 mark { background: var(--resalte); color: inherit; padding: 1px 4px; }
 .a4 hr { border: 0; border-top: 1px solid #5d8f7e; margin: 28px 0 24px; }
@@ -136,7 +136,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 
 /* Resumen */
 .todo { margin-top: 44px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
-.todo h2 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+.todo h2 { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
 .todo ul { list-style: none; margin: 14px 0 0; padding: 0; }
 .todo li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
 .todo li:first-child { border-top: 0; }
@@ -171,12 +171,12 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   </header>
 
   <h1>Descargas: cómo quedaría y qué falta</h1>
-  <p class="lead">Dos descargas del demo de inscripción numérica. El reporte consolidado es un Excel real (<code>.xlsx</code>) de 12 columnas; el certificado PDF se compara <b>cómo quedaría</b> frente a <b>cómo sale hoy</b>. Los datos de las filas son los reales del insumo; la fecha y la hora del informe se calculan al abrir la página.</p>
+  <p class="lead">Dos descargas del demo de inscripción numérica. El reporte consolidado es un Excel real (<code>.xlsx</code>) de 12 columnas; el certificado PDF se compara <b>cómo quedaría</b> frente a <b>cómo sale hoy</b>. Los datos de las filas son los del consolidado; la fecha y la hora del informe se calculan al abrir la página.</p>
   <p class="lead">Cada número marca una diferencia y la leyenda de abajo dice quién la resuelve: <span class="chip chip--dis">Diseño</span> <span class="chip chip--bb">Brand Book</span> <span class="chip chip--be">Backend</span>. Un número azul es una diferencia intencional, no una falta.</p>
 
   <section class="sec" aria-labelledby="t-xlsx">
     <h2 id="t-xlsx">1. Reporte consolidado (HU-IN-14 y HU-IN-17)</h2>
-    <p class="sec__sub">La hoja de cálculo que baja el comité: un <code>.xlsx</code> con las 12 columnas en este orden. Incluye las <b>34 delegaciones</b> del consolidado: 33 con intención declarada y Vichada, habilitada preventivamente (sin filas ni correo propios).</p>
+    <p class="sec__sub">El archivo de Excel que baja el comité: un <code>.xlsx</code> con las 12 columnas en este orden. Incluye las <b>34 delegaciones</b> del consolidado: 33 con intención declarada y Vichada, habilitada preventivamente (sin filas ni correo propios).</p>
     <div class="col">
       <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>Abierto como .xlsx</h3></div>
       <div class="scroll" tabindex="0" role="region" aria-label="Vista del Excel como quedaría; desplaza horizontalmente si no cabe"><div class="stage" data-w="1008"><div id="xl-ok"></div></div></div>
@@ -186,7 +186,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
 
   <section class="sec" aria-labelledby="t-pdf">
     <h2 id="t-pdf">2. Certificado PDF (HU-IN-16 y HU-IN-17)</h2>
-    <p class="sec__sub">El certificado de la delegación, en A4. Se descarga al terminar la fase, las veces que se quiera y siempre es el mismo. Mismos datos en las dos hojas: seis filas reales de la delegación del Atlántico.</p>
+    <p class="sec__sub">El certificado de la delegación, en A4. Se descarga al terminar la fase, las veces que se quiera y siempre es el mismo. Mismos datos en las dos versiones: seis filas reales de la delegación del Atlántico.</p>
     <div class="pair">
       <div class="col">
         <div class="col__head"><span class="naowee-badge naowee-badge--positive">Cómo quedaría</span><h3>PDF con membrete completo</h3></div>
@@ -206,7 +206,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     <ul id="falta"></ul>
   </section>
 
-  <p class="foot">Fechas oficiales de etapas: la inscripción numérica abre el 01-03-2027 (presunta, sin confirmación oficial) y cierra el 30-03-2027. Hoja de referencia: <code>shared/certificado-referencia.png</code> (franja superior). Las cifras de «Pág 1 de N» son estimadas a partir del total real de filas.</p>
+  <p class="foot">Fechas oficiales de etapas: la inscripción numérica abre el 01-03-2027 (presunta, sin confirmación oficial) y cierra el 30-03-2027. Imagen de referencia: <code>shared/certificado-referencia.png</code> (franja superior). Las cifras de «Pág 1 de N» son estimadas a partir del total real de filas.</p>
 </div>
 
 <script src="shared/datos-consolidado.js"></script>
@@ -417,8 +417,8 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
   leg('leg-pdf', [
     { n: 1, t: 'Banner del membrete.', s: 'Hoy es una imagen recortada y de baja resolución (aquí con un leve desenfoque para ilustrarlo). Lo ideal son los logos en vector del Manual de Marca.', who: ['Brand Book', 'Diseño'] },
     { n: 2, t: 'Columnas de la tabla.', s: 'Hoy las nueve columnas son iguales y «Deporte» y «Modalidad» se parten en varias líneas; a la izquierda tienen más ancho que las numéricas.', who: ['Diseño', 'Backend'] },
-    { n: 3, t: 'Título distinto al del PDF original, a propósito.', s: 'El original decía «Intención de participación»; ahora dice «Inscripción numérica». No es una falta. Va igual en las dos hojas.', who: ['Intencional'], int: true },
-    { n: 4, t: 'Numeración de páginas.', s: 'El demo dibuja una sola hoja («Pág 1 de 1»). El PDF real pagina: la delegación tiene ' + at.length + ' filas, unas ' + PAGS_PDF + ' páginas (estimado).', who: ['Backend'] },
+    { n: 3, t: 'Título distinto al del PDF original, a propósito.', s: 'El original decía «Intención de participación»; ahora dice «Inscripción numérica». No es una falta. Va igual en las dos versiones.', who: ['Intencional'], int: true },
+    { n: 4, t: 'Numeración de páginas.', s: 'El demo dibuja una sola página («Pág 1 de 1»). El PDF real pagina: la delegación tiene ' + at.length + ' filas, unas ' + PAGS_PDF + ' páginas (estimado).', who: ['Backend'] },
     { n: 5, t: 'Logo de Naowee del pie.', s: 'En el demo de hoy sale como el texto «naowee»; debe volver a ser el logo (shared/logos/naowee.svg).', who: ['Diseño'] }
   ]);
 
@@ -427,7 +427,7 @@ h1 { font-size: 30px; line-height: 1.2; font-weight: 800; margin: 0 0 8px; lette
     ['Manual de Marca con los logos en vector (Deporte, SUID, Juegos)', 'Reemplaza el banner recortado del demo y alimenta el membrete de las dos descargas.', 'Brand Book'],
     ['Confirmación escrita del membrete', 'Deja por escrito el membrete definitivo para todas las descargas (HU-IN-17).', 'Brand Book'],
     ['Generar el .xlsx del reporte consolidado', 'Imagen del membrete, 12 columnas, cabecera verde, anchos, filtros, panel congelado, pie y número de página.', 'Backend'],
-    ['PDF generado por backend con paginación', 'Reemplaza la hoja dibujada del demo; pagina por filas, repite el membrete y se puede descargar las veces que se quiera al terminar la fase.', 'Backend'],
+    ['PDF generado por backend con paginación', 'Reemplaza la página dibujada del demo; pagina por filas, repite el membrete y se puede descargar las veces que se quiera al terminar la fase.', 'Backend'],
     ['Logo de Naowee restaurado en el pie del certificado del demo', 'Hoy sale como texto «naowee».', 'Diseño'],
     ['Definir cómo viaja «Cupos mixtos» en Ecuestre', 'Número en la celda y la nota aparte, para poder filtrar y sumar; las demás modalidades la dejan vacía.', 'Diseño']
   ].forEach(function (r, i) {

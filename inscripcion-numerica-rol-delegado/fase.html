@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fase de inscripción numérica, rol delegado</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Code:wght@400;500;600&display=swap">
 <style>
 /* Una pantalla a la vez a todo el ancho; el sidebar lo pone el shell. */
-:root{--panel:#fff;--fg:#1f2330;--muted:#5d6272;--line:#dcdbd5;--accent:#d74009;--font:'Inter',-apple-system,system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;color-scheme:light}
+:root{--panel:#fff;--fg:#1f2330;--muted:#5d6272;--line:#dcdbd5;--accent:#d74009;--font:'Google Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--font-mono:'Google Sans Code',ui-monospace,SFMono-Regular,Menlo,monospace;color-scheme:light}
 *{box-sizing:border-box}
 html,body{background:#fff}
 body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
@@ -23,7 +23,7 @@ body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
   --n-050:#fff3e6;--n-100:#ffedc7;--n-500:#ff7b24;--n-600:#f05705;--n-700:#d74009;--n-900:#942700;
   --g-050:#fafbff;--g-100:#f4f5f9;--g-200:#e8e9f2;--g-300:#d4d5e4;--g-500:#9c9ebf;--g-600:#8788ab;--g-700:#646587;--g-900:#282834;
   --ok-100:#defade;--ok-700:#1f8923;--info-100:#cef4ff;--info-700:#0a55a8;--warn-100:#fef3c7;--warn-700:#b45309;--err-100:#ffe5e9;--err-700:#da1630;
-  background:#fff;color:var(--g-900);font-family:'Inter',-apple-system,sans-serif;font-size:14px;position:relative;color-scheme:light
+  background:#fff;color:var(--g-900);font-family:'Google Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;position:relative;color-scheme:light
 }
 .app *{font-family:inherit}
 .nav{display:flex;align-items:center;gap:12px;padding:24px 16px 0}
@@ -50,7 +50,7 @@ body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
 .sport{border-bottom:1px solid var(--g-200)}.sport:last-child{border-bottom:0}
 .sport-r{display:flex;align-items:center;gap:16px;padding:16px 22px;cursor:pointer}
 .sport.open>.sport-r{background:#e9eaf0}
-.sport-ico{width:42px;height:42px;border-radius:50%;background:var(--g-100);display:grid;place-items:center;flex:none;color:var(--g-700);font-size:13px;font-weight:600}
+.sport-ico{width:40px;height:40px;border-radius:12px;background:#eaf1fb;display:grid;place-items:center;flex:none;color:var(--g-700);font-size:13px;font-weight:600}
 .sport-t{flex:1;min-width:0}.sport-t b{display:block;font-size:18px;font-weight:600}.sport-t small{color:var(--g-700);font-size:14px}
 .sport-c{color:var(--g-700);font-size:16px}
 /* Avance y estado de cada deporte juntos, como un solo botón. */
@@ -95,7 +95,7 @@ body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
 /* Columnas con el color de su género (H azul, M rosa, mixto violeta), cebra y hover de fila. */
 .pruebas.g .gr{column-gap:0;padding:0;align-items:stretch;border-bottom:0}
 .pruebas.g{padding:12px 16px 16px 22px}
-.pruebas.g .gr>*{padding:6px 8px}
+.pruebas.g .gr>*{padding:16px 8px}
 .pruebas.g .gr>:nth-child(n+2){text-align:center}
 .pruebas.g .gr:not(.gh)>.mlab{padding-block:16px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
 /* Celdas de 120 px (crecen solo si el texto de la modalidad no cabe); el aviso de tope no agranda la fila. */
@@ -116,9 +116,7 @@ body{color:var(--fg);font-family:var(--font);margin:0;line-height:1.5}
 .pruebas.g .gr.gend{border-bottom:2px solid var(--g-600)}
 .gr.gh{font-size:12px;font-weight:600;color:var(--g-700);padding:2px 0 8px;border-bottom:1px solid var(--g-300)}
 .mlab b{display:block;font-size:15px;font-weight:500;padding-top:6px}
-.mlab small{display:block;color:var(--g-700);font-size:12px}
 .cell small{display:block;color:var(--g-700);font-size:12px;margin-top:3px}
-.cell .caphit{display:block;color:var(--info-700);font-size:12px;font-weight:600;margin-top:2px}
 .cell.off .na{display:block;color:var(--g-500);padding-top:8px}
 .cell.ro b{display:block;font-size:24px;padding-top:0}
 .cell.ro small{font-size:16px}
@@ -212,10 +210,7 @@ body.en-shell .sim-d{display:none}
 .gr.dis{opacity:.62}
 .rn{grid-column:1/-1;font-size:12.5px;color:var(--g-700);padding-left:6px}
 .pc{font-style:normal;font-size:10.5px;font-weight:700;color:var(--info-700);background:var(--info-100);border-radius:99px;padding:1px 7px;margin-left:6px;white-space:nowrap}
-.pc.mx{color:var(--ok-700);background:var(--ok-100)}
 .cp.av .v{color:var(--info-700);font-weight:600}.cp.av .trk{visibility:hidden}.avn{grid-column:1/-1;font-size:12px;color:var(--g-700);margin:-2px 0 6px}
-.inh:hover,.inh:focus-visible{opacity:1!important}
-.inh{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:var(--g-600);color:#fff;opacity:.5;font:700 10px/1 var(--font);margin-left:5px;cursor:help;vertical-align:middle}
 .fbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .fbar .search{width:380px}
 .search input{border:0;outline:0;background:transparent;flex:1;font-size:14px;color:var(--g-900);min-width:0}
@@ -228,20 +223,21 @@ body.en-shell .sim-d{display:none}
 .caps .cp .pc{margin:2px 0 0;display:inline-block}
 @media(max-width:1100px){.caps .cps{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:640px){.caps{padding:0 12px}.caps .cp{grid-template-columns:minmax(0,1fr) 72px;row-gap:4px}.caps .cp>span:first-child{grid-column:1/-1}.caps .cp .trk{grid-column:1}.caps .cp .v{grid-column:2;white-space:nowrap}}
-/* Tres columnas: organización y rol a la izquierda, totales y revisión al centro, acciones a la derecha. */
-.tbar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:20px;align-items:center}
+/* Tres columnas: delegación y rol a la izquierda, totales y revisión al centro, acciones a la derecha. */
+.tbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:center}
 .tb-l{display:flex;align-items:center;gap:12px;min-width:0}
 .tb-c{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 .tb-c .tot{min-width:64px}
 .tb-r{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .tbar .own{min-width:0;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.25}
 .tb-l .rolchip{flex:none}
+/* Con el 25 % estrecho, el rol va sobre el nombre para que éste conserve sus 2 líneas. */
+@media(min-width:1101px) and (max-width:1500px){.tb-l{flex-direction:column;align-items:flex-start;gap:6px}}
 @media(max-width:1100px){.tbar{grid-template-columns:minmax(0,1fr)}.tb-r{justify-content:flex-start}.tb-c{justify-content:flex-start}}
 /* Ventana, avisos y hero de cinco fases */
 .sim-n{margin:0;max-width:300px;font-size:11.5px;line-height:1.4;color:var(--muted);white-space:normal}
 .stp button[disabled],.stp input[disabled]{opacity:.5;cursor:not-allowed}
 .rn.conf{color:var(--g-700)}
-.pc.hj{color:#5b2aa6;background:#efe7ff}
 .cell .ns{font-size:12px;color:var(--g-700);padding:10px 0}
 .tchip{font-size:11.5px;font-weight:600;border-radius:99px;padding:3px 10px;white-space:nowrap;cursor:help}
 .tchip.wa{background:var(--warn-100);color:var(--warn-700)}.tchip.in{background:var(--info-100);color:var(--info-700)}
@@ -260,12 +256,12 @@ body.en-shell .sim-d{display:none}
 @media(max-width:600px){.ini-app .nav{padding-top:52px}}
 .ini{container-type:inline-size}
 .ini-m{max-width:1200px;margin:0 auto;padding:16px 32px 48px;display:flex;flex-direction:column;gap:24px}
-.ini-h{display:flex;flex-wrap:wrap;align-items:flex-start;gap:16px 20px;background:#fff;border:1px solid #e7e9f3;border-radius:12px;box-shadow:0 0 2px rgba(145,158,171,.2),0 12px 24px -4px rgba(145,158,171,.12);padding:24px 32px}
+.ini-h{display:flex;flex-wrap:wrap;align-items:center;gap:16px 20px;padding:12px 0 0}
 /* Alto del bloque de textos del hero con el nombre en una línea. */
-.ini-av{width:88px;height:88px;flex:none;border-radius:12px;background:#eef5ff;color:#002b5b;display:inline-flex;align-items:center;justify-content:center;font-size:36px;font-weight:800}
+.ini-av{align-self:stretch;aspect-ratio:1/1;min-height:64px;flex:none;border-radius:12px;background:#002b5b;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:30px;font-weight:700}
 .ini-hx{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:8px}
-.ini-ev{font-size:13px;font-weight:600;color:#646587}
-.ini-h h1{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.02em;text-wrap:pretty;overflow-wrap:anywhere}
+.ini-ev{font-size:14px;font-weight:600;color:#646587}
+.ini-h h1{margin:0;font-size:39px;line-height:1.15;font-weight:700;letter-spacing:-.02em;text-wrap:pretty;overflow-wrap:anywhere}
 .ini-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;font-size:14px;color:#646587}
 .ini-meta>span{display:inline-flex;align-items:center;gap:6px;min-width:0;overflow-wrap:anywhere}
 .ini-meta svg{width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -278,10 +274,11 @@ body.en-shell .sim-d{display:none}
 .ini-tl{position:relative}
 .ini-st{position:relative;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 /* Ancho fijo por etapa y máximo dos líneas por texto, para que la grilla quede cuadrada. */
-.ini-st li{position:relative;display:flex;flex-direction:column;gap:12px;padding-right:16px}
-.ini-st li:not(:last-child)::after{content:'';position:absolute;top:13px;left:28px;right:0;height:2px;background:#e7e9f3}
+.ini-st li{position:relative;display:flex;flex-direction:column;gap:12px;padding:16px 16px 16px 0}
+.ini-st li:not(:last-child)::after{content:'';position:absolute;top:29px;left:28px;right:0;height:2px;background:#e7e9f3}
 .ini-st li.ln-ok::after{background:#1f8923}
-.ini-st li:last-child::after{content:'';position:absolute;top:13px;left:28px;right:0;height:2px;background:repeating-linear-gradient(90deg,#c9ccdb 0 6px,transparent 6px 12px)}
+.ini-st .ini-rl{padding-bottom:16px}
+.ini-st li:last-child::after{content:'';position:absolute;top:29px;left:28px;right:0;height:2px;background:repeating-linear-gradient(90deg,#c9ccdb 0 6px,transparent 6px 12px)}
 .ini-nd{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none;font-size:13px;font-weight:700;background:#fff;color:#646587;border:1.5px solid #9ca0b8}
 .ini-nd svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .ini-st .done .ini-nd{background:#1f8923;color:#fff;border:0}
@@ -297,6 +294,7 @@ body.en-shell .sim-d{display:none}
 .ini-tx .s{font-size:13px;font-weight:600;color:#646587}
 .ini-tx .d{font-size:13px;color:#646587}
 .ini-st .done .s{color:#17641a}.ini-st .cur .s,.ini-st .soon .s{color:#d74009}.ini-st .next b{color:#646587}
+.ini-st .cur .ini-sd .d{font-weight:700}
 .ini-et{display:flex;flex-direction:column;gap:6px}
 .ini-en{width:32px;height:32px;flex:none;border-radius:50%;background:#d74009;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
 .ini-en.gr{background:#646587}
@@ -317,7 +315,7 @@ body.en-shell .sim-d{display:none}
 /* El apoyo de H y M reserva la altura del pie con barra para que los números coincidan. */
 .ini-dl dd>.sp{min-height:31px;display:flex;align-items:flex-end;gap:.3em}
 .ini-v{display:flex;align-items:baseline;gap:6px;font-size:15px;font-weight:600;color:#646587}
-.ini-v b{font-size:32px;line-height:1;font-weight:800;letter-spacing:-.02em;color:#282834}
+.ini-v b{font-size:32px;line-height:1;font-weight:700;letter-spacing:-.02em;color:#282834}
 .ini-dl.pre .ini-v b{color:#646587}
 .ini-pg{display:block;height:6px;border-radius:99px;background:#f4f5f9;overflow:hidden}
 .ini-pg i{display:block;height:6px;border-radius:99px;background:#d74009}
@@ -338,18 +336,22 @@ body.en-shell .sim-d{display:none}
 .ini-cta.sec{min-height:44px;background:#fff;color:#d74009;border:1px solid #d4d5e4;box-shadow:none}
 .ini-cta.sec:hover{background:#fff3e6}
 .ini-hp{margin:0;display:flex;gap:8px;font-size:13px;line-height:1.45;color:#646587}
+.ini-hp>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;min-width:0}
 .ini-hp svg{width:16px;height:16px;flex:none;margin-top:1px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 /* Bajo ~760 px las cinco etapas no caben en fila: pasan a lista vertical con su conector (diseño «compacto»). */
 @container (max-width:760px){
  .ini-m{padding:16px 16px 32px}
- .ini-card,.ini-h{padding:20px}
- .ini-h h1{font-size:22px}
- .ini-av{width:64px;height:64px;font-size:26px}
+ .ini-card{padding:20px}
+ .ini-h h1{font-size:28px}
+ .ini-av{font-size:26px}
+}
+@container (max-width:400px){
+ .ini-av{align-self:auto;aspect-ratio:auto;width:68px;height:68px}
 }
 /* Si las cinco etapas no caben en una línea cada una, pasan a lista vertical con su conector. */
 @container (max-width:1100px){
  .ini-st{display:flex;flex-direction:column}
- .ini-st li{flex-direction:row;gap:14px;padding-right:0;white-space:normal}
+ .ini-st li{flex-direction:row;gap:14px;padding:0;white-space:normal}
  .ini-st li:not(:last-child)::after,.ini-st li:last-child::after{display:none}
  .ini-rl{display:flex;flex-direction:column;align-items:center;flex:none}
  .ini-rl::after{content:'';flex:1 1 auto;width:2px;min-height:16px;margin:4px 0;border-radius:99px;background:#e7e9f3}
@@ -369,7 +371,7 @@ body.en-shell .sim-d{display:none}
 .ini-hd .nav{padding:0}
 .ini-hd .cr-l{text-align:left}
 .ini-hd .hdr{gap:12px 24px}
-.ini-hd .hdr h1{font-size:24px;line-height:1.2;letter-spacing:-.02em;margin:0 0 8px;text-wrap:pretty}
+.ini-hd .hdr h1{font-size:39px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px;text-wrap:pretty}
 .ini-hd .hdr p{font-size:16px;line-height:1.5;margin:0}
 .ini-hd .ini-dl{flex:none;width:100%}
 /* Un indicador por card, en una fila que baja a 2 y 1 columnas según el ancho. */
@@ -381,6 +383,11 @@ body.en-shell .sim-d{display:none}
 @container (max-width:900px){.ini-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @container (max-width:520px){.ini-kpis{grid-template-columns:minmax(0,1fr)}}
 .ini-hd .kst{display:flex;align-items:center;min-height:32px}
+/* Estado: tag a 1.5x y pegado al rótulo; el resto de KPIs conserva su jerarquía. */
+.ini-k1.ini-ks dt{min-height:0}.ini-k1.ini-ks dd{gap:8px}.ini-k1.ini-ks .kst{min-height:0}
+.ini-k1.ini-ks .ini-b{height:36px;padding:0 15px;font-size:18px}
+/* Número y unidad bajan junto al apoyo, en la misma línea que la barra de la primera card. */
+.ini-k1 dd{gap:8px}.ini-k1 dd>.ini-v:has(+.r){margin-top:auto}.ini-k1 dd>.ini-v+.r{margin-top:0}
 .ini-flt{gap:16px;padding:20px 32px}
 .ini-flt .list-h{padding:0;border:0;gap:4px 12px;flex-wrap:wrap}
 .ini-flt .fbar{flex-wrap:nowrap}.ini-flt .fbar .sp{flex:1}.ini-flt .fchips{flex-wrap:nowrap;flex:none}.ini-flt .search{flex:1 1 160px;min-width:140px}
@@ -395,7 +402,8 @@ body.en-shell .sim-d{display:none}
 .ini-app .sport-r:hover{background:#fafbff}
 .ini-app .sport.open>.sport-r{background:#fff;border-bottom:1px solid #e7e9f3}
 .ini-app .sport-t{flex:1 1 200px}
-.ini-app .sport-ico{background:#eef5ff;color:#002b5b;font-weight:800}
+.ini-app .sport-ico{background:#eaf1fb;color:#002b5b;font-weight:700}
+.sport-ico img{width:24px;height:24px;display:block}
 .ini-app .sport-sum{border-color:#e7e9f3;gap:10px}
 .ini-app .sport-pg{width:56px;flex:none}
 .ini-app .pruebas{background:#fff}
@@ -405,15 +413,20 @@ body.en-shell .sim-d{display:none}
 .ini-wrap{display:flex;align-items:flex-start}.ini-wrap>.ini{flex:1 1 0;min-width:0}
 .sidep{z-index:5;flex:none;width:380px;position:sticky;top:0;height:calc(100vh - var(--tbarh,102px));overflow:auto;background:#fff;border-left:1px solid #e7e9f3;box-shadow:-10px 0 24px -18px rgba(40,40,52,.3)}
 .pre-top+.ini-wrap .sidep{top:64px}
-.sp-h{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:#fff;border-bottom:1px solid var(--g-200)}
+.sp-h{position:sticky;top:0;z-index:3;box-sizing:border-box;height:65px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:#fff;border-bottom:1px solid var(--g-200)}
 .sp-h h4{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em}.sp-h .cn{font-weight:500;color:var(--g-700)}
 .sp-x{all:unset;box-sizing:border-box;width:32px;height:32px;display:grid;place-items:center;border-radius:8px;cursor:pointer;font-size:22px;line-height:1;color:var(--g-700)}
 .sp-x:hover{background:var(--g-100)}.sp-x:focus-visible{outline:2px solid var(--n-700);outline-offset:1px}
-.sp-act{padding:12px 16px;border-bottom:1px solid var(--g-200)}
+.sp-act{position:sticky;top:65px;z-index:2;display:flex;justify-content:center;align-items:center;width:100%;padding:8px 16px;background:var(--n-700);border-bottom:1px solid var(--g-200)}
+.sp-act .btn{background:none;border:0;box-shadow:none;color:#fff;padding:0 16px;border-radius:99px}
+.sp-act .btn:hover:not([disabled]){background:rgba(255,255,255,.12);text-decoration:underline}
+.sp-act .btn:focus-visible{outline:2px solid #fff;outline-offset:2px;background:rgba(255,255,255,.12)}
+.sp-act .btn[disabled]{opacity:.7}
+.sp-act>span{display:inline-flex}
 .sp-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px;border-bottom:1px solid var(--g-200)}
 .sp-chips span{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px}
 .sp-chips .cb{color:#fff;background:var(--err-700)}.sp-chips .cx{color:var(--info-700);background:var(--info-100)}.sp-chips .cw{color:var(--warn-700);background:var(--warn-100)}
-.sp-b h5{margin:0;padding:12px 16px 8px;font-size:13px;font-weight:700;color:var(--g-900)}
+.sp-b h5{margin:0;padding:16px 16px 8px;font-size:16px;line-height:1.3;font-weight:500;color:var(--g-900)}
 .sidep .errs-s{margin:0;border-radius:0;border-width:0 0 1px;padding:12px 16px}
 .sidep .errs-s h5{padding:0 0 8px}
 .sidep .errs-s li{padding:6px 0;border-bottom:1px solid #f4b7c0}.sidep .errs-s li:last-child{border-bottom:0}
@@ -427,7 +440,19 @@ body.en-shell .sim-d{display:none}
 .sp-btn:hover,.sp-btn.on{border-color:var(--n-700);background:var(--n-050)}.sp-btn:focus-visible{outline:2px solid var(--n-700);outline-offset:2px}
 .sp-n{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--g-700);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
 .sp-n.err{background:var(--err-700)}
-@media(max-width:860px){.sidep{position:fixed;inset:0 0 var(--tbarh,102px) 0;width:auto;height:auto;z-index:20}}
+/* FAB de revisión: flota sobre la barra fija y se corre a la izquierda del panel para no quedar tapado. */
+.sp-fab{position:fixed;right:24px;bottom:calc(var(--tbarh,102px) + 16px);z-index:30;width:56px;height:56px;padding:0;justify-content:center;border:0;background:var(--n-700);color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.28);transition:right .2s}
+.sp-fab:hover,.sp-fab.on{border:0;background:var(--n-700);filter:brightness(1.15)}.sp-fab:focus-visible{outline:3px solid #fff;box-shadow:0 0 0 5px var(--n-700)}
+.sp-fab svg{width:26px;height:26px}.sp-fab .sp-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sp-fab .sp-n{top:-4px;right:-4px;border:2px solid #fff;box-sizing:content-box}
+/* El anillo da la vuelta al botón según el avance; el texto va a su izquierda. */
+.sp-fab .sp-ring{position:absolute;inset:-5px;width:66px;height:66px;transform:rotate(-90deg);fill:none;stroke-width:4;pointer-events:none}
+.sp-fab .sp-ring .t{stroke:#fff}.sp-fab .sp-ring .p{stroke:var(--n-700);stroke-linecap:round;transition:stroke-dashoffset .4s}
+.sp-fab .sp-ring .t{filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.sp-fab .sp-t{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%);white-space:nowrap;background:#fff;color:var(--g-900);border-radius:99px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.sp-fab .sp-t b{color:var(--n-700);font-weight:700}
+.sp-fab.on{right:404px}
+@media(max-width:860px){.sidep{position:fixed;inset:0 0 var(--tbarh,102px) 0;width:auto;height:auto;z-index:20;padding-bottom:84px}.sp-fab,.sp-fab.on{right:16px}}
 /* Barra fija: nombre del deporte y columnas de color; cada deporte abierto toma la barra al avanzar el scroll. */
 .pruebas.g .gr.gh{position:sticky;top:0;z-index:3;background:#fff;min-height:70px}
 .pruebas.g .gr.gh>*{display:flex;align-items:center;justify-content:center}
@@ -450,7 +475,7 @@ body.en-shell .sim-d{display:none}
  .ini-flt,.ini-app .caps,.ini-app .cfn{padding-left:20px;padding-right:20px}
  .ini-app .sport-r{padding:16px 20px}
  .ini-app .pruebas.g{padding:12px 12px 16px}
- .ini-hd .hdr h1{font-size:22px}
+ .ini-hd .hdr h1{font-size:28px}
 }
 /* Certificado: hoja A4 fiel al PDF de la fase anterior */
 .docbg{display:flex;flex-direction:column;align-items:center;gap:20px;overflow:auto}
@@ -485,7 +510,7 @@ body.en-shell .sim-d{display:none}
 .doc.av table.ct td{height:24px;padding:3px 4px;font-size:10px}
 .doc.av .ct th{padding:6px 4px;font-size:10px}
 .doc.av .avs td:first-child,.doc.av .avs th:first-child{text-align:left;padding-left:8px}
-.doc.av .wm{position:absolute;inset:0;pointer-events:none;z-index:2;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='100'%3E%3Cg transform='rotate(-30 85 50)' fill='%23d74009' fill-opacity='.09' font-family='Inter,Arial,sans-serif' text-anchor='middle'%3E%3Ctext x='85' y='48' font-size='19' font-weight='800'%3EBORRADOR%3C/text%3E%3Ctext x='85' y='58' font-size='7' font-weight='700'%3Eno es el certificado%3C/text%3E%3C/g%3E%3C/svg%3E") 0 0/170px 100px repeat;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.doc.av .wm{position:absolute;inset:0;pointer-events:none;z-index:2;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='100'%3E%3Cg transform='rotate(-30 85 50)' fill='%23d74009' fill-opacity='.09' font-family='Google Sans,Arial,sans-serif' text-anchor='middle'%3E%3Ctext x='85' y='48' font-size='19' font-weight='700'%3EBORRADOR%3C/text%3E%3Ctext x='85' y='58' font-size='7' font-weight='700'%3Eno es el certificado%3C/text%3E%3C/g%3E%3C/svg%3E") 0 0/170px 100px repeat;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .doc.av .wm>*{display:none}
 #print-root{display:none}
 @media print{
@@ -512,6 +537,7 @@ body.en-shell .sim-d{display:none}
 
 <script src="../shared/datos-inscnum.js"></script>
 <script src="../shared/limites-conjuntos.js?v=0.1.0"></script>
+<script src="../shared/iconos-deportes.js"></script>
 <script>
 (function(){
 var I={
@@ -519,6 +545,8 @@ var I={
  search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
  dl:'<svg viewBox="0 0 20 20"><path d="M10 3v10M6 9.5l4 4 4-4M3.5 16.5h13"/></svg>',
  shield:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+ exp:'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 4.5l5 5 5-5M5 10.5l5 5 5-5"/></svg>',
+ con:'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 9.5l5-5 5 5M5 15.5l5-5 5 5"/></svg>',
  chev:'<svg class="chev" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6"/></svg>'
 };
 function nav(trail){return '<div class="nav"><div class="crumb">'+trail.map(function(t,i){return (i?I.chevR+' ':'')+(i<trail.length-1?'<button type="button" class="cr-l" data-go="n1">'+t+'</button>':t)}).join(' ')+'</div></div>'}
@@ -527,18 +555,16 @@ function modal(inner){return '<div class="modal-bg"><div class="modal">'+inner+'
 var WIN='activa',SIMWIN=null,SIM=false,BN={};
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
 function norm(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
-/* Procedencia del dato: matriz > hoja de reglas > HU; «por confirmar» solo si no hay fuente documentada. */
-function chip(o,extra){
- if(!o)return '';
- if(o.confirmado===false)return '<em class="pc" title="'+esc('Valor de las historias de usuario; la matriz no lo confirma'+(o.matrizDice?'. La matriz dice: «'+o.matrizDice+'»':'')+(extra||''))+'">por confirmar</em>';
- if(o.fuente==='HOJA')return '<em class="pc hj" title="'+esc(o.citaHoja?'Hoja de reglas: «'+o.citaHoja+'»':'Según la hoja de reglas')+'">según hoja</em>';
- return '<em class="pc mx" title="'+esc(o.citaMatriz?'Matriz: «'+o.citaMatriz+'»':'Según la matriz')+'">según matriz</em>';
+/* Solo se rotula lo que sigue pendiente de confirmar; el resto de valores va sin etiqueta. */
+function chip(o){
+ if(!o||o.confirmado!==false)return '';
+ return '<em class="pc" title="Valor pendiente de confirmación">por confirmar</em>';
 }
 function p2(n){return n<10?'0'+n:''+n}
 function dmy(d){return p2(d.getDate())+'-'+p2(d.getMonth()+1)+'-'+d.getFullYear()}
 function nowHM(){var d=new Date();return p2(d.getHours())+':'+p2(d.getMinutes())}
 
-/* Datos reales: reglas de la hoja y las declaraciones de la delegación (shared/datos-inscnum.js). */
+/* Datos reales: reglas de cupos y las declaraciones de la delegación (shared/datos-inscnum.js). */
 var D=window.INSCNUM_DATA;
 if(!D){document.body.insertAdjacentHTML('afterbegin','<p style="padding:20px">No se cargó shared/datos-inscnum.js.</p>');return}
 var AT=D.atlantico,RL={};
@@ -561,7 +587,7 @@ D.reglas.concat(D.reglasGrupo||[]).forEach(function(r){RL[r.id]=r});
 var DELE_UP=(D.resumenDelegaciones.filter(function(r){return /ATL[ÁA]NTICO/i.test(r.nombre)&&r.filas===AT.length})[0]||{nombre:'ATLÁNTICO'}).nombre;
 var MINW={de:1,del:1,la:1,las:1,el:1,los:1,y:1,en:1,para:1};
 var DELE=DELE_UP.toLowerCase().split(' ').map(function(w,i){return i&&MINW[w]?w:w.charAt(0).toUpperCase()+w.slice(1)}).join(' ');
-/* D19: donde la hoja trae cupo mixto, «Mixto» se captura como hombres + mujeres con el tope de la suma. Ecuestre sigue mixto. */
+/* D19: donde hay cupo mixto, «Mixto» se captura como hombres + mujeres con el tope de la suma. Ecuestre sigue mixto. */
 var MJ_EXC={Ecuestre:1};
 function grpRule(rs){
  for(var i=0;i<rs.length;i++){var r=rs[i].reglaId&&RL[rs[i].reglaId];if(r)return r}
@@ -573,7 +599,7 @@ function mixJ(r){
  var LC=window.INSCNUM_LC||{},ids=r.agrupa?r.agrupa.map(function(x){return x.id}):[r.id],a=null,s=null;
  ids.forEach(function(i){var v=LC[i];if(!v)return;if(v.a!=null&&(a==null||v.a>a))a=v.a;if(v.s!=null&&(s==null||v.s>s))s=v.s});
  var m=mixCap(r);
- return {a:a,s:s,o:m?m.o:{confirmado:true,fuente:'HOJA',citaHoja:r.mixtaComposicion||'Límite conjunto de la hoja de reglas'}};
+ return {a:a,s:s,o:m?m.o:{confirmado:true,fuente:'HOJA',citaHoja:r.mixtaComposicion||'Límite conjunto'}};
 }
 var ROWS=(function(){
  var G={},ord=[],out=[],sxOf={Hombres:'H',Mujeres:'M',Mixto:'X'};
@@ -615,7 +641,7 @@ function mixCap(r){
  var t=c.total||((c.fem||0)+(c.masc||0));
  return t?{c:t*eq,t:t,o:c}:null;
 }
-/* Estado de cada celda: off (no aplica), nosup (la hoja no da suplentes), def (sin tope) o cap (con tope). */
+/* Estado de cada celda: off (no aplica), nosup (sin suplentes), def (sin tope) o cap (con tope). */
 function cs(row,f){
  var fl=FLM[f];if(row.dis||fl[3]!==row.sx)return {k:'off'};
  if(f==='mx'){var m=mixCap(row.rule);return m?{k:'cap',c:m.c,m:m}:{k:'def'}}
@@ -624,8 +650,7 @@ function cs(row,f){
  if(fl[2]==='s'&&s.sinSuplentes)return {k:'nosup'};
  return typeof c==='number'?{k:'cap',c:c}:{k:'def'};
 }
-function grpTip(r){return r.deporte+' · '+r.modalidad+' agrupa '+r.agrupa.length+' modalidades de la hoja: '+r.agrupa.map(function(a){return a.modalidad+' ('+a.cupo+')'}).join('; ')+'. Tope de la fila: el mayor cupo del grupo.'}
-/* Equipo de rango (4 a 8): el mínimo vale para todos los géneros y la nota de la hoja es de composición mixta. */
+/* Equipo de rango (4 a 8): el mínimo vale para todos los géneros y la nota es de composición mixta. */
 function eqR(r){return !!(r&&r.composicion&&r.composicion.some(function(k){return k.tipo==='equipoRango'&&k.confirmado!==false}))}
 function genNota(row){var r=row.rule;return r&&row.sx!=='X'?(row.sx==='H'?r.masc:r.fem).nota:null}
 /* Los máximos son duros (la grilla los limita, no los marca). Aquí solo hay mínimos (m, bloquean) y avisos (a). */
@@ -634,13 +659,12 @@ function blocks(i){return i.k==='m'}
 function red(i,x){return i.k==='m'&&!!x.tried}
 /* Las pruebas no entran en esta fase (D14): solo cuentan los topes de modalidad por delegación y género. */
 function tVale(t){return !!t&&t.alcance==='modalidad'&&t.atletas!=null&&!t.aviso}
-/* Criterio aplicado (D2/D3) de la regla de la fila, con sus citas en el title. */
+/* Criterio aplicado (D2/D3) de la regla de la fila. */
 /* Criterios que hablan de pruebas no se muestran: las pruebas no entran en esta fase (D14). */
 var CRIT_OUT={'tenis-de-campo':1,atletismo:1,patinaje:1,triatlon:1,tejo:1,'tiro-deportivo':1};
 function critOk(c){return !CRIT_OUT[c.id]&&!/prueba/i.test(c.criterio)}
 function critTxt(c){return c.criterio.replace(/,? Tenis de Mesa 3 a 4 por equipo/,'')}
 function critOf(r){if(!r)return null;var l=(D.criteriosAplicados||[]).filter(function(c){return c.ref===r.id&&c.tipo!=='decision'&&critOk(c)});return l[0]||null}
-function citasTxt(c){var o=c.citas||{},p=[];if(o.matriz)p.push('Matriz: «'+o.matriz+'»');if(o.hoja)p.push('Hoja: «'+o.hoja+'»');if(o.HU)p.push('HU: «'+o.HU+'»');return p.join(' · ')}
 /* Máximo duro de una celda por reglas de la fila: cupo, composición mixta, suplentes por arma y atletas por equipo. */
 function rowLim(row,f){
  var s=cs(row,f),m=s.k==='cap'?s.c:Infinity,r=row.rule,mi=r&&r.minimo,mxe=r&&r.maximoEquipo,eq=eqR(r);
@@ -664,7 +688,7 @@ function rowIss(x,row){
    }
  var mh=row.sx==='X'&&mixCap(r);
  if(mh&&mh.o.maxHombres&&gv(x,row,'mx')>0)out.push({f:'mx',k:'a',o:mh.o,msg:'Aviso informativo: máx. '+mh.o.maxHombres+' hombres por equipo mixto; la grilla solo cuenta el total y no distingue hombres, así que no lo valida · '+row.mod});
- if(row.sx==='X'&&r&&r.mixtaComposicion&&!mixCap(r)&&gv(x,row,'mx')>0)out.push({f:'mx',k:'a',o:{fuente:'HOJA',confirmado:true,citaHoja:r.mixtaComposicion},msg:'Composición mixta de la hoja («'+r.mixtaComposicion+'»): la grilla solo cuenta el total, no la valida'});
+ if(row.sx==='X'&&r&&r.mixtaComposicion&&!mixCap(r)&&gv(x,row,'mx')>0)out.push({f:'mx',k:'a',o:{fuente:'HOJA',confirmado:true,citaHoja:r.mixtaComposicion},msg:'Composición mixta («'+r.mixtaComposicion+'»): la grilla solo cuenta el total, no la valida'});
  return out;
 }
 /* Topes de delegación que la grilla cuenta (por género): son duros y limitan cada celda (`cells`). */
@@ -679,7 +703,7 @@ function topes(x){
   if(t.por==='genero'){L=ln(r.id+':g:'+row.sx+uc,row.dep+' · '+(t.etiqueta||row.mod)+' · '+(row.sx==='H'?'Hombres':'Mujeres'),'atletas por delegación y género',t.atletas,'sum',row.dep,t);L.u[row.mod]=(L.u[row.mod]||0)+v;L.cells.push(row.i+'.'+cf)}
   else{L=ln(r.id,row.dep,'atletas por delegación',t.atletas,'sum',row.dep,t);L.u[u]=(L.u[u]||0)+v;L.cells.push(row.i+'.'+cf)}
  });
- /* Total de la hoja («hasta N») entre todas las modalidades del deporte: la grilla lo cuenta sumando ambos géneros. */
+ /* Total («hasta N») entre todas las modalidades del deporte: la grilla lo cuenta sumando ambos géneros. */
  var TT={};
  x.rows.forEach(function(row){
   var r=row.rule,m=r&&r.masc;if(row.dis||!m||!m.hasta||typeof m.atletas!=='number'||row.sx==='X')return;
@@ -729,26 +753,12 @@ function analyze(x){
  x.sports.forEach(function(n){var s=an.sp[n];s.k=s.n===0?'none':(s.n===s.tot&&!s.bad?'full':'part');s.l={none:'Sin declarar',part:'Parcial',full:'Completo'}[s.k];if(s.n)an.nd++;if(s.k!=='full')an.pend++;});
  return an;
 }
-function ruleTxt(row){
- var r=row.rule,o=[],mi=r&&r.minimo;
- if(r&&r.grupo)o.push('Agrupa '+r.agrupa.length+' modalidades de la hoja: tope = el mayor del grupo<span class="inh" tabindex="0" role="img" aria-label="'+esc(grpTip(r))+'" title="'+esc(grpTip(r))+'">i</span>');
- if(r&&row.sx==='X'){var mc=mixCap(r);if(mc&&mc.o.maxHombres)o.push('Equipo mixto de hasta '+mc.t+' atletas, máx. '+mc.o.maxHombres+' hombres'+(mc.o.reservas?' + '+mc.o.reservas+' reservas':'')+chip(mc.o))}
- if(row.mj&&row.mj.a!=null){var j=row.mj;o.push('Hombres + mujeres: hasta '+j.a+' atletas'+(j.s!=null?' y '+j.s+' suplentes':'')+chip(j.o))}
- if(!r||row.sx==='X')return o.length?'<small>'+o.join(' · ')+'</small>':'';
- if(mi&&mi.generos&&mi.generos.indexOf(row.sx)<0&&!eqR(r))mi=null;
- if(mi&&modComp(mi)&&typeof mi.atletas==='number'&&(eqR(r)||!genNota(row))){o.push((mi.maximo?'Equipo de '+mi.atletas+' a '+mi.maximo+' atletas'+(mi.reservas?' + '+mi.reservas+' reservas':''):'Mínimo '+mi.atletas+' atletas por equipo')+chip(mi))}
- if(mi&&typeof mi.maxSuplentesPorArma==='number'){o.push('Máx. '+mi.maxSuplentesPorArma+' suplente por arma'+chip(mi))}
- var nt=eqR(r)?null:genNota(row);if(nt&&!(mi&&mi.maxSuplentesPorArma))o.push(esc(nt.charAt(0).toUpperCase()+nt.slice(1)));
- r.notas.forEach(function(n){if(!/^Cupo FEM en blanco/.test(n))o.push(esc(n))});
- return o.length?'<small>'+o.join(' · ')+'</small>':'';
-}
-var SINTOPE='<span class="inh" tabindex="0" role="img" aria-label="Sin tope definido: la delegación solo declara que va" title="Sin tope definido: la delegación solo declara que va">i</span>';
 function cell(x,an,row,f,iss){
  var s=cs(row,f[0]);
  if(s.k==='off')return '<div class="cell off"><span class="na">—</span></div>';
- if(s.k==='nosup')return '<div class="cell off"><small class="ns" title="La hoja de reglas no da suplentes para esta modalidad">Sin suplentes</small></div>';
+ if(s.k==='nosup')return '<div class="cell off"><small class="ns" title="Esta modalidad no tiene suplentes">Sin suplentes</small></div>';
  var v=gv(x,row,f[0]),k=row.i+'.'+f[0];
- var txt=s.k==='cap'?'de '+s.c:(f[0]==='mx'&&row.rule&&row.rule.mixtaComposicion?esc(row.rule.mixtaComposicion):'Sin tope'+SINTOPE);
+ var txt=s.k==='cap'?'de '+s.c:(f[0]==='mx'&&row.rule&&row.rule.mixtaComposicion?esc(row.rule.mixtaComposicion):'Sin tope');
  if(x.ro)return '<div class="cell ro"><b>'+v+'</b><small>'+txt+'</small></div>';
  var bad=iss.filter(function(i){return i.f===f[0]});
  var lm=limOf(x,k,an.topes);
@@ -756,15 +766,14 @@ function cell(x,an,row,f,iss){
  var cls=(bad.some(function(i){return red(i,x)})?' err':(bad.length?' warn':''))+(hit?' lim':'');
  var lock=x.dis||isLocked(x),dd=lock?' disabled':'',ddp=(lock||hit)?' disabled':'';
  /* El máximo se muestra junto al campo; si lo fija el tope de la delegación, el aviso nombra ese tope. */
- var mxt=isFinite(lm.max)?'máx. '+lm.max+(lm.by==='deleg'&&s.k==='cap'&&lm.max<s.c?' · cupo '+s.c:'')+(lm.by==='suma'?' · suma H + M de '+lm.g.max:''):txt;
- var gt=hit?'<span class="caphit">Tope alcanzado: '+(lm.by==='suma'?lm.g.val+' de '+lm.g.max+' (suma hombres + mujeres)':(lm.by==='deleg'?lm.g.val+' de '+lm.g.max+' (delegación)':v+' de '+lm.max))+'</span>':'';
- return '<div class="cell'+cls+'"><div class="stp"><button type="button"'+dd+' data-step="-1" data-k="'+k+'" aria-label="Restar 1">−</button><input type="text"'+dd+' inputmode="numeric" data-k="'+k+'" value="'+v+'" aria-label="'+f[1]+', '+esc(row.mod)+' · '+row.sexo+'"><button type="button"'+ddp+' data-step="1" data-k="'+k+'" aria-label="Sumar 1">+</button></div><small>'+mxt+'</small>'+gt+'</div>';
+ var mxt=isFinite(lm.max)?'máx. '+lm.max+(lm.by==='deleg'&&s.k==='cap'&&lm.max<s.c?' · cupo '+s.c:''):txt;
+ return '<div class="cell'+cls+'"><div class="stp"><button type="button"'+dd+' data-step="-1" data-k="'+k+'" aria-label="Restar 1">−</button><input type="text"'+dd+' inputmode="numeric" data-k="'+k+'" value="'+v+'" aria-label="'+f[1]+', '+esc(row.mod)+' · '+row.sexo+'"><button type="button"'+ddp+' data-step="1" data-k="'+k+'" aria-label="Sumar 1">+</button></div><small>'+mxt+'</small></div>';
 }
 /* La columna de cupos mixtos solo existe en los deportes que aún tienen filas mixtas (Ecuestre). */
 function colsOf(rows){return rows.some(function(r){return r.sx==='X'&&!r.dis})?FL:FL.slice(0,4)}
 function rowHtml(x,an,row,cols){
- var iss=an.ri[row.i]||[],rt=ruleTxt(row),out='';
- var lab='<div class="mlab"><b>'+esc(row.mod)+'</b><span class="gtag g'+row.sx+'">'+GIC[row.sx]+row.sexo+'</span>'+rt+'</div>';
+ var iss=an.ri[row.i]||[],out='';
+ var lab='<div class="mlab"><b>'+esc(row.mod)+'</b><span class="gtag g'+row.sx+'">'+GIC[row.sx]+row.sexo+'</span></div>';
  out='<div class="gr'+(row.dis?' dis':'')+'">'+lab+cols.map(function(f){return cell(x,an,row,f,iss)}).join('');
  if(row.dis)out+='<div class="rn">Las reglas oficiales no habilitan este género en esta modalidad</div>';
  else{
@@ -772,7 +781,7 @@ function rowHtml(x,an,row,cols){
    var rd=red(i,x);
    return '<div class="msg '+(rd?'err':'warn')+'" role="alert">'+(i.k==='m'&&rd?'Bloquea la confirmación: ':'')+esc(i.msg)+chip(i.o)+(i.tag?'<em class="pc" title="'+esc(i.tag)+'">'+i.tag+'</em>':'')+'</div>'}).join('')+'</div>';
   var cr=row.sx!=='H'&&row.rule&&row.rule.mixtaFuente?critOf(row.rule):null;
-  if(cr)out+='<div class="rn conf" role="status" title="'+esc(citasTxt(cr))+'">Criterio aplicado: '+esc(cr.criterio)+'</div>';
+  if(cr)out+='<div class="rn conf" role="status">Criterio aplicado: '+esc(cr.criterio)+'</div>';
  }
  return out+'</div>';
 }
@@ -784,14 +793,14 @@ function sportRowN(x,an,n){
   var q=norm(x.q||''),all=!q||norm(n).indexOf(q)>=0;
   var rs=rows.filter(function(r){return all||norm(r.mod).indexOf(q)>=0});
   var GO_={H:0,M:1,X:2};rs=rs.map(function(r,i){return [r,i]}).sort(function(a,b){return (GO_[a[0].sx]-GO_[b[0].sx])||(a[1]-b[1])}).map(function(a){return a[0]});
-  /* Los géneros que el instructivo no habilita no llevan fila: una sola nota los lista. */
+  /* Los géneros que no están habilitados no llevan fila: una sola nota los lista. */
   var nd=rs.filter(function(r){return r.dis}),gn={};rs=rs.filter(function(r){return !r.dis});
   nd.forEach(function(r){(gn[r.sexo]=gn[r.sexo]||[]).push(r.mod)});
   var gnote=nd.length?'<p class="gnote">Las reglas oficiales no habilitan: '+Object.keys(gn).map(function(k){return '<b>'+k+'</b> en '+gn[k].map(esc).join(', ')}).join('; ')+'.</p>':'';
   var cols=colsOf(rows);
   body='<div class="pruebas g'+(cols.length<5?' c4':'')+'"><div class="gr gh"><span class="gh-s"><b>'+esc(n)+'</b><small>Modalidad · género</small></span>'+cols.map(function(f){return '<span>'+f[1]+'</span>'}).join('')+'</div>'+rs.map(function(r,i){var h=rowHtml(x,an,r,cols),nx=rs[i+1];return nx&&nx.sx!==r.sx?h.replace('class="gr','class="gr gend'):h}).join('')+gnote+'</div>';
  }
- return '<div class="sport'+(open?' open':'')+'"><div class="sport-r" data-open="'+esc(n)+'"><div class="sport-ico">'+esc(n.charAt(0))+'</div><div class="sport-t"><b>'+esc(n)+'</b><small>'+nm+(nm===1?' modalidad':' modalidades')+' · '+rows.length+(rows.length===1?' declaración':' declaraciones')+'</small></div>'+topeChip(an,n)+'<span class="sport-sum"><span class="sport-c">'+s.n+' de '+s.tot+' declaradas</span><span class="ini-pg sport-pg" aria-hidden="true"><i style="width:'+(s.tot?Math.round(s.n/s.tot*100):0)+'%"></i></span>'+(x.dis?'':'<span class="st '+s.k+'">'+s.l+'</span>')+'</span>'+I.chev+'</div>'+body+'</div>';
+ return '<div class="sport'+(open?' open':'')+'"><div class="sport-r" data-open="'+esc(n)+'"><div class="sport-ico" aria-hidden="true">'+InscNum.iconoDeporteHTML(n,24)+'</div><div class="sport-t"><b>'+esc(n)+'</b><small>'+nm+(nm===1?' modalidad':' modalidades')+' · '+rows.length+(rows.length===1?' declaración':' declaraciones')+'</small></div>'+topeChip(an,n)+'<span class="sport-sum"><span class="sport-c">'+s.n+' de '+s.tot+' declaradas</span><span class="ini-pg sport-pg" aria-hidden="true"><i style="width:'+(s.tot?Math.round(s.n/s.tot*100):0)+'%"></i></span>'+(x.dis?'':'<span class="st '+s.k+'">'+s.l+'</span>')+'</span>'+I.chev+'</div>'+body+'</div>';
 }
 /* El panel de topes va colapsado: la fila del deporte repite su aviso para que no pase inadvertido. */
 function topeChip(an,n){
@@ -839,13 +848,14 @@ function bar(x,an){
   /* Guardar solo aparece con cambios; confirmar exige algo declarado y cambios desde la última confirmación. */
   var noConf=(vacio?'Declare al menos una cantidad para confirmar':((x.confirmed&&!x.dirty)?'No hay cambios por confirmar':''));
   var nbe=x.tried?an.all.length:0,ncp=an.topes.length;
-  var side=(x.caps||x.tried)&&(ncp||nbe)?'<button type="button" class="sp-btn'+(x.capsOpen?' on':'')+'" data-act="caps" aria-expanded="'+!!x.capsOpen+'" aria-controls="caps-'+x.id+'" title="Topes y validaciones" aria-label="Revisión: topes y validaciones ('+(nbe||ncp)+')"><span class="sp-l">Revisión</span>'+I.shield+'<span class="sp-n'+(nbe?' err':'')+'">'+(nbe||ncp)+'</span></button>':'';
+  var pct=SPN.length?Math.round(an.nd/SPN.length*100):0;
+  var side=(x.caps||x.tried)&&(ncp||nbe)?'<button type="button" class="sp-btn sp-fab'+(x.capsOpen?' on':'')+'" data-act="caps" aria-expanded="'+!!x.capsOpen+'" aria-controls="caps-'+x.id+'" title="'+pct+'% de avance · Revisión: topes y validaciones ('+(nbe||ncp)+')" aria-label="'+pct+'% de avance. Revisa tu progreso: topes y validaciones ('+(nbe||ncp)+')"><span class="sp-l">Revisión</span><svg class="sp-ring" viewBox="0 0 66 66" aria-hidden="true"><circle class="t" cx="33" cy="33" r="30"/><circle class="p" cx="33" cy="33" r="30" stroke-dasharray="188.5" stroke-dashoffset="'+(188.5*(1-pct/100)).toFixed(1)+'"/></svg><span class="sp-t"><b>'+pct+'%</b> Revisa tu progreso</span>'+I.shield+'<span class="sp-n'+(nbe?' err':'')+'">'+(nbe||ncp)+'</span></button>':'';
   var dav=x.id==='n2'?(x.dis?'<span title="La inscripción aún no abre"><button class="btn sec sm" type="button" disabled>'+I.dl+'Descargar avance</button></span>':'<button class="btn sec sm" type="button" data-act="avance" title="Descarga un borrador con lo declarado hasta ahora">'+I.dl+'Descargar avance</button>'):'';
   right=(x.dis?'':lk?'<button class="btn pri sm" type="button" data-act="modify">Modificar declaración</button>':(x.dirty?'<button class="btn sec sm" type="button" data-act="save">Guardar borrador</button>':'')+
    (noConf?'<span title="'+noConf+'"><button class="btn pri sm" type="button" disabled>Confirmar</button></span>':'<button class="btn pri sm" type="button" data-act="confirm">Confirmar</button>'));
  }
  var role=x.ro?'':'<span class="rolchip">'+(x.role==='aux'?'Auxiliar':'Gestor')+'</span>';
- return '<div class="tbar"><div class="tb-l">'+role+'<span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span></div><div class="tb-c">'+tiles+side+'</div><div class="tb-r">'+right+'</div></div>';
+ return '<div class="tbar"><div class="tb-l">'+role+'<span class="own" title="'+esc(DELE)+'">'+esc(DELE)+'</span></div><div class="tb-c">'+tiles+'</div><div class="tb-r">'+right+'</div></div>'+side;
 }
 function filterBar(x,an,extra){
  var ch=[['todos','Todos',x.sports.length],['pend','Pendientes',an.pend]];
@@ -857,14 +867,14 @@ function confNote(x){
   var hit=ids[c.ref]||(c.refs||[]).some(function(k){return ids[k]});
   return hit&&critOk(c)&&(c.tipo==='complementario'||c.tipo==='precedencia'||c.tipo==='equivalencia')});
  if(!l.length)return '';
- return '<details class="cfn"><summary>Criterios aplicados · '+l.length+'</summary><ul>'+l.map(function(c){var ct=citasTxt(c);return '<li><b>'+esc(c.tema)+'.</b> Criterio aplicado: '+esc(critTxt(c))+(ct?' <span title="'+esc(ct)+'">('+esc(ct)+')</span>':'')+'</li>'}).join('')+'</ul></details>';
+ return '<details class="cfn"><summary>Criterios aplicados · '+l.length+'</summary><ul>'+l.map(function(c){return '<li><b>'+esc(c.tema)+'.</b> Criterio aplicado: '+esc(critTxt(c))+'</li>'}).join('')+'</ul></details>';
 }
 /* Cabecera en card: migas, título y resumen de avance (mismos KPIs que N1). */
 function hdCard(x,an){
  var t=an.t,tot=x.sports.length,nd=an.nd,at=t.ah+t.am,su=t.sh+t.sm;
  var st=x.ro?['gr','Cerrada','Solo lectura']:(x.dis?['inf','Aún no abre','Sin captura']:(isLocked(x)?['ok','Confirmada','Modificable hasta el cierre']:(x.confirmed&&x.editing&&!x.dirty?['wa','Modificando','Sin cambios pendientes']:['wa','Borrador',x.dirty?'Cambios sin guardar':'Sin confirmar'])));
  var sub=function(h,m){return '<span class="r">Hombres '+h+' · Mujeres '+m+(t.mx?' · Mixtos '+t.mx:'')+'</span>'};
- var card1=function(inner){return '<section class="ini-card ini-k1"><dl class="ini-dl'+(x.dis?' pre':'')+'">'+inner+'</dl></section>'};
+ var card1=function(inner,cl){return '<section class="ini-card ini-k1'+(cl||'')+'"><dl class="ini-dl'+(x.dis?' pre':'')+'">'+inner+'</dl></section>'};
  var kpi=function(l,v,u,r){return card1('<div><dt>'+l+'</dt><dd><span class="ini-v"><b>'+v+'</b>'+u+'</span>'+r+'</dd></div>')};
  return '<section class="ini-card ini-hd" aria-labelledby="n2-h1">'+
   '<div class="hdr"><div><h1 id="n2-h1">Declaración numérica de la delegación</h1><p>Indique cuántos atletas y suplentes, hombres y mujeres, llevará '+esc(DELE)+' en cada modalidad.</p></div>'+'</div></section>'+
@@ -872,7 +882,7 @@ function hdCard(x,an){
   kpi('Deportes con inscripción numérica',nd,'de '+tot,'<span class="ft"><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></span>')+
   kpi('Total atletas',at,at===1?'atleta':'atletas',sub(t.ah,t.am))+
   kpi('Total suplentes',su,su===1?'suplente':'suplentes',sub(t.sh,t.sm))+
-  card1('<div><dt>Estado de la declaración</dt><dd><span class="kst"><span class="ini-b '+st[0]+'">'+st[1]+'</span></span><span class="r">'+st[2]+'</span></dd></div>')+'</div>';
+  card1('<div><dt>Estado de la declaración</dt><dd><span class="kst"><span class="ini-b '+st[0]+'">'+st[1]+'</span></span><span class="r">'+st[2]+'</span></dd></div>',' ini-ks')+'</div>';
 }
 function gridApp(x){
  var an=analyze(x);x.an=an;
@@ -883,7 +893,7 @@ function gridApp(x){
  var pre=!x.ro&&x.dis?'<div class="pre-n pre-top" role="status"><b>La inscripción numérica aún no abre</b><span>Abre el '+abreTxt()+' (presunta, sin confirmación oficial). Hasta entonces no puede declarar ni guardar.</span></div>':'';
   return '<div class="app ini-app">'+pre+(x.ro?closed:'')+'<div class="ini-wrap"><div class="ini"><div class="ini-m">'+
   hdCard(x,an)+
-  '<section class="ini-card ini-flt" aria-label="Filtros de la declaración">'+(function(){var bt='<span class="sp"></span><button class="btn ter" type="button" data-act="expand">Expandir todo</button><button class="btn ter" type="button" data-act="collapse">Contraer todo</button>';return x.filters&&!x.ro?filterBar(x,an,bt):'<div class="fbar">'+bt+'</div>'})()+'</section>'+
+  '<section class="ini-card ini-flt" aria-label="Filtros de la declaración">'+(function(){var bt='<span class="sp"></span><button class="btn ter" type="button" data-act="expand">'+I.exp+'Expandir todo</button><button class="btn ter" type="button" data-act="collapse">'+I.con+'Contraer todo</button>';return x.filters&&!x.ro?filterBar(x,an,bt):'<div class="fbar">'+bt+'</div>'})()+'</section>'+
   '<div class="list">'+list+'</div>'+
   (x.conf?confNote(x):'')+
   '</div></div>'+((x.caps||x.tried)?capsPanel(x,an):'')+'</div>'+bar(x,an)+(x.toast?'<div class="toast"><b>'+x.toast+'</b><span>'+nowHM()+'</span></div>':'')+(x.sv?modal('<h3>Guardar borrador</h3><p>Se guardará lo declarado hasta ahora. Podrá seguir editando y confirmar la declaración más adelante, hasta el cierre.</p><div class="foot"><button class="btn sec sm" type="button" data-act="svclose">Cancelar</button><button class="btn pri sm" type="button" data-act="svok">Guardar borrador</button></div>'):'')+(x.av?'<div class="modal-bg cert-bg"><div class="cert-pan">'+avBar(x)+'<div class="docbg">'+avHtml(x)+'</div></div></div>':'')+'</div>';
@@ -971,7 +981,7 @@ function n1Ahora(b){
  var st=ph.map(function(p,i){return '<li class="'+p[0]+(i<reached?' ln-ok':'')+'"'+(i===2&&!cl?' aria-current="step"':'')+'><span class="ini-rl"><span class="ini-nd">'+(p[0]==='done'?IC.ok+'<span class="ini-sr">Etapa '+(i+1)+'</span>':i+1)+'</span></span><span class="ini-tx"><b>'+p[1]+'</b><span class="ini-sd"><span class="s">'+p[2]+'</span>'+(p[3]?'<span class="d">'+p[3]+'</span>':'')+'</span></span></li>'}).join('');
  var badge=cl?['gr','Cerrada']:(pre?['inf','Aún no abre']:['ok','Abierta']);
  var plazo=cl?[IC.lock,'Cerró el '+cie,'gr','Solo lectura']:(pre?[IC.cal,'Abre el '+abr+' (presunta, sin confirmación oficial)','inf',abreChip()]:[IC.cal,'Cierra el '+cie,'wa',cierraChip()]);
- var ayuda=cl?'La ventana cerró: solo puede consultar la declaración y descargar los reportes y el certificado.':(pre?'La declaración se habilita cuando abra la ventana de inscripción.':'Puede modificar la declaración cuantas veces quiera hasta el cierre; vale la última versión guardada.');
+ var ayuda=cl?'Solo puede consultar la declaración y descargar los reportes y el certificado.':(pre?'La declaración se habilita cuando abra la ventana de inscripción.':'Puede modificarla hasta el cierre; vale la última versión guardada.');
  var cta=cl?'<button class="ini-cta" type="button" data-go="n7" data-cert>'+IC.dl+'Descargar certificado</button>'+'<button class="ini-cta sec" type="button" data-go="n7">Ver declaración</button>'
   :'<button class="ini-cta" type="button" data-go="n2"'+(pre?' disabled':'')+'>'+ctaLbl()+'</button>'+(pre?'':'<button class="ini-cta sec" type="button" data-av>'+IC.dl+'Descargar avance</button>');
  var tot2=function(a,s){return '<span class="ini-v"><b>'+a+'</b>'+(a===1?'atleta':'atletas')+'</span><span class="sp"><b>'+s+'</b> '+(s===1?'suplente':'suplentes')+'</span>'};
@@ -986,7 +996,7 @@ function n1Ahora(b){
    '<div><dt>Total hombres (H)</dt><dd>'+tot2(t.ah,t.sh)+'</dd></div>'+
    '<div><dt>Total mujeres (M)</dt><dd>'+tot2(t.am,t.sm)+'</dd></div></dl>'+
   '<div class="ini-pn"><div class="ini-pz"><span>'+plazo[0]+'<span>'+plazo[1]+'</span></span><span class="chs"><span class="ini-b '+plazo[2]+'">'+plazo[3]+'</span></span></div>'+
-   '<div class="ini-ac">'+cta+'<p class="ini-hp">'+IC.inf+'<span>'+ayuda+'</span></p></div></div>'+
+   '<div class="ini-ac">'+cta+'<p class="ini-hp">'+IC.inf+'<span title="'+esc(ayuda)+'">'+ayuda+'</span></p></div></div>'+
   '</div></div></section></div></div>'+(b.toast?'<div class="toast"><b>'+b.toast+'</b><span>'+nowHM()+'</span></div>':'')+'</div>';
 }
 
@@ -1034,7 +1044,7 @@ function certHtml(x){
  }
  return out;
 }
-/* Avance del borrador: misma hoja, banner y membrete del certificado, con marca de agua para no confundirlo con N7. */
+/* Avance del borrador: mismo diseño, banner y membrete del certificado, con marca de agua para no confundirlo con N7. */
 var AV_P1=22,AV_PER=29,AV_LEY='BORRADOR — no es el certificado';
 /* Cupo conjunto hombres + mujeres (D19) que cubre esta celda, si lo hay. */
 function jf(row,f){var g=row.mj;if(!g)return null;var m=(f==='ah'||f==='am')?g.a:g.s;return m==null?null:m}
@@ -1307,40 +1317,45 @@ simEstado();
 })();
 </script>
 <div id="print-root" aria-hidden="true"></div>
+<script>
+/* El avatar del hero es cuadrado del alto del texto: CSS no transfiere el alto estirado al ancho. */
+(function(){var q=0;function fit(){q=0;var a=document.querySelector('.ini-av'),h=document.querySelector('.ini-hx');if(!a||!h)return;a.style.width='';if(getComputedStyle(a).alignSelf==='stretch'){for(var i=0;i<3;i++)a.style.width=h.offsetHeight+'px'}}
+function sch(){if(!q)q=requestAnimationFrame(fit)}
+addEventListener('resize',sch);new MutationObserver(sch).observe(document.documentElement,{childList:true,subtree:true});sch()})();
+</script>
 <script src="../shared/tour.js"></script>
 <script>
 mountTour({
- 'HU-IN-04':{rol:'Gestor de una organización',title:'Grilla de captura de la delegación',
-  purpose:'Como Gestor de una Organización, quiero ver los deportes y modalidades en los que mi delegación declaró intención de participación y registrar allí las cantidades, para declarar el tamaño de mi delegación sin salirme de lo que ya manifesté.',
+ 'HU-IN-04':{rol:'Gestor de una delegación',title:'Grilla de captura de la delegación',
+  purpose:'Como Gestor de una Delegación, quiero ver los deportes y modalidades en los que mi delegación declaró intención de participación y registrar allí las cantidades, para declarar el tamaño de mi delegación sin salirme de lo que ya manifesté.',
   steps:[
-   {board:'n2',sel:'#n2 .ini-flt',body:'La grilla lista <b>únicamente</b> los deportes, modalidades y géneros que la delegación declaró en la intención de participación ('+(window.INSCNUM_FILAS||'')+' filas de captura; donde la hoja trae cupo mixto, Mixto se captura como hombres + mujeres). Ningún otro aparece para capturar.'},
+   {board:'n2',sel:'#n2 .ini-flt',body:'La grilla lista <b>únicamente</b> los deportes, modalidades y géneros que la delegación declaró en la intención de participación ('+(window.INSCNUM_FILAS||'')+' filas de captura; donde hay cupo mixto, Mixto se captura como hombres + mujeres). Ningún otro aparece para capturar.'},
    {board:'n2',sel:'#n2 .sport-r',body:'Cada deporte se abre en una fila por <b>declaración</b> (modalidad + género) y dice cuántas lleva declaradas («N de M») y en qué estado está: Sin declarar, Parcial o Completo.'},
-   {board:'n2',sel:'#n2 .tbar .own',body:'<b>La delegación solo ve y edita lo suyo.</b> La barra fija nombra a la organización y nunca muestra datos de otras delegaciones.'}
+   {board:'n2',sel:'#n2 .tbar .own',body:'<b>La delegación solo ve y edita lo suyo.</b> La barra fija nombra a la delegación y nunca muestra datos de otras delegaciones.'}
   ]},
- 'HU-IN-06':{rol:'Gestor de una organización',title:'Registro de cantidad de atletas y suplentes',
-  purpose:'Como Gestor de una Organización, quiero ingresar la cantidad de atletas y de suplentes por deporte, modalidad y género, para declarar formalmente cuántas personas llevará mi delegación.',
+ 'HU-IN-06':{rol:'Gestor de una delegación',title:'Registro de cantidad de atletas y suplentes',
+  purpose:'Como Gestor de una Delegación, quiero ingresar la cantidad de atletas y de suplentes por deporte, modalidad y género, para declarar formalmente cuántas personas llevará mi delegación.',
   steps:[
-   {board:'n2',sel:'#n2 .gr.gh',body:'Por cada fila habilitada se capturan <b>atletas y suplentes</b> de hombres y de mujeres. Donde la hoja trae cupo mixto, no hay columna mixta: el límite es la <b>suma hombres + mujeres</b>.'},
+   {board:'n2',sel:'#n2 .gr.gh',body:'Por cada fila habilitada se capturan <b>atletas y suplentes</b> de hombres y de mujeres. Donde hay cupo mixto, no hay columna mixta: el límite es la <b>suma hombres + mujeres</b>.'},
    {board:'n2',sel:'#n2 .stp',body:'Escriba la cantidad o use <b>− / +</b>. Los totales de la barra inferior se recalculan al instante.'},
-   {board:'n2',sel:'#n2 .cell small',body:'Debajo de cada celda se ve el <b>cupo de la hoja de reglas</b> de esa combinación («máx. 18»): cada valor se limita a ese máximo y no puede superarlo.'},
+   {board:'n2',sel:'#n2 .cell small',body:'Debajo de cada celda se ve el <b>cupo oficial</b> de esa combinación («máx. 18»): cada valor se limita a ese máximo y no puede superarlo.'},
    {board:'n6',sel:'#n6 .modal p',body:'Tras confirmar, la declaración <b>sigue modificable hasta el cierre</b> con «Modificar declaración», las veces que sea necesario; vale la última versión guardada. El Auxiliar tiene los mismos permisos que el Gestor y el rol de quien registra queda guardado para el reporte.'}
   ]},
  'HU-IN-07':{rol:'Sistema · lo ve el Gestor',title:'Validación contra el cupo parametrizado',
   purpose:'Como sistema, quiero validar que la cantidad de atletas y suplentes registrada no exceda el cupo oficial para esa combinación de deporte, modalidad y género, para que ninguna delegación declare por encima del tope oficial.',
   steps:[
    {board:'n3',sel:'#n3 .cell.lim',body:'<b>El tope es duro: no se puede superar.</b> Si escribes o pegas más del cupo de la <b>combinación exacta</b> (o de la suma hombres + mujeres del cupo mixto), el sistema limita el valor al máximo; no hay error ni bloqueo.'},
-   {board:'n3',sel:'#n3 .cell.lim small',body:'Junto a cada campo se lee el máximo que le queda («máx. 2 · suma H + M de 4»). Al llegar a él el botón <b>+</b> se deshabilita.'},
-   {board:'n3',sel:'#n3 .cell.lim .caphit',body:'Al llegar al límite aparece un aviso informativo y discreto, «Tope alcanzado: 4 de 4 (suma hombres + mujeres)», sin color de error.'},
+   {board:'n3',sel:'#n3 .cell.lim small',body:'Junto a cada campo se lee el máximo que le queda («máx. 2»). Al llegar a él el botón <b>+</b> se deshabilita.'},
    {board:'n3',sel:'#n3 input[aria-label^="Suplentes hombres"]',body:'<b>Atletas y suplentes se limitan por separado</b>, cada uno a su propio máximo: aquí los suplentes llegan a 2 por su cupo y los atletas, en cambio, comparten la suma de 4 entre hombres y mujeres.'},
    {board:'n3',sel:'#n3 .sidep',open:'#n3 [data-act="caps"]',body:'Como nada se puede exceder, <b>Confirmar no se bloquea por topes</b>; solo los mínimos de equipo impiden confirmar.'}
   ]},
  'HU-IN-08':{rol:'Sistema · lo ve el Gestor',title:'Validación de reglas de composición de equipo',
   purpose:'Como sistema, quiero aplicar las reglas de composición propias de cada modalidad, para que lo declarado sea inscribible según el reglamento y no solo un número dentro del tope.',
   steps:[
-   {board:'n4',sel:'#n4 .mlab small',body:'Algunas modalidades traen reglas que <b>no son un simple máximo</b>: aquí Baloncesto: mínimo 3 atletas por equipo en 3x3 y 10 en 5x5 (<b>según matriz</b>, con la cita al pasar el cursor); el máximo sale de la hoja.'},
+   {board:'n4',sel:'#n4 .mlab',body:'Algunas modalidades traen reglas que <b>no son un simple máximo</b>: aquí Baloncesto exige un mínimo de 3 atletas por equipo en 3x3 y de 10 en 5x5; el máximo es el cupo de la modalidad. Si no se alcanza el mínimo, el aviso aparece bajo la fila.'},
    {board:'n4',sel:'#n4 .msg.warn',open:'#n4 [data-ctl="edit"]',body:'Al editar, quedar por debajo del mínimo es un <b>aviso ámbar</b> que dice cuántos faltan.'},
    {board:'n4',sel:'#n4 .msg.err',open:'#n4 [data-ctl="conf"]',body:'Al pulsar <b>Confirmar</b> el mismo mínimo se vuelve un bloqueo rojo: la declaración no es inscribible. Los mínimos siguen siendo la única regla que bloquea.'},
-   {board:'n4',sel:'#n4 .sport:last-child .cell.lim',body:'Los máximos de composición no se pueden superar: en Tiro Deportivo el tope es <b>máx. 1 suplente por arma</b> («según hoja») y el campo limita el valor, sin mensaje de error.'}
+   {board:'n4',sel:'#n4 .sport:last-child .cell.lim',body:'Los máximos de composición no se pueden superar: en Tiro Deportivo el tope es <b>máx. 1 suplente por arma</b> y el campo limita el valor, sin mensaje de error.'}
   ]},
  'HU-IN-09':{rol:'Sistema · lo ve el Gestor',title:'Validación de topes agregados de la delegación',
   purpose:'Como sistema, quiero validar los topes que aplican al conjunto de la delegación y no a una fila individual, para que el total declarado respete los límites del evento.',
@@ -1349,16 +1364,16 @@ mountTour({
    {board:'n5',sel:'#n5 .cp',open:'#n5 [data-act="caps"]',body:'Esgrima: <b>máx. 12 atletas por delegación y género</b>, sumando Espada, Florete y Sable. Atletismo: <b>hasta 90 atletas</b> entre todas sus modalidades. Cada fila puede estar dentro de su cupo y aun así la suma llega al tope. Las pruebas no entran en esta fase: se declara solo por deporte, modalidad y género.'},
    {board:'n5',sel:'#n5 .cp.lim',open:'#n5 [data-act="caps"]',body:'El tope de la delegación también es duro: la suma no se puede superar. Al llegar a «12 de 12» el resumen dice <b>Tope alcanzado</b> y cada campo restante limita su máximo a lo que queda.'}
   ]},
- 'HU-IN-16':{rol:'Gestor de una organización',title:'Certificado de inscripción numérica por delegación',
-  purpose:'Como Gestor de una Organización, quiero descargar el certificado oficial de mi inscripción numérica al cierre de la fase, para tener el soporte formal de lo que declaró mi delegación.',
+ 'HU-IN-16':{rol:'Gestor de una delegación',title:'Certificado de inscripción numérica por delegación',
+  purpose:'Como Gestor de una Delegación, quiero descargar el certificado oficial de mi inscripción numérica al cierre de la fase, para tener el soporte formal de lo que declaró mi delegación.',
   steps:[
    {board:'n7',sel:'#n7 .closed-n',body:'Al cerrar la ventana la declaración queda en <b>solo lectura</b>: se consulta y se descargan los reportes y el certificado; solo un cambio extraordinario del comité la reabre.'},
    {board:'n7',sel:'#n7 .tbar .btn.pri',body:'Aparece <b>Descargar certificado (PDF)</b> al terminar la fase: un documento por delegación, descargable las veces que se quiera y siempre el mismo.'},
    {board:'n7',sel:'#n7 .doc .dh',open:'#n7 [data-act="cert"]',body:'Mismo formato del certificado de la fase anterior: banner, «XXIII Juegos deportivos nacionales · Córdoba – Sucre 2027», fecha de última actualización y delegación.'},
    {board:'n7',sel:'#n7 .doc thead',open:'#n7 [data-act="cert"]',body:'Se añaden las <b>columnas nuevas</b>: Cupos MASC, Suplentes MASC, Cupos FEM, Suplentes FEM y Cupos mixtos (este último solo se llena en Ecuestre), con lo que capturaste en la grilla.'}
   ]},
- 'HU-IN-P10':{rol:'Gestor de una organización',title:'Descargar avance de la declaración',
-  purpose:'Como Gestor de una Organización, quiero descargar un reporte ligero de mi avance mientras inscribo, para revisar cómo voy antes de confirmar.',
+ 'HU-IN-P10':{rol:'Gestor de una delegación',title:'Descargar avance de la declaración',
+  purpose:'Como Gestor de una Delegación, quiero descargar un reporte ligero de mi avance mientras inscribo, para revisar cómo voy antes de confirmar.',
   steps:[
    {board:'n2',sel:'#n2 .sidep [data-act="avance"]',open:'#n2 [data-act="caps"]',body:'Mientras la declaración es un borrador, <b>Descargar avance</b> está en el panel «Revisión» de la barra inferior. También aparece en el inicio, junto al botón principal de la tarjeta «Inscripción numérica».'},
    {board:'n2',sel:'#n2 .doc.av .dh',open:'#n2 .sidep [data-act="avance"] || #n2 [data-act="avance"] || #n2 [data-act="caps"]',body:'Mismo membrete del certificado, pero rotulado como <b>borrador sin confirmar</b>, con la delegación y la fecha y hora de generación.'},

@@ -86,7 +86,8 @@
   --duration-slow: 360ms;
 
   /* ─── Tipografía ─── */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family: 'Google Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Google Sans Code', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 * {
