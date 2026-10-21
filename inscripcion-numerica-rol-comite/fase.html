@@ -472,6 +472,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 <section class="board" id="c6"></section>
 </main>
 
+<script src="../shared/config-demo.js?v=0.1.0"></script>
 <script src="../shared/datos-inscnum.js"></script>
 <script src="../shared/iconos-deportes.js"></script>
 <script src="../shared/datos-consolidado.js"></script>
@@ -570,7 +571,9 @@ function CARD(t,body,o){o=o||{};var hd='<div class="cd-h"><div><h2 class="ini-k"
 function KPIS(t,l){return '<div class="kpis" role="group" aria-label="'+t+'" style="--kn:'+l.length+'">'+l.map(function(k){var sp=(k[2]||'').replace(/^<span>|<\/span>$/g,'');return '<section class="ini-card kpi1"><dl class="ini-dl"><div><dt>'+k[0]+'</dt><dd><b class="kpi-n">'+k[1]+'</b><span class="kpi-s">'+(k[3]!=null?'<span class="ini-pg"><i style="width:'+k[3]+'%"></i></span>':sp)+'</span></dd></div></dl></section>'}).join('')+'</div>'}
 function EX(){return '<span class="exl">Cifras de ejemplo</span>'}
 /* Pestañas que agrupan las vistas del seguimiento (consolidado, avance, tablero). */
-function TABS(cur){return '<div class="ptabs" role="tablist" aria-label="Vistas del seguimiento">'+[['c1','Consolidado'],['c3','Quién falta'],['c6','Tablero']].map(function(t){return '<button type="button" role="tab" class="ptab'+(t[0]===cur?' on':'')+'" aria-selected="'+(t[0]===cur)+'" tabindex="'+(t[0]===cur?0:-1)+'"'+(t[0]===cur?'':' data-go="'+t[0]+'"')+'>'+t[1]+'</button>'}).join('')+'</div>'}
+// Con INSCNUM_CONFIG.tablero=false el Tablero (C6) no se enruta ni se dibuja.
+var TABLERO=!(window.INSCNUM_CONFIG&&window.INSCNUM_CONFIG.tablero===false);
+function TABS(cur){return '<div class="ptabs" role="tablist" aria-label="Vistas del seguimiento">'+[['c1','Consolidado'],['c3','Quién falta']].concat(TABLERO?[['c6','Tablero']]:[]).map(function(t){return '<button type="button" role="tab" class="ptab'+(t[0]===cur?' on':'')+'" aria-selected="'+(t[0]===cur)+'" tabindex="'+(t[0]===cur?0:-1)+'"'+(t[0]===cur?'':' data-go="'+t[0]+'"')+'>'+t[1]+'</button>'}).join('')+'</div>'}
 function num(c){return typeof c==='number'?c:parseInt(String(c).split('–').pop(),10)}
 function pager(p,pages,a){return '<div class="pgn">Página <input type="number" min="1" max="'+pages+'" value="'+p+'" data-a="'+a+'" aria-label="Número de página"> de <b>'+pages+'</b><button type="button" class="ar" data-a="'+a+':prev" aria-label="Página anterior"'+(p<=1?' disabled':'')+'>‹</button><button type="button" class="ar" data-a="'+a+':next" aria-label="Página siguiente"'+(p>=pages?' disabled':'')+'>›</button></div>'}
 function clamp(p,pages){return Math.max(1,Math.min(pages,p||1))}
@@ -925,7 +928,7 @@ function c6Ahora(){
  '<span class="badge warn">Falta el Manual de Marca (Brand Book)</span> <span class="pager-note">Ya se le pidió al comité organizador. Mientras llega, se usa el membrete del certificado.</span></div>',{s:'Vale para las descargas de todos los roles.'})+'</div>'}
 
 /* ---------- pantallas ---------- */
-var B={c1:c1Ahora,c3:c3Ahora,c4:c4Ahora,c5:c5Ahora,c6:c6Ahora};
+var B={c1:c1Ahora,c3:c3Ahora,c4:c4Ahora,c5:c5Ahora};if(TABLERO)B.c6=c6Ahora;
 /* Marca como «pegadas» las barras fijas de C1 solo cuando el scroll ya pasó su posición natural. */
 function stk(){var cq=document.querySelector('.cq-h');document.documentElement.style.setProperty('--cqh',(cq&&cq.offsetParent?cq.offsetHeight:40)+'px');var sub=false;
  Array.prototype.forEach.call(document.querySelectorAll('.cq-h,.rw.op>.rw-h'),function(h){if(!h.offsetParent){h.classList.remove('is-pin');return}
@@ -965,7 +968,7 @@ document.addEventListener('keydown',function(e){
 document.addEventListener('click',function(e){
  // Los clics del recorrido guiado no cierran los menús que el propio recorrido abre.
  if(e.target.isConnected&&!e.target.closest('.tt-coach')){
-  if(S.c6.gm&&!e.target.closest('.gm')){S.c6.gm=false;draw('c6')}
+  if(TABLERO&&S.c6.gm&&!e.target.closest('.gm')){S.c6.gm=false;draw('c6')}
   if(S.c1.fm&&!e.target.closest('.fwrap')){S.c1.fm=false;draw('c1')}}
  var g=e.target.closest('[data-go]');
  if(g){var gid=g.getAttribute('data-go');
@@ -1014,7 +1017,7 @@ document.addEventListener('change',function(e){
  else if(a0==='c1st'){S.c1.st=q.value;draw('c1')}
 });
 /* ---------- Pantalla única: hash y barra «Simular» ---------- */
-var SCR=['c1','c3','c4','c5','c6'],cur=null;
+var SCR=['c1','c3','c4','c5'].concat(TABLERO?['c6']:[]),cur=null;
 function toast(m){var t=document.createElement('div');t.className='ptoast';t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},4000)}
 function go(id,o){show(id,o||{})}
 function show(id,o){
@@ -1060,7 +1063,7 @@ window.addEventListener('hashchange',function(){show(location.hash.slice(1))});
 <script src="../shared/tour.js"></script>
 <script>
 function fmt2(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
-mountTour({
+var TOURS_COM={
  'HU-IN-05':{rol:'Comité organizador',title:'Visualización del cupo máximo en el consolidado',
   purpose:'Como comité organizador, quiero ver el cupo máximo de atletas y suplentes de cada deporte y modalidad en el consolidado de intenciones, para comparar de un vistazo lo declarado con el tope del reglamento.',
   steps:[
@@ -1118,7 +1121,13 @@ mountTour({
    {board:'c6',sel:'#c6 .mem',body:'Las descargas de <b>todos los roles</b> llevan el membrete del evento: el mismo banner del certificado anterior, ya confirmado por negocio.'},
    {board:'c5',sel:'#c5 .hdr-a .btn.pri',body:'Cada descarga, como este reporte, sale con ese <b>membrete oficial</b>. Así sirve como documento formal ante las delegaciones y el Ministerio.'}
   ]}
-});
+};
+// Sin tablero: fuera HU-IN-10 a 13 y los pasos que apuntan a C6.
+if(window.INSCNUM_CONFIG&&window.INSCNUM_CONFIG.tablero===false){
+ ['HU-IN-10','HU-IN-11','HU-IN-12','HU-IN-13'].forEach(function(k){delete TOURS_COM[k]});
+ Object.keys(TOURS_COM).forEach(function(k){TOURS_COM[k].steps=TOURS_COM[k].steps.filter(function(st){return st.board!=='c6'})});
+}
+mountTour(TOURS_COM);
 </script>
 </body>
 </html>

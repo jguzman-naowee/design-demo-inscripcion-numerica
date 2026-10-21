@@ -5,7 +5,7 @@
   var data = window.HU_DATA, N = window.InscNum;
   if (!data || !N) return;
   var role = N.lastRole(); if (!role) return;
-  var hus = data.filter(function (h) { return h.rol === role; });
+  var hus = data.filter(function (h) { return h.rol === role && N.huVisible(h.n); });
   var esc = N.esc;
   var screens = N.FASE[role], activeScreen = screens[0][0];
   var I_HOME = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>';

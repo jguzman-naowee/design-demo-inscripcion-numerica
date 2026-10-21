@@ -227,3 +227,7 @@ _Vive en «Consolidado», vista «Por delegación»: lista de delegaciones a la 
 ### Decisión del 21-oct-2026 (Jorge): textos en lenguaje sencillo
 
 - Los textos de las pantallas y de los recorridos del comité se reescribieron en lenguaje natural (tuteo, frases cortas). No cambian reglas, cifras, columnas del Excel ni estados. Se quitó de pantalla la procedencia de los datos (hojas, actas, códigos de decisión).
+
+### Decisión del 21-oct-2026 (Jorge): Tablero oculto por ahora
+
+- El Tablero (C6) y HU-IN-10 a HU-IN-13 están ocultos por `INSCNUM_CONFIG.tablero=false` (`shared/config-demo.js`); el código sigue intacto y `true` los reactiva.

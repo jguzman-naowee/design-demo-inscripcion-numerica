@@ -7,6 +7,10 @@
   var P = 'naowee-inscnum-';
   var ROL_KEY = P + 'rol';            // último rol abierto
 
+  /* Con tablero:false se oculta el Tablero (C6) y sus HU 10 a 13 (config-demo.js). */
+  var TABLERO = !(window.INSCNUM_CONFIG && window.INSCNUM_CONFIG.tablero === false);
+  var HU_TABLERO = ['10', '11', '12', '13'];
+
   /* ─── Datos (copiados de indice-anterior.html) ─── */
   var ROLES = {
     delegado: { code: 'delegado', page: 'delegado.html', label: 'Delegado', avatar: 'DE', color: '#1f78d1',
@@ -16,7 +20,7 @@
       d: 'Carga y mantiene los cupos oficiales y la ventana de la fase. El delegado solo los ve como tope y como estado.',
       dir: 'inscripcion-numerica-rol-admin' },
     comite: { code: 'comite', page: 'comite.html', label: 'Comité organizador', avatar: 'CO', color: '#1f8923',
-      d: 'Sigue el avance del evento: consolidado, tablero y reportes. El tablero vive en un dashboard externo, no en este repo.',
+      d: 'Sigue el avance del evento: consolidado' + (TABLERO ? ', tablero' : '') + ' y reportes.' + (TABLERO ? ' El tablero vive en un dashboard externo, no en este repo.' : ''),
       dir: 'inscripcion-numerica-rol-comite' }
   };
   var ORDER = ['delegado', 'admin', 'comite'];
@@ -39,13 +43,13 @@
     ['15', 'comite', 'Reportes', 'Exportación desde el consolidado'],
     ['16', 'delegado', 'Certificado de cierre', 'Certificado de inscripción numérica por delegación'],
     ['17', 'comite', 'Certificado de cierre', 'Membrete oficial en las descargas']
-  ];
+  ].filter(function (h) { return TABLERO || HU_TABLERO.indexOf(h[0]) < 0; });
 
   /* [id, código, título, notas opcionales que se listan en Configuraciones → Pantallas] */
   var FASE = {
     delegado: [['n1', 'N1', 'Hero con fases'], ['n2', 'N2', 'Grilla de captura'], ['n3', 'N3', 'Error de cupo'], ['n4', 'N4', 'Composición de equipo'], ['n5', 'N5', 'Tope de delegación'], ['n6', 'N6', 'Guardar y confirmar'], ['n7', 'N7', 'Cerrada y certificado'], ['estados', 'EV', 'Estados de la ventana']],
     admin: [['a5', 'A5', 'Ventana de la fase'], ['a1', 'A1', 'Pestaña Cupos'], ['a2', 'A2', 'Importar desde Excel'], ['a3', 'A3', 'Editar el cupo de una modalidad'], ['a4', 'A4', 'Límites conjuntos'], ['a6', 'A6', 'Cambios a mitad de fase']],
-    comite: [['c1', 'C1', 'Consolidado: por deporte y por delegación'], ['c3', 'C3', 'Quién falta'], ['c4', 'C4', 'Exportar'], ['c5', 'C5', 'Reporte consolidado'], ['c6', 'C6', 'Tablero y membrete', ['Diseño del cambio: el tablero real vive en un dashboard externo, no en este repo.', 'Las cifras son de ejemplo (modelo simple y determinista); solo «Delegaciones Registradas» (33 sin filtros) es real.']]]
+    comite: [['c1', 'C1', 'Consolidado: por deporte y por delegación'], ['c3', 'C3', 'Quién falta'], ['c4', 'C4', 'Exportar'], ['c5', 'C5', 'Reporte consolidado']].concat(!TABLERO ? [] : [['c6', 'C6', 'Tablero y membrete', ['Diseño del cambio: el tablero real vive en un dashboard externo, no en este repo.', 'Las cifras son de ejemplo (modelo simple y determinista); solo «Delegaciones Registradas» (33 sin filtros) es real.']]])
   };
 
   function husOf(code) { return HU.filter(function (h) { return h[1] === code; }); }
@@ -108,6 +112,7 @@
 
   window.InscNum = {
     ROLES: ROLES, ORDER: ORDER, HU: HU, FASE: FASE,
+    huVisible: function (n) { return TABLERO || HU_TABLERO.indexOf(String(n)) < 0; }, tablero: TABLERO,
     husOf: husOf, bootRole: bootRole, go: go, resetDemo: resetDemo, esc: esc,
     lastRole: function () { var r = lsGet(ROL_KEY); return ROLES[r] ? r : null; },
     keys: { rol: ROL_KEY }
