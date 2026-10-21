@@ -735,11 +735,6 @@ function ruleTxt(row){
  r.notas.forEach(function(n){if(!/^Cupo FEM en blanco/.test(n))o.push(esc(n))});
  return o.length?'<small>'+o.join(' · ')+'</small>':'';
 }
-function inh(row){
- var r=row.rule;if(!r||!r.heredado)return '';
- var c=r.heredadoCampos;if(c&&c.indexOf(row.sx==='H'?'masc':'fem')<0)return '';
- return '<span class="inh" tabindex="0" role="img" aria-label="Cupo tomado de celda combinada de la hoja; por revisar" title="Cupo tomado de celda combinada de la hoja; por revisar">i</span>';
-}
 var SINTOPE='<span class="inh" tabindex="0" role="img" aria-label="Sin tope definido: la delegación solo declara que va" title="Sin tope definido: la delegación solo declara que va">i</span>';
 function cell(x,an,row,f,iss){
  var s=cs(row,f[0]);
@@ -756,7 +751,7 @@ function cell(x,an,row,f,iss){
  /* El máximo se muestra junto al campo; si lo fija el tope de la delegación, el aviso nombra ese tope. */
  var mxt=isFinite(lm.max)?'máx. '+lm.max+(lm.by==='deleg'&&s.k==='cap'&&lm.max<s.c?' · cupo '+s.c:'')+(lm.by==='suma'?' · suma H + M de '+lm.g.max:''):txt;
  var gt=hit?'<span class="caphit">Tope alcanzado: '+(lm.by==='suma'?lm.g.val+' de '+lm.g.max+' (suma hombres + mujeres)':(lm.by==='deleg'?lm.g.val+' de '+lm.g.max+' (delegación)':v+' de '+lm.max))+'</span>':'';
- return '<div class="cell'+cls+'"><div class="stp"><button type="button"'+dd+' data-step="-1" data-k="'+k+'" aria-label="Restar 1">−</button><input type="text"'+dd+' inputmode="numeric" data-k="'+k+'" value="'+v+'" aria-label="'+f[1]+', '+esc(row.mod)+' · '+row.sexo+'"><button type="button"'+ddp+' data-step="1" data-k="'+k+'" aria-label="Sumar 1">+</button></div><small>'+mxt+(s.k==='cap'?inh(row):'')+'</small>'+gt+'</div>';
+ return '<div class="cell'+cls+'"><div class="stp"><button type="button"'+dd+' data-step="-1" data-k="'+k+'" aria-label="Restar 1">−</button><input type="text"'+dd+' inputmode="numeric" data-k="'+k+'" value="'+v+'" aria-label="'+f[1]+', '+esc(row.mod)+' · '+row.sexo+'"><button type="button"'+ddp+' data-step="1" data-k="'+k+'" aria-label="Sumar 1">+</button></div><small>'+mxt+'</small>'+gt+'</div>';
 }
 /* La columna de cupos mixtos solo existe en los deportes que aún tienen filas mixtas (Ecuestre). */
 function colsOf(rows){return rows.some(function(r){return r.sx==='X'&&!r.dis})?FL:FL.slice(0,4)}
