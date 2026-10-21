@@ -740,7 +740,7 @@ function inh(row){
  var c=r.heredadoCampos;if(c&&c.indexOf(row.sx==='H'?'masc':'fem')<0)return '';
  return '<span class="inh" tabindex="0" role="img" aria-label="Cupo tomado de celda combinada de la hoja; por revisar" title="Cupo tomado de celda combinada de la hoja; por revisar">i</span>';
 }
-var SINTOPE='<span class="inh" tabindex="0" role="img" aria-label="Sin tope en el instructivo: la delegación solo declara que va" title="Sin tope en el instructivo: la delegación solo declara que va">i</span>';
+var SINTOPE='<span class="inh" tabindex="0" role="img" aria-label="Sin tope definido: la delegación solo declara que va" title="Sin tope definido: la delegación solo declara que va">i</span>';
 function cell(x,an,row,f,iss){
  var s=cs(row,f[0]);
  if(s.k==='off')return '<div class="cell off"><span class="na">—</span></div>';
@@ -764,7 +764,7 @@ function rowHtml(x,an,row,cols){
  var iss=an.ri[row.i]||[],rt=ruleTxt(row),out='';
  var lab='<div class="mlab"><b>'+esc(row.mod)+'</b><span class="gtag g'+row.sx+'">'+GIC[row.sx]+row.sexo+'</span>'+rt+'</div>';
  out='<div class="gr'+(row.dis?' dis':'')+'">'+lab+cols.map(function(f){return cell(x,an,row,f,iss)}).join('');
- if(row.dis)out+='<div class="rn">El instructivo no habilita este género en esta modalidad</div>';
+ if(row.dis)out+='<div class="rn">Las reglas oficiales no habilitan este género en esta modalidad</div>';
  else{
   if(iss.length)out+='<div class="rowmsg">'+iss.map(function(i){
    var rd=red(i,x);
@@ -785,7 +785,7 @@ function sportRowN(x,an,n){
   /* Los géneros que el instructivo no habilita no llevan fila: una sola nota los lista. */
   var nd=rs.filter(function(r){return r.dis}),gn={};rs=rs.filter(function(r){return !r.dis});
   nd.forEach(function(r){(gn[r.sexo]=gn[r.sexo]||[]).push(r.mod)});
-  var gnote=nd.length?'<p class="gnote">El instructivo no habilita: '+Object.keys(gn).map(function(k){return '<b>'+k+'</b> en '+gn[k].map(esc).join(', ')}).join('; ')+'.</p>':'';
+  var gnote=nd.length?'<p class="gnote">Las reglas oficiales no habilitan: '+Object.keys(gn).map(function(k){return '<b>'+k+'</b> en '+gn[k].map(esc).join(', ')}).join('; ')+'.</p>':'';
   var cols=colsOf(rows);
   body='<div class="pruebas g'+(cols.length<5?' c4':'')+'"><div class="gr gh"><span class="gh-s"><b>'+esc(n)+'</b><small>Modalidad · género</small></span>'+cols.map(function(f){return '<span>'+f[1]+'</span>'}).join('')+'</div>'+rs.map(function(r,i){var h=rowHtml(x,an,r,cols),nx=rs[i+1];return nx&&nx.sx!==r.sx?h.replace('class="gr','class="gr gend'):h}).join('')+gnote+'</div>';
  }
@@ -868,7 +868,7 @@ function hdCard(x,an){
  return '<section class="ini-card ini-hd" aria-labelledby="n2-h1">'+
   '<div class="hdr"><div><h1 id="n2-h1">Declaración numérica de la delegación</h1><p>Indique cuántos atletas y suplentes, hombres y mujeres, llevará '+esc(DELE)+' en cada modalidad.</p></div>'+'</div></section>'+
   '<div class="ini-kpis" role="group" aria-label="Resumen de la declaración">'+
-  kpi('Deportes declarados',nd,'de '+tot,'<span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span>')+
+  kpi('Deportes con inscripción numérica',nd,'de '+tot,'<span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span>')+
   kpi('Total atletas',at,at===1?'atleta':'atletas',sub(t.ah,t.am))+
   kpi('Total suplentes',su,su===1?'suplente':'suplentes',sub(t.sh,t.sm))+
   card1('<div><dt>Estado de la declaración</dt><dd><span class="kst"><span class="ini-b '+st[0]+'">'+st[1]+'</span></span><span class="r">'+st[2]+'</span></dd></div>')+'</div>';
@@ -957,6 +957,8 @@ var IC={
  dl:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>',
  inf:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>'
 };
+/* Sin cantidades guardadas (mismo criterio de «0 de N») se invita a iniciar. */
+function ctaLbl(){return analyze(BN.n2.x).nd>0?'Continuar inscripción numérica':'Iniciar inscripción numérica'}
 function n1Ahora(b){
  var cl=b.state==='cerrada',pre=b.state==='abre',c=winCfg(),an=analyze(BN.n2.x),t=an.t,nd=an.nd,tot=SPN.length;
  var cie=wDmy(c.cierra)+' · '+wHm(c.cierra),abr=wDmy(c.abre)+' · '+wHm(c.abre);
@@ -970,7 +972,7 @@ function n1Ahora(b){
  var plazo=cl?[IC.lock,'Cerró el '+cie,'gr','Solo lectura']:(pre?[IC.cal,'Abre el '+abr+' (presunta, sin confirmación oficial)','inf',abreChip()]:[IC.cal,'Cierra el '+cie,'wa',cierraChip()]);
  var ayuda=cl?'La ventana cerró: solo puede consultar la declaración y descargar los reportes y el certificado.':(pre?'La declaración se habilita cuando abra la ventana de inscripción.':'Puede modificar la declaración cuantas veces quiera hasta el cierre; vale la última versión guardada.');
  var cta=cl?'<button class="ini-cta" type="button" data-go="n7" data-cert>'+IC.dl+'Descargar certificado</button>'+'<button class="ini-cta sec" type="button" data-go="n7">Ver declaración</button>'
-  :'<button class="ini-cta" type="button" data-go="n2"'+(pre?' disabled':'')+'>'+'Continuar declaración'+(pre?'':IC.arr)+'</button>'+(pre?'':'<button class="ini-cta sec" type="button" data-av>'+IC.dl+'Descargar avance</button>');
+  :'<button class="ini-cta" type="button" data-go="n2"'+(pre?' disabled':'')+'>'+ctaLbl()+(pre?'':IC.arr)+'</button>'+(pre?'':'<button class="ini-cta sec" type="button" data-av>'+IC.dl+'Descargar avance</button>');
  var tot2=function(a,s){return '<span class="ini-v"><b>'+a+'</b>'+(a===1?'atleta':'atletas')+'</span><span class="sp"><b>'+s+'</b> '+(s===1?'suplente':'suplentes')+'</span>'};
  return '<div class="app ini-app"><div class="ini"><div class="ini-m">'+
   '<section class="ini-h" aria-labelledby="ini-org"><span class="ini-av" aria-hidden="true">A</span><div class="ini-hx"><span class="ini-ev">XXIII Juegos Deportivos Nacionales · Córdoba – Sucre 2027</span><h1 id="ini-org">'+esc(DELE)+'</h1>'+
@@ -979,7 +981,7 @@ function n1Ahora(b){
   '<section class="ini-card" aria-labelledby="ini-etapa">'+
   '<div class="ini-sec"><div class="ini-et"><div><span class="ini-en'+(cl?' gr':'')+'" aria-hidden="true">3</span><h2 id="ini-etapa"><span class="ini-sr">Etapa 3 de 5: </span>Inscripción numérica</h2><span class="ini-b '+badge[0]+'">'+badge[1]+'</span></div><p>'+(cl?'Resumen de lo que la delegación declaró al cierre de la ventana.':'Declare por deporte cuántos atletas y suplentes inscribirá la delegación.')+'</p></div>'+
   '<div class="ini-row"><dl class="ini-dl'+(pre?' pre':'')+'">'+
-   '<div><dt>Deportes declarados</dt><dd><span class="ini-v"><b>'+nd+'</b>de '+tot+'</span><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></dd></div>'+
+   '<div><dt>Deportes con inscripción numérica</dt><dd><span class="ini-v"><b>'+nd+'</b>de '+tot+'</span><span class="ini-pg" aria-hidden="true"><i style="width:'+(tot?nd/tot*100:0)+'%"></i></span><span class="r">'+(tot-nd)+' sin declarar</span></dd></div>'+
    '<div><dt>Total hombres (H)</dt><dd>'+tot2(t.ah,t.sh)+'</dd></div>'+
    '<div><dt>Total mujeres (M)</dt><dd>'+tot2(t.am,t.sm)+'</dd></div></dl>'+
   '<div class="ini-pn"><div class="ini-pz"><span>'+plazo[0]+'<span>'+plazo[1]+'</span></span><span class="chs"><span class="ini-b '+plazo[2]+'">'+plazo[3]+'</span></span></div>'+
@@ -1062,7 +1064,7 @@ function avHtml(x){
  var sum='<table class="ct avs"><colgroup><col style="width:24%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:15%"><col style="width:16%"></colgroup><thead><tr><th></th>'+FL.map(function(f){return '<th>'+f[1]+'</th>'}).join('')+'</tr></thead><tbody>'+
   '<tr><td><b>Declarados</b></td>'+FL.map(function(f){return '<td>'+st.t[f[0]].d+'</td>'}).join('')+'</tr>'+
   '<tr><td>Cupo (filas con tope)</td>'+FL.map(function(f){return '<td>'+st.t[f[0]].c+'</td>'}).join('')+'</tr></tbody></table>'+
-  '<p class="avn2">Deportes con cantidades: <b>'+an.nd+' de '+SPN.length+'</b> · Declaraciones con cantidades: <b>'+st.nr+' de '+st.nd+'</b>. El cupo suma solo las filas que tienen tope en el instructivo. Donde hay cupo mixto, hombres + mujeres lo cuentan una sola vez.</p>';
+  '<p class="avn2">Deportes con cantidades: <b>'+an.nd+' de '+SPN.length+'</b> · Declaraciones con cantidades: <b>'+st.nr+' de '+st.nd+'</b>. El cupo suma solo las filas que tienen tope definido. Donde hay cupo mixto, hombres + mujeres lo cuentan una sola vez.</p>';
  pages.forEach(function(rs,p){
   out+='<section class="doc sheet av" aria-label="Página '+(p+1)+' de '+n+'"><div class="cb" role="img" aria-label="Banner XXIII Juegos Deportivos Nacionales 2027"></div>'+
    '<div class="wm" aria-hidden="true"><b>BORRADOR</b><span>no es el certificado</span></div>'+
@@ -1145,10 +1147,10 @@ function n7Ahora(b){
 }
 
 var EST=[['Aún no abre','⏳','La inscripción numérica aún no abre',null,'<span class="chip-gr">Aún no abre</span>'],
- ['Abierta','✎','Inscripción numérica abierta',null,'<button class="btn pri sm" type="button" data-go="n2">Continuar declaración</button>'],
+ ['Abierta','✎','Inscripción numérica abierta',null,'<button class="btn pri sm" type="button" data-go="n2">{CTA}</button>'],
  ['Cerrada','✓','Inscripción numérica cerrada',null,'<button class="btn sec sm" type="button" data-go="n7" data-cert>Descargar certificado</button>']];
 function estTxt(x){return x[0]==='Abierta'?pillTxt()+'. Puede modificar la declaración cuantas veces quiera hasta el cierre; vale la última versión guardada.':(x[0]==='Cerrada'?'Cerró el '+cierreDmy()+' · '+wHm(winCfg().cierra)+'. Solo puede consultar lo declarado y descargar los reportes y el certificado.':'Abre el '+abreTxt()+' (presunta, sin confirmación oficial). Cuando abra podrá declarar los atletas y suplentes de su delegación.')}
-function estAhora(b){var x=EST[{abre:0,abierta:1,cerrada:2}[b.state]];return '<div class="app">'+nav(['Inicio',DELE,'Inscripción numérica'])+'<div class="page"><div class="card"><div class="emp"><div class="ic">'+x[1]+'</div><b>'+x[2]+'</b><p>'+estTxt(x)+'</p>'+x[4]+'</div></div></div></div>'}
+function estAhora(b){var x=EST[{abre:0,abierta:1,cerrada:2}[b.state]];return '<div class="app">'+nav(['Inicio',DELE,'Inscripción numérica'])+'<div class="page"><div class="card"><div class="emp"><div class="ic">'+x[1]+'</div><b>'+x[2]+'</b><p>'+estTxt(x)+'</p>'+x[4].replace('{CTA}',ctaLbl())+'</div></div></div></div>'}
 var BOARDS=[
  {id:'n1',ahora:n1Ahora,state:'activa',ctl:{label:'Estado',opts:[['abre','Aún no abre'],['activa','Activa'],['cerrada','Cerrada']]}},
  {id:'n2',win:true,mk:function(){var x=mkInst({caps:true,filters:true,conf:true,sports:SPN,open:['Actividades Subacuáticas']});loadDecl(x);return x}},
@@ -1323,7 +1325,7 @@ mountTour({
    {board:'n6',sel:'#n6 .modal p',body:'Tras confirmar, la declaración <b>sigue modificable hasta el cierre</b> con «Modificar declaración», las veces que sea necesario; vale la última versión guardada. El Auxiliar tiene los mismos permisos que el Gestor y el rol de quien registra queda guardado para el reporte.'}
   ]},
  'HU-IN-07':{rol:'Sistema · lo ve el Gestor',title:'Validación contra el cupo parametrizado',
-  purpose:'Como sistema, quiero validar que la cantidad de atletas y suplentes registrada no exceda el cupo del instructivo para esa combinación de deporte, modalidad y género, para que ninguna delegación declare por encima del tope oficial.',
+  purpose:'Como sistema, quiero validar que la cantidad de atletas y suplentes registrada no exceda el cupo oficial para esa combinación de deporte, modalidad y género, para que ninguna delegación declare por encima del tope oficial.',
   steps:[
    {board:'n3',sel:'#n3 .cell.lim',body:'<b>El tope es duro: no se puede superar.</b> Si escribes o pegas más del cupo de la <b>combinación exacta</b> (o de la suma hombres + mujeres del cupo mixto), el sistema limita el valor al máximo; no hay error ni bloqueo.'},
    {board:'n3',sel:'#n3 .cell.lim small',body:'Junto a cada campo se lee el máximo que le queda («máx. 2 · suma H + M de 4»). Al llegar a él el botón <b>+</b> se deshabilita.'},
@@ -1357,7 +1359,7 @@ mountTour({
  'HU-IN-P10':{rol:'Gestor de una organización',title:'Descargar avance de la declaración',
   purpose:'Como Gestor de una Organización, quiero descargar un reporte ligero de mi avance mientras inscribo, para revisar cómo voy antes de confirmar.',
   steps:[
-   {board:'n2',sel:'#n2 .sidep [data-act="avance"]',open:'#n2 [data-act="caps"]',body:'Mientras la declaración es un borrador, <b>Descargar avance</b> está en el panel «Revisión» de la barra inferior. También aparece en el inicio, junto a «Continuar declaración».'},
+   {board:'n2',sel:'#n2 .sidep [data-act="avance"]',open:'#n2 [data-act="caps"]',body:'Mientras la declaración es un borrador, <b>Descargar avance</b> está en el panel «Revisión» de la barra inferior. También aparece en el inicio, junto al botón principal de la tarjeta «Inscripción numérica».'},
    {board:'n2',sel:'#n2 .doc.av .dh',open:'#n2 .sidep [data-act="avance"] || #n2 [data-act="avance"] || #n2 [data-act="caps"]',body:'Mismo membrete del certificado, pero rotulado como <b>borrador sin confirmar</b>, con la delegación y la fecha y hora de generación.'},
    {board:'n2',sel:'#n2 .doc.av .wm',open:'#n2 .sidep [data-act="avance"] || #n2 [data-act="avance"] || #n2 [data-act="caps"]',body:'La marca de agua y la leyenda <b>«BORRADOR — no es el certificado»</b> evitan confundirlo con el certificado oficial del cierre.'},
    {board:'n2',sel:'#n2 .doc.av .avs',open:'#n2 .sidep [data-act="avance"] || #n2 [data-act="avance"] || #n2 [data-act="caps"]',body:'Resume los totales declarados frente al cupo; debajo, cada deporte, modalidad y género con sus atletas y suplentes declarados contra el cupo. Es la vista previa del borrador.'},

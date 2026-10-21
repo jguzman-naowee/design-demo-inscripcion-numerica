@@ -20,6 +20,7 @@ body.landing {
   padding: 7px 13px; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius-full); font-size: 12px; font-weight: 600; color: var(--text-secondary);
 }
+.masthead__nw { height: 16px; width: auto; display: block; margin-left: 4px; }
 .masthead__chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--naranja); }
 
 .hero { max-width: 720px; margin-bottom: 40px; }

@@ -1974,7 +1974,7 @@ window.INSCNUM_DATA = {
    },
    "mixtaComposicion": null,
    "notas": [
-    "El instructivo no menciona suplentes"
+    "Las reglas oficiales no mencionan suplentes"
    ],
    "minimo": null,
    "topeDelegacion": null,
@@ -2144,7 +2144,7 @@ window.INSCNUM_DATA = {
    },
    "mixtaComposicion": null,
    "notas": [
-    "El instructivo no menciona suplentes"
+    "Las reglas oficiales no mencionan suplentes"
    ],
    "minimo": null,
    "topeDelegacion": null,
@@ -7930,7 +7930,7 @@ window.INSCNUM_DATA = {
    "id": "precedencia",
    "tipo": "precedencia",
    "tema": "Criterio oficial",
-   "criterio": "Manda lo documentado, con precedencia matriz (transcribe el instructivo de competencia) > hoja de reglas > texto de las HU. Donde dos fuentes dicen cosas distintas pero compatibles, se aplican las dos.",
+   "criterio": "Manda lo documentado, con precedencia matriz (transcribe las reglas oficiales) > hoja de reglas > texto de las HU. Donde dos fuentes dicen cosas distintas pero compatibles, se aplican las dos.",
    "porque": "Decisión de Jorge Guzmán, 9-oct-2026 (D2/D3)."
   },
   {
@@ -8083,7 +8083,7 @@ window.INSCNUM_DATA = {
   {
    "id": "sin-tope",
    "tipo": "decision",
-   "tema": "Sin tope en el instructivo",
+   "tema": "Sin tope definido",
    "criterio": "Billar, Lucha y los géneros en blanco de la hoja (Atletismo y Ecuestre femenino) no tienen tope: la delegación solo declara que va. No cuentan como pendientes.",
    "porque": "Decisión del 9-oct-2026 (D4).",
    "refs": [

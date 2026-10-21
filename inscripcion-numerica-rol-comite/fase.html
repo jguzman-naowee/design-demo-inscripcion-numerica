@@ -50,6 +50,8 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .ptab:hover{color:var(--g-900)}.ptab.on{color:var(--n-700);border-bottom-color:var(--n-700);cursor:default}
 .pgn-b{justify-content:center;padding-top:16px}
 .toolbar .sp{flex:1}
+/* Toolbar de C4 en una sola fila: los selectores ceden ancho antes que partir la barra. */
+@media(min-width:900px){.tb-inl{flex-wrap:nowrap}.tb-inl .seg{flex:none}.tb-inl .sel{flex:1 1 0;min-width:0}.tb-inl .sel select{min-width:0;width:100%;text-overflow:ellipsis}}
 .sel{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--g-300);border-radius:99px;height:40px;padding:0 14px;font-size:13px;color:var(--g-700);background:#fff}
 .sel select{border:0;background:none;font-size:13px;color:var(--g-900);outline:0;max-width:240px}
 .btn{border-radius:99px;height:44px;padding:0 22px;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;white-space:nowrap}
@@ -115,7 +117,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .ptoast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:40;background:#fff;color:#282834;border:1px solid #e8e9f2;border-left:5px solid #28bf2d;border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.14);font-size:14px;max-width:340px}
 /* ---------- Consolidado real (C1), hoja (C5) y tablero (C6) ---------- */
 .cq-h,.rw-h{display:grid;grid-template-columns:24px minmax(84px,1.15fr) minmax(84px,1fr) repeat(4,100px) 104px 150px 130px;align-items:center;column-gap:8px}
-.rw-h.nc,.cq-h.nc{grid-template-columns:24px minmax(170px,1.15fr) minmax(170px,1fr) 220px 150px}
+.rw-h.nc,.cq-h.nc{grid-template-columns:24px minmax(260px,2fr) minmax(170px,1fr) 220px 150px}
 .cq-h{padding:0 38px;margin:6px -20px 0;color:var(--g-700);font-size:12px;font-weight:600}
 /* Cabecera de columnas fija a todo el ancho; la fila abierta fija su título justo debajo. */
 .cq-h{position:sticky;top:0;z-index:6;background:#fff;padding-block:8px}
@@ -145,6 +147,26 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .rw-b ul{margin:6px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:4px 24px}
 .rw-b li{padding:3px 0;border-bottom:1px solid var(--g-200)}
 .rw-b li.hit{font-weight:700;color:var(--n-700)}
+/* Cebra y alto fijo en filas y listas de C1: el contenido no empuja el tamaño (DC-241, DC-243). */
+.rws>.rw:nth-child(even)>.rw-h:not([aria-expanded=true]){background:var(--g-100)}
+.rws>.rw:nth-child(even)>.rw-h .chp{background:#fff}
+.rws>.rw>.rw-h:hover{background:var(--g-200)}
+.rw-h:not(.nc){height:64px;min-height:0}.rw-h.nc{height:76px;min-height:0}.rw-h.nc .dp{-webkit-line-clamp:3}
+.rws>.rw>.rw-h,.rws>.rw.op>.rw-h{margin-top:0;padding-block:8px}
+.rw-h .dp,.rw-h .md{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.3}
+.rw-h .md{align-self:center}
+.rw-h .cq{display:flex;align-items:center;justify-content:center;align-self:stretch}
+.rw-h .chs{flex-wrap:nowrap}
+.rw-b{background:#fff;padding:16px 18px 20px 56px}
+.rw-b>b{display:block;margin-bottom:10px}
+.rw-b ul{margin:0;gap:0;border:1px solid var(--g-200);border-radius:8px;overflow:hidden;grid-template-columns:repeat(3,minmax(0,1fr))}
+.rw-b li{display:flex;align-items:center;min-height:56px;padding:8px 16px;border-bottom:0;line-height:1.35}
+.rw-b ul:not(.od) li:nth-child(6n+4),.rw-b ul:not(.od) li:nth-child(6n+5),.rw-b ul:not(.od) li:nth-child(6n+6),.rw-b ul.od li:nth-child(even){background:var(--g-100)}
+.rw-b ul.od{grid-template-columns:1fr;grid-auto-rows:auto}
+.rw-b ul.od li{display:grid;grid-template-columns:200px minmax(0,1fr);column-gap:16px;padding:12px 16px}
+.rw-b .mo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px}
+.rw-b .mo>span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.rw-b ul.od li:nth-child(even) .chp{background:#fff}
 .pgn{display:flex;align-items:center;gap:8px;color:var(--g-700);font-size:13px;flex-wrap:wrap}
 .pgn input{border:1px solid var(--g-700);border-radius:8px;height:34px;width:56px;text-align:center;font:inherit;color:var(--g-900);background:#fff}
 .pgn .ar{border:0;background:none;font-size:18px;color:var(--n-700);cursor:pointer;width:28px;height:30px}
@@ -252,11 +274,17 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .ini-dl>div{background:#fff;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
 .ini-dl dt{font-size:13px;font-weight:600;color:#646587}
 .ini-dl dd{margin:0;display:flex;flex-direction:column;gap:10px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(var(--kn,4),minmax(0,1fr));gap:16px}
 .kpi1{padding:0;gap:0;overflow:hidden}
-.kpi1 .ini-dl{display:block;border:0;background:none;border-radius:0}.kpi1 .ini-dl>div{height:100%}
-.ini-v{display:flex;align-items:baseline;gap:6px;font-size:15px;font-weight:600;color:#646587}
-.ini-v b{font-size:32px;line-height:1;font-weight:800;letter-spacing:-.02em;color:#282834}
+.kpi1 .ini-dl{display:block;height:100%;border:0;background:none;border-radius:0}
+.kpi1 .ini-dl>div{height:100%;padding:20px 24px;gap:8px;justify-content:flex-start}
+.kpi1 dt,.kpi1 .kpi-s{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:18px;min-height:36px}
+.kpi1 dd{gap:8px}
+.kpi-n{display:block;font-size:32px;line-height:36px;font-weight:800;letter-spacing:-.02em;color:#282834;font-variant-numeric:tabular-nums}
+.kpi-s{font-size:13px;font-weight:500;color:#646587}
+.kpi-s .ini-pg{margin-top:6px}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.kpis{grid-template-columns:minmax(0,1fr);gap:12px}.kpi1 dt{min-height:0}.kpi1 .kpi-s{min-height:18px}.kpi1 .ini-dl>div{padding:16px 20px}}
 .ini-pg{display:block;height:6px;border-radius:99px;background:#f4f5f9;overflow:hidden}
 .ini-pg i{display:block;height:6px;border-radius:99px;background:#d74009}
 .ini-b{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap;background:#f4f5f9;color:#282834}
@@ -299,7 +327,7 @@ body{background:#fff;color:var(--fg);font-family:var(--font);margin:0;line-heigh
 .cq-h+.rws{margin-top:0}
 .page>*,.dsh>*,.dc{min-width:0}
 @media (max-width:640px){
- .hsi{min-width:1212px}.hsi.nc{min-width:810px}
+ .hsi{min-width:1212px}.hsi.nc{min-width:1100px}
  .scr>.tbl{min-width:760px}
  .seg{flex-wrap:wrap;border-radius:20px;max-width:100%}
  .sel{max-width:100%;min-width:0}.sel select{min-width:0;max-width:100%}
@@ -422,7 +450,8 @@ function HEAD(o){
 function GO(id){return ' data-go="'+id+'"'}
 /* Card con título, subtítulo y acciones; KPIS arma el resumen de arriba, como el N1 del delegado. */
 function CARD(t,body,o){o=o||{};var hd='<div class="cd-h"><div><h2 class="ini-k">'+t+'</h2>'+(o.s?'<p class="cd-s">'+o.s+'</p>':'')+'</div>'+(o.a||'')+'</div>';if(o.out)return '<div class="cd-out">'+hd+'</div><section class="ini-card ini-nb"'+(o.t?' data-t="'+o.t+'"':'')+'>'+body+'</section>';return '<section class="ini-card"'+(o.t?' data-t="'+o.t+'"':'')+'><div class="cd-h"><div><h2 class="ini-k">'+t+'</h2>'+(o.s?'<p class="cd-s">'+o.s+'</p>':'')+'</div>'+(o.a||'')+'</div>'+body+'</section>'}
-function KPIS(t,l){return '<div class="kpis" role="group" aria-label="'+t+'">'+l.map(function(k){return '<section class="ini-card kpi1"><dl class="ini-dl"><div><dt>'+k[0]+'</dt><dd><span class="ini-v"><b>'+k[1]+'</b>'+(k[2]||'')+'</span>'+(k[3]!=null?'<span class="ini-pg"><i style="width:'+k[3]+'%"></i></span>':'')+'</dd></div></dl></section>'}).join('')+'</div>'}
+// Etiqueta, número y apoyo siempre en el mismo sitio: las cards de una fila alinean sus números (DC-242).
+function KPIS(t,l){return '<div class="kpis" role="group" aria-label="'+t+'" style="--kn:'+l.length+'">'+l.map(function(k){var sp=(k[2]||'').replace(/^<span>|<\/span>$/g,'');return '<section class="ini-card kpi1"><dl class="ini-dl"><div><dt>'+k[0]+'</dt><dd><b class="kpi-n">'+k[1]+'</b><span class="kpi-s">'+(k[3]!=null?'<span class="ini-pg"><i style="width:'+k[3]+'%"></i></span>':sp)+'</span></dd></div></dl></section>'}).join('')+'</div>'}
 function EX(){return '<span class="exl">Cifras de ejemplo (Intercolegiados)</span>'}
 /* Pestañas que agrupan las vistas del seguimiento (consolidado, cupo, avance, tablero). */
 function TABS(cur){return '<div class="ptabs" role="tablist" aria-label="Vistas del seguimiento">'+[['c1','Consolidado'],['c2','Declarado vs cupo'],['c3','Quién falta'],['c6','Tablero']].map(function(t){return '<button type="button" role="tab" class="ptab'+(t[0]===cur?' on':'')+'" aria-selected="'+(t[0]===cur)+'" tabindex="'+(t[0]===cur?0:-1)+'"'+(t[0]===cur?'':' data-go="'+t[0]+'"')+'>'+t[1]+'</button>'}).join('')+'</div>'}
@@ -461,7 +490,7 @@ function rowSport(c){
  var cp=c.cp,tip=cp.ov?TIPOV:'',open=!!S.c1.open[c.i],f=S.f;
  var jt=jtxt(cp.cj),cells=cqv(cp.mc,1,tip)+cqv(cp.ms,0,tip)+cqv(cp.fc,1)+cqv(cp.fs,0)+(jt?'<span class="cq sep cj" title="Límite conjunto Hombres + Mujeres: lo declarado en ambos géneros se suma contra este valor">'+jt+'</span>':'<span class="cq sep nil">—</span>');
  var body=open?'<div class="rw-b">'+(jt?'<p class="pager-note">Se declaran Hombres y Mujeres; el límite general es la suma de ambos: <b>'+jt+'</b>.</p>':'')+'<b>Organizaciones que declararon esta combinación ('+c.orgIdx.length+')</b><ul>'+c.orgIdx.map(function(i){return '<li'+(f.org!==''&&+f.org===i?' class="hit"':'')+'>'+esc(DELN[i])+'</li>'}).join('')+'</ul></div>':'';
- return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h" data-a="c1x:'+c.i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(c.deporte)+'</b><span class="md">'+esc(c.modalidad)+'</span>'+cells+'<span class="chs">'+chipsOf(c.porSexo)+'</span><span class="badge info">'+c.organizaciones+' organizaciones</span></button>'+body+'</div>'}
+ return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h" data-a="c1x:'+c.i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp" title="'+esc(c.deporte)+'">'+esc(c.deporte)+'</b><span class="md" title="'+esc(c.modalidad)+'">'+esc(c.modalidad)+'</span>'+cells+'<span class="chs">'+chipsOf(c.porSexo)+'</span><span class="badge info">'+c.organizaciones+' organizaciones</span></button>'+body+'</div>'}
 function rowOrg(i){
  var p=PROF[i],f=S.f,open=!!S.c1.open['o'+i],sx={};
  var lst='';
@@ -470,9 +499,9 @@ function rowOrg(i){
   var ms=Object.keys(p.deps[d]).filter(function(m){return !f.sexo||p.deps[d][m][f.sexo]}).sort(function(a,b){return a.localeCompare(b,'es')});
   if(!ms.length)return;
   ms.forEach(function(m){for(var k in p.deps[d][m])sx[k]=1});
-  lst+='<li><b>'+esc(d)+'</b>: '+ms.map(function(m){return esc(m)+' '+chipsOf(p.deps[d][m])}).join(' · ')+'</li>'});
- var hb=isHab(i),body=open?(hb?'<div class="rw-b"><b>'+ESTH+'</b><p class="pager-note">No hizo la intención en deportes y modalidades; queda habilitada ante un posible permiso extraordinario del comité.</p></div>':'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul style="grid-template-columns:1fr">'+lst+'</ul></div>'):'';
- return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp">'+esc(DELN[i])+'</b><span class="md">'+(hb?ESTH:p.nd+' deportes · '+p.nm+' modalidades')+'</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge '+(hb?'warn':'info')+'">'+(hb?'Habilitada':p.nd+' deportes')+'</span></button>'+body+'</div>'}
+  lst+='<li><b>'+esc(d)+'</b><span class="mo">'+ms.map(function(m){return '<span>'+esc(m)+' '+chipsOf(p.deps[d][m])+'</span>'}).join('')+'</span></li>'});
+ var hb=isHab(i),body=open?(hb?'<div class="rw-b"><b>'+ESTH+'</b><p class="pager-note">No hizo la intención en deportes y modalidades; queda habilitada ante un posible permiso extraordinario del comité.</p></div>':'<div class="rw-b"><b>Deportes y modalidades declarados</b><ul class="od">'+lst+'</ul></div>'):'';
+ return '<div class="rw'+(open?' op':'')+'"><button type="button" class="rw-h nc" data-a="c1x:o'+i+'" aria-expanded="'+open+'"><span class="chv">'+CHV+'</span><b class="dp" title="'+esc(DELN[i])+'">'+esc(DELN[i])+'</b><span class="md">'+(hb?ESTH:p.nd+' deportes · '+p.nm+' modalidades')+'</span><span class="chs">'+chipsOf(sx)+'</span><span class="badge '+(hb?'warn':'info')+'">'+(hb?'Habilitada':p.nd+' deportes')+'</span></button>'+body+'</div>'}
 function sexOpts(sel){return '<option value="">Todos</option>'+SEXK.map(function(k){return '<option value="'+k+'"'+(sel===k?' selected':'')+'>'+(k==='Mixto'?'Mixto (solo Ecuestre)':SEXL[k])+'</option>'}).join('')}
 function c1Ahora(){
  var st=S.c1,f=S.f,body,pages,total,nf=(f.sport?1:0)+(f.sexo?1:0);
@@ -535,7 +564,7 @@ function c4Ahora(){
  var st=S.c4,f=S.f,rows=c4Rows(),full=st.mode==='completo';
  var chips=full?'<span class="chipf">Reporte completo · <b>sin filtros</b></span>':filtChips();
  var m=st.menu?'<div class="menu" role="menu"><button class="it" role="menuitem" data-a="c4x:vista"><b>Lo que estoy viendo </b><small>Respeta los filtros y la pestaña activa. Incluye las columnas de cupos y cantidades.</small><span style="display:flex;gap:6px;flex-wrap:wrap">'+filtChips()+'</span></button><button class="it" role="menuitem" data-a="c4x:completo"><b>Reporte completo</b><small>Todo el evento, sin filtros.</small></button></div>':'';
- var fl='<div class="toolbar"><div class="seg"><button data-a="fv:bySport" class="'+(f.view==='bySport'?'on':'')+'">Por deporte</button><button data-a="fv:byOrg" class="'+(f.view==='byOrg'?'on':'')+'">Por organización</button></div>'+
+ var fl='<div class="toolbar tb-inl"><div class="seg"><button data-a="fv:bySport" class="'+(f.view==='bySport'?'on':'')+'">Por deporte</button><button data-a="fv:byOrg" class="'+(f.view==='byOrg'?'on':'')+'">Por organización</button></div>'+
  '<label class="sel">Deporte <select data-a="fs">'+opts(DEPS,f.sport,'Todos')+'</select></label><label class="sel">Género <select data-a="fg">'+sexOpts(f.sexo)+'</select></label><label class="sel">Organización <select data-a="fo">'+optsI(DELN,f.org,'Todas')+'</select></label></div>';
  var vp='<div style="display:flex;gap:6px;flex-wrap:wrap">'+chips+'</div>'+
  '<div><b>'+fmt(rows.length)+' filas</b> · 12 columnas, incluidas las de cupos y suplentes. Se descarga un archivo de Excel (.xlsx) con la hoja «Membrete» y la hoja «Consolidado». Vista previa de las primeras 5:</div>'+

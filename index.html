@@ -23,6 +23,7 @@
       <img src="shared/logos/suid.png" alt="SUID">
     </div>
     <span class="masthead__chip"><span class="dot"></span>Inscripción numérica · v0.1.0 · demo</span>
+    <img class="masthead__nw" src="shared/logos/naowee.svg" alt="Naowee">
   </header>
 
   <section class="hero">
@@ -53,7 +54,9 @@
     var N = window.InscNum;
     var ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
     var last = N.lastRole();
-    document.getElementById('grid').innerHTML = N.ORDER.map(function (c) {
+    /* En la portada el Admin va primero; el orden del resto no cambia. */
+    var ORD = ['admin'].concat(N.ORDER.filter(function (c) { return c !== 'admin'; }));
+    document.getElementById('grid').innerHTML = ORD.map(function (c) {
       var r = N.ROLES[c], n = N.husOf(c).length;
       return '<a class="role-card" href="' + r.page + '" style="--role-color:' + r.color + '">' +
         '<div class="role-card__top"><span class="role-card__avatar">' + r.avatar + '</span>' +
